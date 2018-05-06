@@ -1,0 +1,59 @@
+{
+    'parser': 'babel-eslint',
+    'plugins': [
+        'jest',
+        'promise',
+        'import',
+    ],
+    'extends': [
+        'airbnb',
+        'plugin:jest/recommended'
+    ],
+    'settings': {
+        'import/resolver': {
+            'node': {
+                'moduleDirectory': ['node_modules', './']
+            },
+        },
+    },
+    'rules': {
+        'arrow-body-style': 0,
+        'arrow-parens': [2, 'as-needed', { 'requireForBlockBody': false }],
+        'comma-dangle': [2, 'always-multiline'],
+        'consistent-return': 0,
+        'dot-notation': 0,
+        'function-paren-newline': 0,
+        'import/extensions': [2, 'ignorePackages'],
+        'import/prefer-default-export': 0,
+        'indent': ['error', 4, { 'ignoredNodes': [ 'TemplateLiteral *' ], 'ignoreComments': true }],
+        'max-len': ['error', 110, 4, { 'ignoreUrls': true }],
+        'new-cap': 0,
+        'newline-per-chained-call': 0,
+        'no-await-in-loop': 0,
+        'no-confusing-arrow': 0,
+        'no-console': 0,
+        'no-continue': 0,
+        'no-mixed-operators': 0,
+        'no-param-reassign': [2, { 'props': false }],
+        'no-plusplus': 0,
+        'no-restricted-globals': 0,
+        'no-underscore-dangle': 0,
+        'no-unused-expressions': 0,
+        'no-unused-vars': [2, { 'args': 'none' }],
+        'object-curly-newline': 0,
+        'promise/no-native': 2,
+        'semi': [2, 'never', { 'beforeStatementContinuationChars': 'always' }],
+        'jsx-a11y/anchor-is-valid': 0,
+        'react/jsx-closing-tag-location': 0,
+        'react/jsx-filename-extension': 0,
+        'react/jsx-indent': ['error', 4],
+        'react/jsx-indent-props': ['error', 4],
+        'react/jsx-wrap-multilines': 0,
+        'react/prop-types': 0,
+        'react/sort-comp': 0,
+    },
+    'env': {
+        'jest/globals': true,
+        'browser': true,
+    },
+}
