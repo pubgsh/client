@@ -1,0 +1,12 @@
+{
+    'presets': [
+        'env',
+        'react',
+    ],
+    'plugins': [
+        ['babel-plugin-root-import', [{ 'rootPathPrefix': '@', 'rootPathSuffix': 'src' }]],
+        ['transform-object-rest-spread', { 'useBuiltIns': true }],
+        'transform-class-properties',
+        'transform-runtime',
+    ],
+}
