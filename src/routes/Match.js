@@ -1,95 +1,133 @@
 import React from 'react'
+import { get } from 'lodash'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
+import styled from 'styled-components'
 import { Input } from 'semantic-ui-react'
-import Match from '../models/Match.js'
-import miramar from '../miramar.jpg'
+import Map from '../components/Map/index.js'
 
-class MatchView extends React.Component {
-    state = {
-        msSinceEpoch: 1000,
-        match: null,
-    }
+const MatchContainer = styled.div`
+    display: grid;
+    grid-template-columns: 1fr 250px;
+    border: 0px solid black;
+    overflow: hidden;
+`
+
+const MapContainer = styled.div`
+    grid-column: 1;
+    position: relative;
+    padding-bottom: 100%;
+`
+
+class Match extends React.Component {
+    state = { telemetry: null, secondsSinceEpoch: 600, autoPlay: false }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.data.match) {
-            const parsed = {
-                id: nextProps.data.match.id,
-                data: JSON.parse(nextProps.data.match.data),
-                telemetryData: JSON.parse(nextProps.data.match.telemetryData),
-            }
+        const matchId = get(nextProps, 'data.match.id')
+        if (prevState.matchId === matchId) return null
 
-            return { match: Match(parsed) }
+        return { matchId, telemetry: null }
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        // console.log('did update', get(prevProps, 'data.match.id'), get(this.props, 'data.match.id'))
+        if (get(prevProps, 'data.match.id') !== get(this.props, 'data.match.id')) {
+            this.loadTelemetry()
+        }
+    }
+
+    componentDidMount() {
+        if (get(this.props, 'data.match.id')) {
+            this.loadTelemetry()
         }
 
-        return null
+        if (this.state.autoPlay) {
+            this.startAutoplay()
+        }
+    }
+
+    componentWillUnmount() {
+        // console.log('unmounting', get(this.props, 'data.match.id'))
     }
 
     onChange = e => {
         this.setState({ [e.target.name]: e.target.value })
+        // console.log(this.props.history)
+    }
+
+    loadTelemetry = async () => {
+        // console.log('Fetching telemetry')
+        const res = await fetch(this.props.data.match.telemetryUrl)
+        const telemetry = await res.json()
+        console.log('setting telemetry', telemetry)
+        this.setState({ telemetry })
+    }
+
+    startAutoplay = () => {
+        this.autoplayInterval = setInterval(() => {
+            this.setState(prevState => ({ secondsSinceEpoch: prevState.secondsSinceEpoch + 1 }))
+        }, 10)
     }
 
     render() {
-        if (!this.state.match) return 'Loading...'
+        const { match: routerMatch, data: { loading, error, match } } = this.props
+        const { telemetry, secondsSinceEpoch } = this.state
 
-        const players = this.state.match.stateAt(this.state.msSinceEpoch)
-
-        let left = '50%'
-        let top = '50%'
-
-        if (players && players.robobagins && players.robobagins.location) {
-            const { x, y } = players.robobagins.location
-            left = `${x / 8160}%`
-            top = `${y / 8160}%`
-        }
+        if (loading) return 'Loading...'
+        if (error) return `Error ${error}`
+        if (!match) return 'Match not found'
 
         return <div>
-            Match {this.state.match.id}
+            Match {match.id} {secondsSinceEpoch}
+
+            <p />
+
             <Input
-                name="msSinceEpoch"
+                name="secondsSinceEpoch"
                 onChange={this.onChange}
-                value={this.state.msSinceEpoch}
+                value={secondsSinceEpoch}
                 type="range"
-                min="1000"
-                max={this.state.match.duration * 1000}
-                step="1000"
+                min="1"
+                max={match.durationSeconds + 10}
+                step="1"
+                fluid
             />
-            {this.state.msSinceEpoch}
-            <p>
-                {players &&
-                    JSON.stringify(players.robobagins)
-                }
-            </p>
-            <div style={{ backgroundImage: `url(${miramar})`, width: '898px', height: '701px', position: 'relative' }}>
-                <div style={{ color: 'red', position: 'absolute', height: '20px', width: '20px',
-                    fontWeight: 'bold',
-                    left,
-                    top,
-                }}>X</div>
-            </div>
+
+            <MatchContainer>
+                <MapContainer>
+                    <Map
+                        match={match}
+                        telemetry={telemetry}
+                        secondsSinceEpoch={secondsSinceEpoch}
+                        focusPlayer={routerMatch.params.playerName}
+                    />
+                </MapContainer>
+            </MatchContainer>
         </div>
     }
 }
 
-const matchQuery = gql`
+export default graphql(gql`
     query($matchId: String!) {
         match(id: $matchId) {
             id
-            data
-            telemetryData
+            shardId
+            gameMode
+            playedAt
+            mapName
+            durationSeconds
+            telemetryUrl
+            players {
+                id
+                name
+                rosterId
+            }
         }
-    }
-`
-
-const WrappedMatch = graphql(matchQuery, {
-    variables: props => ({
-        matchId: props.matchId,
-    }),
-    options: {
+    }`, {
+    options: ({ match }) => ({
         fetchPolicy: 'network-only',
-    },
-})(MatchView)
-
-export default ({ match }) =>
-    <WrappedMatch matchId={match.params.matchId} />
-
+        variables: {
+            matchId: match.params.matchId,
+        },
+    }),
+})(Match)

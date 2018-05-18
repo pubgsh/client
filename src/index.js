@@ -7,7 +7,7 @@ import { ApolloProvider } from 'react-apollo'
 import 'semantic-ui-css/semantic.min.css'
 import './index.css'
 
-import Routes from './routes'
+import Routes from './routes/index.js'
 
 const client = new ApolloClient({
     link: new HttpLink({ uri: 'http://localhost:3005/graphql' }),

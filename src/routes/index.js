@@ -1,17 +1,27 @@
 import React from 'react'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import { Container } from 'semantic-ui-react'
-import Home from './Home'
-import Player from './Player'
+import Home from './Home.js'
+import Player from './Player.js'
+import Match from './Match.js'
 import TopMenu from '../components/TopMenu.js'
+
+const RouteWithTopMenu = ({ component: Component, ...rest }) =>
+    <Route
+        {...rest}
+        render={props => [
+            <TopMenu key="topMenu" {...props} />,
+            <Component key="Component" {...props} />,
+        ]}
+    />
 
 export default () => (
     <BrowserRouter>
         <Container>
-            <Route path="/" component={TopMenu} />
             <Switch>
-                <Route path="/" exact component={Home} />
-                <Route path="/:playerName/:shardId" component={Player} />
+                <RouteWithTopMenu path="/" exact component={Home} />
+                <RouteWithTopMenu path="/:playerName/:shardId/:matchId" component={Match} />
+                <RouteWithTopMenu path="/:playerName/:shardId" component={Player} />
             </Switch>
         </Container>
     </BrowserRouter>
