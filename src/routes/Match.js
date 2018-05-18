@@ -5,6 +5,7 @@ import gql from 'graphql-tag'
 import styled from 'styled-components'
 import { Input } from 'semantic-ui-react'
 import Map from '../components/Map/index.js'
+import Telemetry from '../models/Telemetry.js'
 
 const MatchContainer = styled.div`
     display: grid;
@@ -20,7 +21,7 @@ const MapContainer = styled.div`
 `
 
 class Match extends React.Component {
-    state = { telemetry: null, secondsSinceEpoch: 600, autoPlay: false }
+    state = { telemetry: null, secondsSinceEpoch: 1, autoPlay: false }
 
     static getDerivedStateFromProps(nextProps, prevState) {
         const matchId = get(nextProps, 'data.match.id')
@@ -34,15 +35,15 @@ class Match extends React.Component {
         if (get(prevProps, 'data.match.id') !== get(this.props, 'data.match.id')) {
             this.loadTelemetry()
         }
+
+        if (this.state.telemetry && !this.autoplayInterval && this.state.autoplay) {
+            this.startAutoplay()
+        }
     }
 
     componentDidMount() {
         if (get(this.props, 'data.match.id')) {
             this.loadTelemetry()
-        }
-
-        if (this.state.autoPlay) {
-            this.startAutoplay()
         }
     }
 
@@ -58,14 +59,22 @@ class Match extends React.Component {
     loadTelemetry = async () => {
         // console.log('Fetching telemetry')
         const res = await fetch(this.props.data.match.telemetryUrl)
-        const telemetry = await res.json()
-        console.log('setting telemetry', telemetry)
+        const telemetryData = await res.json()
+        const telemetry = Telemetry(this.props.data.match, telemetryData)
         this.setState({ telemetry })
     }
 
     startAutoplay = () => {
         this.autoplayInterval = setInterval(() => {
-            this.setState(prevState => ({ secondsSinceEpoch: prevState.secondsSinceEpoch + 1 }))
+            this.setState(prevState => {
+                const prev = prevState.secondsSinceEpoch
+
+                if (prev > get(this.props, 'data.match.durationSeconds')) {
+                    return { secondsSinceEpoch: 1 }
+                }
+
+                return { secondsSinceEpoch: prevState.secondsSinceEpoch + 3 }
+            })
         }, 10)
     }
 
