@@ -1,3 +1,4 @@
+import React from 'react'
 import styled from 'styled-components'
 
 const ZoneCircle = styled.div.attrs({
@@ -10,9 +11,17 @@ const ZoneCircle = styled.div.attrs({
 })`
     z-index: 3;
     border: 1px solid ${props => props.color};
+    background: ${props => props.background};
     position: absolute;
     border-radius: 3000px
     transform: translate(-50%, -50%);
 `
 
-export default ZoneCircle
+export const Safezone = props =>
+    <ZoneCircle {...props} color="white" />
+
+export const Bluezone = props =>
+    <ZoneCircle {...props} color="blue" />
+
+export const Redzone = props =>
+    <ZoneCircle {...props} color="#FF000044" background="#FF000044" />

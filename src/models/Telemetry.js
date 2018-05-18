@@ -8,6 +8,7 @@ export default function Telemetry(matchData, telemetry) {
         const players = {}
         const safezone = {}
         const bluezone = {}
+        const redzone = {}
 
         forEach(telemetry, d => {
             if (new Date(d._D).getTime() - epoch > msSinceEpoch) {
@@ -33,10 +34,12 @@ export default function Telemetry(matchData, telemetry) {
                 bluezone.radius = d.gameState.safetyZoneRadius
                 safezone.position = d.gameState.poisonGasWarningPosition
                 safezone.radius = d.gameState.poisonGasWarningRadius
+                redzone.position = d.gameState.redZonePosition
+                redzone.radius = d.gameState.redZoneRadius
             }
         })
 
-        return { players, safezone, bluezone }
+        return { players, safezone, bluezone, redzone }
     }
 
     return {
