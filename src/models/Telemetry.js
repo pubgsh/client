@@ -1,10 +1,43 @@
 import { get, cloneDeep } from 'lodash'
 
-export default function Telemetry(matchData, telemetry) {
-    const epoch = new Date(matchData.playedAt).getTime()
+const getColor = (focusType, status) => {
+    if (focusType === 'player') {
+        return status === 'dead' ? '#895aff' : '#18e786'
+    }
 
-    const cache = new Array(telemetry.length)
-    cache[0] = {
+    if (focusType === 'teammate') {
+        return status === 'dead' ? 'pink' : 'blue'
+    }
+
+    return status === 'dead' ? '#FF0000' : '#FFF'
+}
+
+
+export default function Telemetry(matchData, telemetry, focusedPlayer) {
+    const epoch = new Date(matchData.playedAt).getTime()
+    const focusedRosterId = matchData.players.find(p => p.name === focusedPlayer).rosterId
+
+    function Player(name, rosterId) {
+        this.name = name
+        this.rosterId = rosterId
+
+        this.focusType = (() => {
+            if (name === focusedPlayer) return 'player'
+            if (rosterId === focusedRosterId) return 'teammate'
+            return 'none'
+        })()
+
+        this.setStatus('alive')
+    }
+
+    Player.prototype.setStatus = function setStatus(status) {
+        this.status = status
+        this.color = getColor(this.focusType, this.status)
+    }
+
+    // console.log(matchData)
+
+    const initialResult = {
         lastIndex: 0,
         state: {
             players: {},
@@ -13,6 +46,15 @@ export default function Telemetry(matchData, telemetry) {
             redzone: {},
         },
     }
+
+    matchData.players.forEach(p => {
+        initialResult.state.players[p.name] = new Player(p.name, p.rosterId)
+    })
+
+    console.log(initialResult)
+
+    const cache = new Array(telemetry.length)
+    cache[0] = initialResult
 
     function calculateState(previousResult, secondsSinceEpoch) {
         const msSinceEpoch = secondsSinceEpoch * 1000
@@ -31,13 +73,16 @@ export default function Telemetry(matchData, telemetry) {
 
             if (get(d, 'character.name')) {
                 const { name, location } = d.character
-                const player = (result.state.players[name] || (result.state.players[name] = {}))
-                player.lastUpdatedAt = new Date(d._D).getTime() - epoch
-                player.location = location
+                const player = result.state.players[name]
+
+                if (player) {
+                    player.lastUpdatedAt = new Date(d._D).getTime() - epoch
+                    player.location = location
+                }
             }
 
             if (d._T === 'LogPlayerKill') {
-                result.state.players[d.victim.name].status = 'dead'
+                result.state.players[d.victim.name].setStatus('dead')
             }
 
             if (d._T === 'LogGameStatePeriodic') {

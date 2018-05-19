@@ -3,7 +3,7 @@ import { get } from 'lodash'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import styled from 'styled-components'
-import { Input, Container, Button, Icon } from 'semantic-ui-react'
+import { Input, Container, Button } from 'semantic-ui-react'
 import Map from '../components/Map/index.js'
 import Telemetry from '../models/Telemetry.js'
 
@@ -35,23 +35,37 @@ const StyledPlayButton = styled(Button)`
 `
 
 class Match extends React.Component {
-    state = { telemetry: null, secondsSinceEpoch: 600, autoplay: false, mapSize: 0 }
+    state = {
+        matchId: null,
+        focusedPlayer: null,
+        telemetry: null,
+        telemetryLoading: false,
+        secondsSinceEpoch: 600,
+        autoplay: false,
+        mapSize: 0,
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        return {
+            matchId: nextProps.match.params.matchId,
+            focusedPlayer: nextProps.match.params.playerName,
+        }
+    }
 
     componentDidUpdate(prevProps, prevState) {
-        if (get(prevProps, 'data.match.id') !== get(this.props, 'data.match.id')) {
-            console.log(`New match id (${get(this.props, 'data.match.id')})`)
+        if (!this.state.telemetry && !this.state.telemetryLoading) {
+            console.log(`New match id (${this.state.matchId})`)
             this.loadTelemetry()
         }
 
-        if (this.state.telemetry && !this.autoplayInterval && this.state.autoplay) {
-            console.log('Telemetry loaded and autoplay = true. Autoplaying.')
-            this.startAutoplay()
-        }
-
-        const mapSize = document.getElementById('MapContainer').clientWidth
-        if (prevState.mapSize !== mapSize) {
-            console.log(`New MapContainer size (${prevState.mapSize} --> ${mapSize})`)
-            this.setMapSize(mapSize)
+        try {
+            const mapSize = document.getElementById('MapContainer').clientWidth
+            if (prevState.mapSize !== mapSize) {
+                console.log(`New MapContainer size (${prevState.mapSize} --> ${mapSize})`)
+                this.setMapSize(mapSize)
+            }
+        } catch (e) {
+            console.log('No map container')
         }
     }
 
@@ -69,10 +83,13 @@ class Match extends React.Component {
 
     loadTelemetry = async () => {
         console.log('Loading telemetry...')
+        this.setState({ telemetry: null, telemetryLoading: true })
+
         const res = await fetch(this.props.data.match.telemetryUrl)
         const telemetryData = await res.json()
-        const telemetry = Telemetry(this.props.data.match, telemetryData)
-        this.setState({ telemetry })
+        const telemetry = Telemetry(this.props.data.match, telemetryData, this.state.focusedPlayer)
+
+        this.setState({ telemetry, telemetryLoading: false })
     }
 
     startAutoplay = () => {
@@ -108,8 +125,8 @@ class Match extends React.Component {
     }
 
     render() {
-        const { match: routerMatch, data: { loading, error, match } } = this.props
-        const { telemetry, secondsSinceEpoch, mapSize } = this.state
+        const { data: { loading, error, match } } = this.props
+        const { telemetry, secondsSinceEpoch, mapSize, autoplay, focusedPlayer } = this.state
 
         if (loading) return 'Loading...'
         if (error) return `Error ${error}`
@@ -119,7 +136,6 @@ class Match extends React.Component {
             Match {match.id} {secondsSinceEpoch}
 
             <p />
-
 
             <MatchContainer>
                 <MapContainer id="MapContainer">
@@ -134,17 +150,14 @@ class Match extends React.Component {
                             max={match.durationSeconds + 10}
                             step="1"
                         />
-                        <StyledPlayButton
-                            icon={this.state.autoplay ? 'pause' : 'play'}
-                            onClick={this.toggleAutoplay}
-                        />
+                        <StyledPlayButton icon={autoplay ? 'pause' : 'play'} onClick={this.toggleAutoplay} />
                     </Container>
 
                     <Map
                         match={match}
                         telemetry={telemetry}
                         secondsSinceEpoch={secondsSinceEpoch}
-                        focusedPlayer={routerMatch.params.playerName}
+                        focusedPlayer={focusedPlayer}
                         mapSize={mapSize}
                     />
                 </MapContainer>
