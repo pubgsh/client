@@ -1,37 +1,20 @@
 import React from 'react'
-import styled from 'styled-components'
+import { Circle } from 'react-konva'
 
-const StyledDot = styled.div.attrs({
-    style: props => ({
-        left: `${props.x / 8160}%`,
-        top: `${props.y / 8160}%`,
-    }),
-})`
-    z-index: ${props => props.isFocused ? 2 : 1};
-    background: ${props => props.color};
-    border: 1px solid black;
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    border-radius: 10px;
-    transform: translate(-50%, -50%);
-`
-
-const getDotColor = (isFocused, status) => {
-    if (isFocused) {
-        return status === 'dead' ? '#895aff' : '#18e786'
-    }
-
-    return status === 'dead' ? '#FF0000' : '#FFF'
-}
-
-const PlayerDot = ({ focusPlayer, name, location: { x, y }, status }) => {
-    const isFocused = focusPlayer === name
+const PlayerDot = ({ mapSize, name, location: { x, y }, status, color = 'white', strokeColor = 'black' }) => {
+    const toScale = n => n / 816000 * mapSize
 
     return (
-        <StyledDot x={x} y={y} color={getDotColor(isFocused, status)} isFocused={isFocused} />
+        <Circle
+            x={toScale(x)}
+            y={toScale(y)}
+            fill={color}
+            stroke={strokeColor}
+            width="10"
+            height="10"
+            strokeWidth="1"
+        />
     )
 }
-
 
 export default PlayerDot

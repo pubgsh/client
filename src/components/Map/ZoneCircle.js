@@ -1,21 +1,21 @@
 import React from 'react'
-import styled from 'styled-components'
+import { Circle } from 'react-konva'
 
-const ZoneCircle = styled.div.attrs({
-    style: props => ({
-        left: `${props.position.x / 8160}%`,
-        top: `${props.position.y / 8160}%`,
-        width: `${props.radius / 8160 * 2}%`,
-        height: `${props.radius / 8160 * 2}%`,
-    }),
-})`
-    z-index: 3;
-    border: 1px solid ${props => props.color};
-    background: ${props => props.background};
-    position: absolute;
-    border-radius: 3000px
-    transform: translate(-50%, -50%);
-`
+const ZoneCircle = ({ mapSize, position: { x, y }, radius, color, background }) => {
+    const toScale = n => n / 816000 * mapSize
+
+    return (
+        <Circle
+            x={toScale(x)}
+            y={toScale(y)}
+            fill={background}
+            stroke={color}
+            width={toScale(radius) * 2}
+            height={toScale(radius) * 2}
+            strokeWidth="1"
+        />
+    )
+}
 
 export const Safezone = props =>
     <ZoneCircle {...props} color="white" />

@@ -3,7 +3,7 @@ import { get } from 'lodash'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import styled from 'styled-components'
-import { Input } from 'semantic-ui-react'
+import { Input, Container, Button, Icon } from 'semantic-ui-react'
 import Map from '../components/Map/index.js'
 import Telemetry from '../models/Telemetry.js'
 
@@ -17,47 +17,58 @@ const MatchContainer = styled.div`
 const MapContainer = styled.div`
     grid-column: 1;
     position: relative;
-    padding-bottom: 100%;
+`
+
+const StyledRangeInput = styled(Input)`
+    &&& {
+        display: flex;
+        width: 100%;
+        margin-right: 10px;
+    }
+`
+
+const StyledPlayButton = styled(Button)`
+    &&& {
+        display: flex;
+        margin-right: 1px;
+    }
 `
 
 class Match extends React.Component {
-    state = { telemetry: null, secondsSinceEpoch: 1, autoPlay: false }
-
-    static getDerivedStateFromProps(nextProps, prevState) {
-        const matchId = get(nextProps, 'data.match.id')
-        if (prevState.matchId === matchId) return null
-
-        return { matchId, telemetry: null }
-    }
+    state = { telemetry: null, secondsSinceEpoch: 600, autoplay: false, mapSize: 0 }
 
     componentDidUpdate(prevProps, prevState) {
-        // console.log('did update', get(prevProps, 'data.match.id'), get(this.props, 'data.match.id'))
         if (get(prevProps, 'data.match.id') !== get(this.props, 'data.match.id')) {
+            console.log(`New match id (${get(this.props, 'data.match.id')})`)
             this.loadTelemetry()
         }
 
         if (this.state.telemetry && !this.autoplayInterval && this.state.autoplay) {
+            console.log('Telemetry loaded and autoplay = true. Autoplaying.')
             this.startAutoplay()
         }
-    }
 
-    componentDidMount() {
-        if (get(this.props, 'data.match.id')) {
-            this.loadTelemetry()
+        const mapSize = document.getElementById('MapContainer').clientWidth
+        if (prevState.mapSize !== mapSize) {
+            console.log(`New MapContainer size (${prevState.mapSize} --> ${mapSize})`)
+            this.setMapSize(mapSize)
         }
     }
 
     componentWillUnmount() {
-        // console.log('unmounting', get(this.props, 'data.match.id'))
+        this.stopAutoplay()
     }
 
-    onChange = e => {
-        this.setState({ [e.target.name]: e.target.value })
-        // console.log(this.props.history)
+    onInputChange = e => {
+        this.setState({ [e.target.name]: Number(e.target.value) })
+    }
+
+    setMapSize(mapSize) {
+        this.setState({ mapSize })
     }
 
     loadTelemetry = async () => {
-        // console.log('Fetching telemetry')
+        console.log('Loading telemetry...')
         const res = await fetch(this.props.data.match.telemetryUrl)
         const telemetryData = await res.json()
         const telemetry = Telemetry(this.props.data.match, telemetryData)
@@ -75,12 +86,30 @@ class Match extends React.Component {
 
                 return { secondsSinceEpoch: prevState.secondsSinceEpoch + 3 }
             })
-        }, 10)
+        }, 16)
+
+        this.setState({ autoplay: true })
+    }
+
+    stopAutoplay = () => {
+        if (this.autoplayInterval) {
+            clearInterval(this.autoplayInterval)
+        }
+
+        this.setState({ autoplay: false })
+    }
+
+    toggleAutoplay = () => {
+        if (this.state.autoplay) {
+            this.stopAutoplay()
+        } else {
+            this.startAutoplay()
+        }
     }
 
     render() {
         const { match: routerMatch, data: { loading, error, match } } = this.props
-        const { telemetry, secondsSinceEpoch } = this.state
+        const { telemetry, secondsSinceEpoch, mapSize } = this.state
 
         if (loading) return 'Loading...'
         if (error) return `Error ${error}`
@@ -91,24 +120,32 @@ class Match extends React.Component {
 
             <p />
 
-            <Input
-                name="secondsSinceEpoch"
-                onChange={this.onChange}
-                value={secondsSinceEpoch}
-                type="range"
-                min="1"
-                max={match.durationSeconds + 10}
-                step="1"
-                fluid
-            />
 
             <MatchContainer>
-                <MapContainer>
+                <MapContainer id="MapContainer">
+                    <Container fluid style={{ display: 'flex', marginBottom: '5px' }}>
+                        <StyledRangeInput
+                            name="secondsSinceEpoch"
+                            onClick={this.stopAutoplay}
+                            onChange={this.onInputChange}
+                            value={secondsSinceEpoch}
+                            type="range"
+                            min="1"
+                            max={match.durationSeconds + 10}
+                            step="1"
+                        />
+                        <StyledPlayButton
+                            icon={this.state.autoplay ? 'pause' : 'play'}
+                            onClick={this.toggleAutoplay}
+                        />
+                    </Container>
+
                     <Map
                         match={match}
                         telemetry={telemetry}
                         secondsSinceEpoch={secondsSinceEpoch}
-                        focusPlayer={routerMatch.params.playerName}
+                        focusedPlayer={routerMatch.params.playerName}
+                        mapSize={mapSize}
                     />
                 </MapContainer>
             </MatchContainer>
