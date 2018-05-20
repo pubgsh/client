@@ -36,8 +36,17 @@ export default function Telemetry(matchData, telemetry, focusedPlayerName) {
 
         if (d._T === 'LogPlayerKill') {
             state = state.withMutations(s => {
-                const path = ['players', d.victim.name]
-                s.setIn(path, setPlayerStatus(s.getIn(path), 'dead'))
+                const victimPath = ['players', d.victim.name]
+
+                const victim = setPlayerStatus(s.getIn(victimPath), 'dead')
+                s.deleteIn(victimPath)
+                s.setIn(victimPath, victim)
+
+                if (d.killer.name) {
+                    const killerPath = ['players', d.killer.name]
+                    const killer = s.getIn(killerPath)
+                    s.setIn(killerPath, killer.set('kills', killer.get('kills') + 1))
+                }
             })
         }
 

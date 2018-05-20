@@ -44,6 +44,7 @@
         'promise/no-native': 2,
         'semi': [2, 'never', { 'beforeStatementContinuationChars': 'always' }],
         'jsx-a11y/anchor-is-valid': 0,
+        'jsx-a11y/mouse-events-have-key-events': 0,
         'react/jsx-closing-tag-location': 0,
         'react/jsx-filename-extension': 0,
         'react/jsx-indent': ['error', 4],

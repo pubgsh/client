@@ -58,7 +58,7 @@ const Breadcrumbs = ({ playerName, shardId, matchId }) => {
     const matchCrumb = matchId &&
         <li>
             <Link to={`/${playerName}/${shardId}/${matchId}`}>
-                {matchId.substring(0, 11)}...
+                {matchId}
             </Link>
         </li>
 

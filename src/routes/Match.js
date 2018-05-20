@@ -5,6 +5,7 @@ import gql from 'graphql-tag'
 import styled from 'styled-components'
 import { Input, Container, Button } from 'semantic-ui-react'
 import Map from '../components/Map/index.js'
+import Roster from '../components/Roster.js'
 import Telemetry from '../models/Telemetry.js'
 
 const MatchContainer = styled.div`
@@ -17,6 +18,13 @@ const MatchContainer = styled.div`
 const MapContainer = styled.div`
     grid-column: 1;
     position: relative;
+    cursor: ${props => props.hoveredPlayer ? 'pointer' : 'normal'}
+`
+
+const RosterContainer = styled.div`
+    grid-column: 2;
+    position: relative;
+    overflow: scroll;
 `
 
 const StyledRangeInput = styled(Input)`
@@ -43,6 +51,8 @@ class Match extends React.Component {
         secondsSinceEpoch: 600,
         autoplay: false,
         mapSize: 0,
+        hoveredPlayer: null,
+        trackedPlayers: {},
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -89,7 +99,18 @@ class Match extends React.Component {
         const telemetryData = await res.json()
         const telemetry = Telemetry(this.props.data.match, telemetryData, this.state.focusedPlayer)
 
-        this.setState({ telemetry, telemetryLoading: false })
+        const defaultTracked = telemetry.stateAt(1).get('players')
+            .filter(p => p.get('focusType') === 'player' || p.get('focusType') === 'teammate')
+            .map(p => p.get('name'))
+
+        this.setState(prevState => ({
+            telemetry,
+            telemetryLoading: false,
+            trackedPlayers: {
+                ...prevState.trackedPlayers,
+                ...defaultTracked.reduce((acc, name) => ({ ...acc, [name]: true }), {}),
+            },
+        }))
     }
 
     startAutoplay = () => {
@@ -124,21 +145,49 @@ class Match extends React.Component {
         }
     }
 
+    setHoveredPlayer = playerName => {
+        this.setState({ hoveredPlayer: playerName })
+    }
+
+    toggleTrackedPlayer = playerName => {
+        this.setState(prevState => ({
+            hoveredPlayer: prevState.trackedPlayers[playerName] ? '' : playerName,
+            trackedPlayers: {
+                ...prevState.trackedPlayers,
+                [playerName]: !prevState.trackedPlayers[playerName],
+            },
+        }))
+    }
+
     render() {
         const { data: { loading, error, match } } = this.props
-        const { telemetry, secondsSinceEpoch, mapSize, autoplay, focusedPlayer } = this.state
+        const { telemetry, secondsSinceEpoch, mapSize, autoplay } = this.state
 
         if (loading) return 'Loading...'
         if (error) return `Error ${error}`
         if (!match) return 'Match not found'
+        if (!telemetry) return 'Loading telemetry...'
+
+        const currentTelemetry = telemetry.stateAt(secondsSinceEpoch)
+
+        const marks = {
+            focusedPlayer: this.state.focusedPlayer,
+            hoveredPlayer: this.state.hoveredPlayer,
+            trackedPlayers: this.state.trackedPlayers,
+            setHoveredPlayer: this.setHoveredPlayer,
+            toggleTrackedPlayer: this.toggleTrackedPlayer,
+            isHovered: playerName => this.state.hoveredPlayer === playerName,
+            isTracked: playerName => !!this.state.trackedPlayers[playerName],
+            isFocused: playerName => this.state.focusedPlayer === playerName,
+        }
 
         return <div>
-            Match {match.id} {secondsSinceEpoch}
+            Match {match.id} {secondsSinceEpoch} {marks.hoveredPlayer}
 
             <p />
 
             <MatchContainer>
-                <MapContainer id="MapContainer">
+                <MapContainer id="MapContainer" hoveredPlayer={marks.hoveredPlayer}>
                     <Container fluid style={{ display: 'flex', marginBottom: '5px' }}>
                         <StyledRangeInput
                             name="secondsSinceEpoch"
@@ -153,14 +202,11 @@ class Match extends React.Component {
                         <StyledPlayButton icon={autoplay ? 'pause' : 'play'} onClick={this.toggleAutoplay} />
                     </Container>
 
-                    <Map
-                        match={match}
-                        telemetry={telemetry}
-                        secondsSinceEpoch={secondsSinceEpoch}
-                        focusedPlayer={focusedPlayer}
-                        mapSize={mapSize}
-                    />
+                    <Map match={match} telemetry={currentTelemetry} mapSize={mapSize} marks={marks} />
                 </MapContainer>
+                <RosterContainer>
+                    <Roster match={match} telemetry={currentTelemetry} marks={marks} />
+                </RosterContainer>
             </MatchContainer>
         </div>
     }

@@ -3,28 +3,36 @@ import { map } from 'lodash'
 import { Stage, Layer } from 'react-konva'
 import { Safezone, Bluezone, Redzone } from './ZoneCircle.js'
 import PlayerDot from './PlayerDot.js'
+import PlayerTooltip from './PlayerTooltip.js'
 import BackgroundLayer from './BackgroundLayer.js'
 
-const Map = ({ match, telemetry, secondsSinceEpoch, focusedPlayer, mapSize }) => {
-    if (!telemetry) return 'Loading telemetry...'
-
-    const t = telemetry.stateAt(secondsSinceEpoch)
-
+const Map = ({ match, telemetry, mapSize, marks }) => {
     return (
         <Stage width={mapSize} height={mapSize}>
             <BackgroundLayer mapName={match.mapName} mapSize={mapSize} />
             <Layer>
-                {map(t.get('players'), player =>
+                {<Safezone mapSize={mapSize} circle={telemetry.get('safezone')} />}
+                {<Bluezone mapSize={mapSize} circle={telemetry.get('bluezone')} />}
+                {<Redzone mapSize={mapSize} circle={telemetry.get('redzone')} />}
+                {map(telemetry.get('players'), player =>
                     <PlayerDot
                         player={player}
                         mapSize={mapSize}
-                        key={player.get('name')}
-                        name={player.get('name')}
-                    />
+                        key={`dot-${player.get('name')}`}
+                        isHovered={marks.isHovered(player.get('name'))}
+                        isTracked={marks.isTracked(player.get('name'))}
+                        setHoveredPlayer={marks.setHoveredPlayer}
+                        toggleTrackedPlayer={marks.toggleTrackedPlayer}
+                    />,
                 )}
-                {<Safezone mapSize={mapSize} circle={t.get('safezone')} />}
-                {<Bluezone mapSize={mapSize} circle={t.get('bluezone')} />}
-                {<Redzone mapSize={mapSize} circle={t.get('redzone')} />}
+                {map(telemetry.get('players'), player =>
+                    <PlayerTooltip
+                        player={player}
+                        mapSize={mapSize}
+                        key={`tooltip-${player.get('name')}`}
+                        show={marks.isTracked(player.get('name')) || marks.isHovered(player.get('name'))}
+                    />,
+                )}
             </Layer>
         </Stage>
     )
