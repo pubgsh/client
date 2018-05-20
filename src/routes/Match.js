@@ -30,7 +30,7 @@ const StyledRangeInput = styled(Input)`
 const StyledPlayButton = styled(Button)`
     &&& {
         display: flex;
-        margin-right: 1px;
+        margin-right: 0;
     }
 `
 

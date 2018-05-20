@@ -1,0 +1,600 @@
+{
+    "__typename": "Match",
+    "durationSeconds": 1962,
+    "gameMode": "duo-fpp",
+    "id": "cce37d14-ebc8-40c0-b942-cbc8fd7b34cc",
+    "mapName": "Erangel_Main",
+    "playedAt": "2018-05-18 03:50:59+0000",
+    "players": [
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.14d7b8c4c1c04cdfb6f8af259879992a",
+            "name": "SaltySalV3",
+            "rosterId": "b0665162-096a-4911-a477-bdad61d9693f"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.dadf855d27314e60a7e563bd6a5fcf18",
+            "name": "Black_Nagger",
+            "rosterId": "a59a45b6-5297-4c5d-82a1-d3429a48bba6"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.a48fe8f44c8445079959c9c17cd82da0",
+            "name": "Mrjay_utubius",
+            "rosterId": "0b41a8b1-e1f2-4183-8e43-9a2a099c1c1b"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.8e66c50861294b4887e8108cc016fecb",
+            "name": "autistic_toe",
+            "rosterId": "e99131e4-9930-4d16-89cc-8b588066bd36"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.d193fa2b67264681ad4faf9c0e6d670e",
+            "name": "Roxxxi",
+            "rosterId": "5d353947-d659-44a8-938d-cf8e4b29ea12"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.66896822a4734854b75d54c3d0b860e7",
+            "name": "Sweet1266",
+            "rosterId": "d1edd7fb-a36c-4438-9127-facfe59db743"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.b33c24b5daf747d7a1f7277edf41e453",
+            "name": "Mavius6",
+            "rosterId": "06967fe3-b872-4a46-9bbd-9d399a1d5385"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.547f1a9c5650452f8fcb143a40390891",
+            "name": "sedamk",
+            "rosterId": "a7b609b6-9ed3-4355-964a-33341125fcc9"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.1647d9687ef648deb7c86c853a057c9b",
+            "name": "sweetmeatt",
+            "rosterId": "d1edd7fb-a36c-4438-9127-facfe59db743"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.1185a42c1a8842e6996ac82d692bf1f6",
+            "name": "Oliver_Phillips",
+            "rosterId": "30c535a0-d39f-4959-be8a-cf2b72c48777"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.22c389d454614c7c86c575917272f15c",
+            "name": "Gangsterduck",
+            "rosterId": "b8a8bb7b-35e4-4688-a0ab-782161a38445"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.b5f53d99d66c4f0bb80fa622b8ff6168",
+            "name": "Keyume",
+            "rosterId": "c0fac584-2ddc-4c16-bd1e-70ec2303d88f"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.ce48d81d57d543b69fc102914033a9ab",
+            "name": "sailedcomic",
+            "rosterId": "49ea3892-cbf4-464c-8d49-6435d386ebfa"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.6e49978291aa485eac3760f9f2cacd77",
+            "name": "Kylew121",
+            "rosterId": "59e94d6f-2270-48e3-b4df-bd47e5386b0f"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.f1ed63dc470947a4ba20b97eae0f73ef",
+            "name": "RichardDick",
+            "rosterId": "ffce2ab0-1e89-4ebb-87a7-57ce3e88e613"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.1e1cdaf8a2564d52b2a9dffce94274cd",
+            "name": "ItsMeTheArab",
+            "rosterId": "65f020b8-6436-4f08-8568-5106d383752d"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.b1f4714f6d7c451c909ca57042a133b6",
+            "name": "SpicyGreenCurry",
+            "rosterId": "6aa297ac-bcc4-4cc2-a77d-d389fcba800a"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.60caa6fc6fd846609b2b3fde64d19bf4",
+            "name": "Princess_Petal",
+            "rosterId": "ab2eb7f8-37a9-48e1-a15c-5799f1693ee0"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.bbe68db0db754e0e850e8e5d4a94754d",
+            "name": "Easygooon",
+            "rosterId": "2a288e44-fe02-406a-a82f-2ffec15c33a1"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.6ea3d4f285d2411581164ab56761a9fd",
+            "name": "Goobeez",
+            "rosterId": "29e74da2-a448-403f-b280-0d7e1f8f4db3"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.04f18bbec82945eda80add855665ca2f",
+            "name": "DonkeyRyder",
+            "rosterId": "65f020b8-6436-4f08-8568-5106d383752d"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.9432c295d8174bfdb7b2ae33c5f92429",
+            "name": "Cuauhtecuhtli",
+            "rosterId": "071b8160-95b1-4a52-9118-5245c3adc96d"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.8630309125bc461eaf084a91987f5e4d",
+            "name": "Pure_Pie",
+            "rosterId": "a59a45b6-5297-4c5d-82a1-d3429a48bba6"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.a9957b0c3e3d4406a15581b652250a89",
+            "name": "customfreak567",
+            "rosterId": "d481d7eb-3f71-4f91-96e9-a18a2560ee6f"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.3e84f8011c444e07a19ebe9a590fb52f",
+            "name": "tkeller25",
+            "rosterId": "0070031e-881f-48ef-9fe6-f0e8fa806ade"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.538bb3d16ee64207814d0127e02bfb46",
+            "name": "Samdog56",
+            "rosterId": "525148bc-744f-46f6-a767-43300d577ced"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.a4e490ea89644d86bd0de923aefaf498",
+            "name": "kevdawg85",
+            "rosterId": "b047c5b7-5138-4dbf-8fb6-97cc8b046d0b"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.3b8984cf4b1a49149ee58d5442df68e1",
+            "name": "thecolonel831",
+            "rosterId": "81b3ca91-1fa2-4bde-968b-4bab3ed7958e"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.0fb6cfbb5f104cc6b72cc0510b52215f",
+            "name": "BasedSeohyun1",
+            "rosterId": "2a288e44-fe02-406a-a82f-2ffec15c33a1"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.23d543f6fc584f22b49c34f6e452b494",
+            "name": "Rxpunisher",
+            "rosterId": "6320b34c-2342-4b26-8e00-68c1564c9d35"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.2c4f1ad758114544b6de6b17e5963502",
+            "name": "AlphaBlood",
+            "rosterId": "861b6f99-8bb7-4714-b806-7ce926334c98"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.bda42669380943698fdb2154fef88d7f",
+            "name": "CAliChronic",
+            "rosterId": "d38bb95b-2bd3-4732-be08-d7a87972073b"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.80a64dce7b244d6eb56828f5a9ade477",
+            "name": "FORTRAN_",
+            "rosterId": "245b3e64-50f3-44bb-b17f-6841b0631190"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.bb38b2c52806439e9437699fc1777ad6",
+            "name": "Rapt0r_OG",
+            "rosterId": "8bc02445-11b7-439e-b1c0-d20c70cbff18"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.7388b7939fc848e4888f645f8b2bed30",
+            "name": "kromb0p",
+            "rosterId": "5b4fc957-bfc4-465d-82c4-5703514d72c5"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.4a2884c23dee4faf8084beeeb5f2dbab",
+            "name": "tanshihlek",
+            "rosterId": "8b138f22-e0c9-4ea1-bbde-eab1fdceb0b4"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.a984bf0b06c0486f854fafe50634a379",
+            "name": "SwiFtL337",
+            "rosterId": "4b717ad4-e720-4b38-8de4-06b46810b1e8"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.f44e3c69b6ff4c91b823b650e057a8bf",
+            "name": "InouyeD",
+            "rosterId": "4b717ad4-e720-4b38-8de4-06b46810b1e8"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.9ec7c6184e62434794b2c8c218551e19",
+            "name": "yumbumclamstab",
+            "rosterId": "0038d647-2fd1-46e5-b4f7-498dc9d5346c"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.2787ba589d154cc1a75a6586a3a4e9c9",
+            "name": "Mistrott",
+            "rosterId": "81b3ca91-1fa2-4bde-968b-4bab3ed7958e"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.867e6be2b14246fcb5af5700532618a6",
+            "name": "Mortis125",
+            "rosterId": "621e963c-a389-4148-b519-b8a9dbc4d65a"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.bdc6ed7f10674762945158d2caeae265",
+            "name": "GommanderSheburd",
+            "rosterId": "a415584d-3537-4063-bdfe-ec09df632173"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.f62a0bf596924c1986d80b8a4292a946",
+            "name": "Logon1027",
+            "rosterId": "49ea3892-cbf4-464c-8d49-6435d386ebfa"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.aa1fb065d4b048988574d92b4801bbee",
+            "name": "NickNguyens",
+            "rosterId": "6320b34c-2342-4b26-8e00-68c1564c9d35"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.9f2f1a2abd134c3bbb715c3c3ada5f33",
+            "name": "Asator92",
+            "rosterId": "245b3e64-50f3-44bb-b17f-6841b0631190"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.546ec83f2ba04569a5b1fa5117569bca",
+            "name": "Gamewarden3006",
+            "rosterId": "8bc02445-11b7-439e-b1c0-d20c70cbff18"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.faa22465fb9f4d3db16db02893c0d416",
+            "name": "mmultimate",
+            "rosterId": "4b594eb8-0b23-4bff-86de-09b1cec369b7"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.ae09a5ae6c504ea897624a7759b01d75",
+            "name": "Davsol",
+            "rosterId": "30a34461-369b-488f-b228-7bfbcfad4db5"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.fd3c2e86712540d9830980159d7de927",
+            "name": "JBuggs",
+            "rosterId": "d38bb95b-2bd3-4732-be08-d7a87972073b"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.137c298f9d3146b5ba64e332cbbdc365",
+            "name": "Sabas_moz",
+            "rosterId": "071b8160-95b1-4a52-9118-5245c3adc96d"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.0f4535fece7247dc9fd62739df5eabfc",
+            "name": "Zahynacz",
+            "rosterId": "ab2eb7f8-37a9-48e1-a15c-5799f1693ee0"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.71acca867dd54c80bfc5d9526b554b13",
+            "name": "Timecode",
+            "rosterId": "99dfec5d-5757-4c60-ac09-e5895ed3b614"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.a630fdf155b04daa97d8954bd7726e5b",
+            "name": "Ghost187",
+            "rosterId": "d062d26c-17aa-4fd5-a8b0-5edabf19d856"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.77bc5976018446ed83a78bae426eaebb",
+            "name": "Opeyone",
+            "rosterId": "861e47cd-2709-45c9-8bc2-784bf86daf42"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.04e3b439095d4a53b187d4e2eba98a13",
+            "name": "StokesMcGoats",
+            "rosterId": "c766ec5d-3c02-438d-a639-cfc230379e03"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.286c381ce4b544a58ad1d2c894510068",
+            "name": "k1ng_tut_1o1",
+            "rosterId": "621e963c-a389-4148-b519-b8a9dbc4d65a"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.15ebb15df6ee4c54b5ae4ab0449af69b",
+            "name": "Shyftyyy",
+            "rosterId": "c2741bf8-4e8b-4f4c-8a6a-f8383cb3acd5"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.3ef192717db54cddae0330773f7ef5ae",
+            "name": "Redrix",
+            "rosterId": "d22a3774-e46c-4d49-8d35-405e1322da74"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.e87733d46a1b4cab95f282101530d503",
+            "name": "Smexy_Turtle",
+            "rosterId": "b0665162-096a-4911-a477-bdad61d9693f"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.fbe5c7ecf4894708afbee1b7d350daa7",
+            "name": "SavageVagabond",
+            "rosterId": "c0fac584-2ddc-4c16-bd1e-70ec2303d88f"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.b8191aec69674052b6e05608013f51e8",
+            "name": "KuyaWagPo",
+            "rosterId": "d399aa64-87ab-4061-aff2-bef60158b19b"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.bd49858bdb4248f0bfa4753c471e6447",
+            "name": "Urmay",
+            "rosterId": "7eb0a739-193c-431f-b1b3-3e9a8f8b1dd4"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.2bd7a66c1b5b4b25a18ee20f64f733b7",
+            "name": "BOT_Andre",
+            "rosterId": "29e74da2-a448-403f-b280-0d7e1f8f4db3"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.5399d12501dc40e4a2755d4ec028986b",
+            "name": "pablowme",
+            "rosterId": "ffce2ab0-1e89-4ebb-87a7-57ce3e88e613"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.3452b65307ea421b97f4132b3f31ab70",
+            "name": "ClickClickBoom",
+            "rosterId": "35b623e9-db03-4649-84d4-b5c2847be9ed"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.cec7e898d4534ddea7a42544c4d427fe",
+            "name": "kapsinyoarse",
+            "rosterId": "b047c5b7-5138-4dbf-8fb6-97cc8b046d0b"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.4ba467c6474f483cb60b50c33773ef1e",
+            "name": "MacGriffon",
+            "rosterId": "d22a3774-e46c-4d49-8d35-405e1322da74"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.c8b3b3a8724e45daa9940f3032cbf393",
+            "name": "Jorune_Zephyr",
+            "rosterId": "99dfec5d-5757-4c60-ac09-e5895ed3b614"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.0932618b85cf49feb0afbfd704e24133",
+            "name": "Fredrica",
+            "rosterId": "a7b609b6-9ed3-4355-964a-33341125fcc9"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.278a6f8bbca84eceb6ead869ceb48d1c",
+            "name": "Balagat",
+            "rosterId": "59e94d6f-2270-48e3-b4df-bd47e5386b0f"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.3746cf71d3744418879dd12f93685109",
+            "name": "Sonofservo",
+            "rosterId": "b8a8bb7b-35e4-4688-a0ab-782161a38445"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.4ecb60cf81d943b99ac2da99625fabdc",
+            "name": "FixyouLoL",
+            "rosterId": "d062d26c-17aa-4fd5-a8b0-5edabf19d856"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.e6ad9f4dc35543bc8a4c3325edc8de48",
+            "name": "underpaidzulu",
+            "rosterId": "9655e07a-a755-496f-9753-9e3faffb7e02"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.b3e11a60c0b94e9e9b77934a47d62f16",
+            "name": "GossipLobster",
+            "rosterId": "0038d647-2fd1-46e5-b4f7-498dc9d5346c"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.60db17b216f74ae68004840fa5044610",
+            "name": "CptAwesomePants",
+            "rosterId": "06967fe3-b872-4a46-9bbd-9d399a1d5385"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.36d4a6a77b4f4d09937f49a8c1a0363c",
+            "name": "YellowShirtRick",
+            "rosterId": "2f0300fa-863a-4cd2-b946-aea657babc8a"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.5c68143f54b74bfda2448795a69f8c9e",
+            "name": "HK_SLAP",
+            "rosterId": "27262f98-6d08-41b9-b072-ecf5f5bbf82d"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.e9713829db35476a9d3469637ff985cd",
+            "name": "m1ck",
+            "rosterId": "c766ec5d-3c02-438d-a639-cfc230379e03"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.ded078b4ac7b41daa031f104450f87ef",
+            "name": "Neonumbuh1",
+            "rosterId": "d481d7eb-3f71-4f91-96e9-a18a2560ee6f"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.ea9b6e8159ae49b49d9e42f1043f56eb",
+            "name": "Zer0Pu1se",
+            "rosterId": "0070031e-881f-48ef-9fe6-f0e8fa806ade"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.f4de579f22f146ab929e3e87e802fa5b",
+            "name": "Midnight-Rush",
+            "rosterId": "8b138f22-e0c9-4ea1-bbde-eab1fdceb0b4"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.274a0618ec5b4344baf1cc75fb3cb868",
+            "name": "Cliff_utubius",
+            "rosterId": "0b41a8b1-e1f2-4183-8e43-9a2a099c1c1b"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.db438d3305934512b574c830800da55e",
+            "name": "Poopsters",
+            "rosterId": "a415584d-3537-4063-bdfe-ec09df632173"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.6bfb6c99535348849e343bbd8859683a",
+            "name": "Snorkypork",
+            "rosterId": "c2741bf8-4e8b-4f4c-8a6a-f8383cb3acd5"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.5ac14de009174eae95739de1ada4bc27",
+            "name": "grhino",
+            "rosterId": "27262f98-6d08-41b9-b072-ecf5f5bbf82d"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.963d34f8d5974eb08f3761719852a25b",
+            "name": "Jonezgirl",
+            "rosterId": "35b623e9-db03-4649-84d4-b5c2847be9ed"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.a3cd52dffde94f5690038a31ec99f21c",
+            "name": "decimal_",
+            "rosterId": "30a34461-369b-488f-b228-7bfbcfad4db5"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.4938981846d54f81bf116a4e7af7c678",
+            "name": "Avengous",
+            "rosterId": "30c535a0-d39f-4959-be8a-cf2b72c48777"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.77fe9b437624498792ebe8af3db83d2d",
+            "name": "Kdub",
+            "rosterId": "9655e07a-a755-496f-9753-9e3faffb7e02"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.d0bacf0330a24320ab54ef15a4ad4f60",
+            "name": "Giefanarr",
+            "rosterId": "6aa297ac-bcc4-4cc2-a77d-d389fcba800a"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.8f38369151824252ab25266e19309a5d",
+            "name": "beatmenace",
+            "rosterId": "861b6f99-8bb7-4714-b806-7ce926334c98"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.a589e53e98824bbc91f4c7a72ac6ffc7",
+            "name": "Wazzzuka",
+            "rosterId": "861e47cd-2709-45c9-8bc2-784bf86daf42"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.1223c815549a434a968984002c813304",
+            "name": "Tiger_Tye",
+            "rosterId": "7eb0a739-193c-431f-b1b3-3e9a8f8b1dd4"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.bfe289e5b8364331a760ac023b71f3ac",
+            "name": "mnelly10",
+            "rosterId": "4b594eb8-0b23-4bff-86de-09b1cec369b7"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.9f193d632c5a43468682912bd4a97bb2",
+            "name": "GetSchwiftyDude",
+            "rosterId": "5d353947-d659-44a8-938d-cf8e4b29ea12"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.769ea291dae34979af427b776e56e8db",
+            "name": "Callahandler",
+            "rosterId": "2f0300fa-863a-4cd2-b946-aea657babc8a"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.4a63cc01780d4ee5be7ac7ff45fb2ecc",
+            "name": "Tmpwu",
+            "rosterId": "5b4fc957-bfc4-465d-82c4-5703514d72c5"
+        },
+        {
+            "__typename": "MatchPlayer",
+            "id": "account.b50d122f28734d618b5f110d7a2eae46",
+            "name": "DooDooStain",
+            "rosterId": "d399aa64-87ab-4061-aff2-bef60158b19b"
+        }
+    ],
+    "shardId": "pc-na",
+    "telemetryUrl": "https://telemetry-cdn.playbattlegrounds.com/bluehole-pubg/pc-na/2018/05/18/04/25/7236f71d-5a53-11e8-b364-0a58647f9b0f-telemetry.json"
+}

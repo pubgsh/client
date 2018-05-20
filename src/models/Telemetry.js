@@ -1,121 +1,59 @@
-import { get, cloneDeep } from 'lodash'
+import { get } from 'lodash'
+import { Map } from 'immutable'
+import Participants, { setPlayerStatus } from './Participants.js'
 
-const getColor = (focusType, status) => {
-    if (focusType === 'player') {
-        return status === 'dead' ? '#895aff' : '#18e786'
-    }
-
-    if (focusType === 'teammate') {
-        return status === 'dead' ? 'pink' : 'blue'
-    }
-
-    return status === 'dead' ? '#FF0000' : '#FFF'
-}
-
-
-export default function Telemetry(matchData, telemetry, focusedPlayer) {
+export default function Telemetry(matchData, telemetry, focusedPlayerName) {
     const epoch = new Date(matchData.playedAt).getTime()
-    const focusedRosterId = matchData.players.find(p => p.name === focusedPlayer).rosterId
 
-    function Player(name, rosterId) {
-        this.name = name
-        this.rosterId = rosterId
-
-        this.focusType = (() => {
-            if (name === focusedPlayer) return 'player'
-            if (rosterId === focusedRosterId) return 'teammate'
-            return 'none'
-        })()
-
-        this.setStatus('alive')
-    }
-
-    Player.prototype.setStatus = function setStatus(status) {
-        this.status = status
-        this.color = getColor(this.focusType, this.status)
-    }
-
-    // console.log(matchData)
-
-    const initialResult = {
-        lastIndex: 0,
-        state: {
-            players: {},
-            safezone: {},
-            bluezone: {},
-            redzone: {},
-        },
-    }
-
-    matchData.players.forEach(p => {
-        initialResult.state.players[p.name] = new Player(p.name, p.rosterId)
+    let state = Map({
+        players: Participants(matchData, focusedPlayerName),
+        safezone: Map({ x: 0, y: 0, radius: 0 }),
+        bluezone: Map({ x: 0, y: 0, radius: 0 }),
+        redzone: Map({ x: 0, y: 0, radius: 0 }),
     })
 
-    console.log(initialResult)
+    const cache = new Array(matchData.durationSeconds + 1)
+    let currentSecond = 0
 
-    const cache = new Array(telemetry.length)
-    cache[0] = initialResult
+    telemetry.forEach(d => {
+        if (new Date(d._D).getTime() - epoch > currentSecond * 1000) {
+            const playersArray = state.get('players').reverse().valueSeq().toArray()
+                .filter(p => p.get('name'))
 
-    function calculateState(previousResult, secondsSinceEpoch) {
-        const msSinceEpoch = secondsSinceEpoch * 1000
-        const result = cloneDeep(previousResult)
+            const finalizedState = state.set('players', playersArray)
+            cache[currentSecond] = finalizedState
 
-        // console.log('calculating', result)
-        for (let i = result.lastIndex; i < telemetry.length; i++) {
-            const d = telemetry[i]
-
-            if (new Date(d._D).getTime() - epoch > msSinceEpoch) {
-                return {
-                    lastIndex: i,
-                    state: result.state,
-                }
-            }
-
-            if (get(d, 'character.name')) {
-                const { name, location } = d.character
-                const player = result.state.players[name]
-
-                if (player) {
-                    player.lastUpdatedAt = new Date(d._D).getTime() - epoch
-                    player.location = location
-                }
-            }
-
-            if (d._T === 'LogPlayerKill') {
-                result.state.players[d.victim.name].setStatus('dead')
-            }
-
-            if (d._T === 'LogGameStatePeriodic') {
-                result.state.bluezone.position = d.gameState.safetyZonePosition
-                result.state.bluezone.radius = d.gameState.safetyZoneRadius
-                result.state.safezone.position = d.gameState.poisonGasWarningPosition
-                result.state.safezone.radius = d.gameState.poisonGasWarningRadius
-                result.state.redzone.position = d.gameState.redZonePosition
-                result.state.redzone.radius = d.gameState.redZoneRadius
-            }
+            currentSecond++
         }
 
-        return {
-            lastIndex: telemetry.length,
-            state: result.state,
+        if (get(d, 'character.name')) {
+            const { name, location } = d.character
+
+            state = state.withMutations(s => {
+                s.setIn(['players', name, 'location'], location)
+            })
         }
-    }
+
+        if (d._T === 'LogPlayerKill') {
+            state = state.withMutations(s => {
+                const path = ['players', d.victim.name]
+                s.setIn(path, setPlayerStatus(s.getIn(path), 'dead'))
+            })
+        }
+
+        if (d._T === 'LogGameStatePeriodic') {
+            const gs = d.gameState
+
+            state = state.withMutations(s => {
+                s.set('bluezone', Map({ ...gs.safetyZonePosition, radius: gs.safetyZoneRadius }))
+                s.set('safezone', Map({ ...gs.poisonGasWarningPosition, radius: gs.poisonGasWarningRadius }))
+                s.set('redzone', Map({ ...gs.redZonePosition, radius: gs.redZoneRadius }))
+            })
+        }
+    })
 
     function stateAt(secondsSinceEpoch) {
-        if (!cache[secondsSinceEpoch]) {
-            // console.log('no cache at ', secondsSinceEpoch)
-
-            for (let i = secondsSinceEpoch; i >= 0; i--) {
-                if (cache[i]) {
-                    // console.log('found prev at', i, cache[i])
-                    const result = calculateState(cache[i], secondsSinceEpoch)
-                    cache[secondsSinceEpoch] = result
-                    break
-                }
-            }
-        }
-
-        return cache[secondsSinceEpoch].state
+        return cache[secondsSinceEpoch]
     }
 
     return {
