@@ -12,10 +12,10 @@ export default function Telemetry(matchData, telemetry, focusedPlayerName) {
         redzone: Map({ x: 0, y: 0, radius: 0 }),
     })
 
-    const cache = new Array(matchData.durationSeconds + 1)
+    const cache = new Array(matchData.durationSeconds + 10)
     let currentSecond = 0
 
-    telemetry.forEach(d => {
+    telemetry.forEach((d, i) => {
         if (new Date(d._D).getTime() - epoch > currentSecond * 1000) {
             const playersArray = state.get('players').reverse().valueSeq().toArray()
                 .filter(p => p.get('name'))
@@ -61,8 +61,14 @@ export default function Telemetry(matchData, telemetry, focusedPlayerName) {
         }
     })
 
+    // Sometimes we don't load telemetry until the match duration, ensure that we don't get a cache
+    // miss later on.
+    for (currentSecond; currentSecond < cache.length; currentSecond++) {
+        cache[currentSecond] = cache[currentSecond - 1]
+    }
+
     function stateAt(secondsSinceEpoch) {
-        return cache[clamp(secondsSinceEpoch, 1, currentSecond - 1)]
+        return cache[clamp(secondsSinceEpoch, 1, cache.length - 1)]
     }
 
     return {

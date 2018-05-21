@@ -62,7 +62,7 @@ class Match extends React.Component {
         telemetry: null,
         telemetryLoading: false,
         secondsSinceEpoch: 1,
-        autoplay: false,
+        autoplay: true,
         mapSize: 0,
         hoveredPlayer: null,
         trackedPlayers: {},
@@ -214,7 +214,7 @@ class Match extends React.Component {
                             value={secondsSinceEpoch}
                             type="range"
                             min="1"
-                            max={match.durationSeconds}
+                            max={match.durationSeconds + 11}
                             step="1"
                         />
                         <StyledDuration>{getDurationFormat(secondsSinceEpoch)}</StyledDuration>
