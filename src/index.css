@@ -1,3 +1,10 @@
 *, .ui.button {
     font-family: Raleway,HelveticaNeue,"Helvetica Neue",Helvetica,Arial,sans-serif;
 }
+
+@media only screen and (min-width: 1400px) {
+    .ui.container{
+        width: 1330px;
+    }
+}
+

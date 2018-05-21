@@ -13,7 +13,7 @@ const PlayerTooltip = ({ player, mapSize, show }) => {
                 x={toScale(player.getIn(['location', 'x'])) + 10}
                 y={toScale(player.getIn(['location', 'y'])) - 10}
                 text={player.get('name')}
-                fontSize="11"
+                fontSize="10.5"
             />
         </Group>
     )

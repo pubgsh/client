@@ -9,7 +9,7 @@ const getColor = (focusType, status) => {
         return status === 'dead' ? '#895AFFB0' : '#18E786B0'
     }
 
-    return status === 'dead' ? '#FF0000B0' : '#FFFFFFB0'
+    return status === 'dead' ? '#FF000080' : '#FFFFFFB0'
 }
 
 export function setPlayerStatus(player, status) {

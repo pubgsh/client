@@ -24,7 +24,8 @@ const MapContainer = styled.div`
 const RosterContainer = styled.div`
     grid-column: 2;
     position: relative;
-    overflow: scroll;
+    overflow-y: scroll;
+    height: ${props => props.mapSize + 40}px;
 `
 
 const StyledRangeInput = styled(Input)`
@@ -48,7 +49,7 @@ class Match extends React.Component {
         focusedPlayer: null,
         telemetry: null,
         telemetryLoading: false,
-        secondsSinceEpoch: 600,
+        secondsSinceEpoch: 1,
         autoplay: false,
         mapSize: 0,
         hoveredPlayer: null,
@@ -68,27 +69,31 @@ class Match extends React.Component {
             this.loadTelemetry()
         }
 
+        this.updateMapSize(prevState)
+    }
+
+    componentDidMount() {
+        window.addEventListener('resize', this.updateMapSize.bind(this))
+    }
+
+    updateMapSize = (stateToUse = this.state) => {
         try {
-            const mapSize = document.getElementById('MapContainer').clientWidth
-            if (prevState.mapSize !== mapSize) {
-                console.log(`New MapContainer size (${prevState.mapSize} --> ${mapSize})`)
-                this.setMapSize(mapSize)
+            const mapSize = document.getElementById('MatchContainer').clientWidth - 250
+            if (mapSize !== stateToUse.mapSize) {
+                this.setState({ mapSize })
             }
         } catch (e) {
-            console.log('No map container')
+            console.log('No #MatchContainer DOM element')
         }
     }
 
     componentWillUnmount() {
         this.stopAutoplay()
+        window.removeEventListener('resize', this.updateMapSize.bind(this))
     }
 
     onInputChange = e => {
         this.setState({ [e.target.name]: Number(e.target.value) })
-    }
-
-    setMapSize(mapSize) {
-        this.setState({ mapSize })
     }
 
     loadTelemetry = async () => {
@@ -111,6 +116,10 @@ class Match extends React.Component {
                 ...defaultTracked.reduce((acc, name) => ({ ...acc, [name]: true }), {}),
             },
         }))
+
+        if (this.state.autoplay) {
+            setTimeout(this.startAutoplay, 500)
+        }
     }
 
     startAutoplay = () => {
@@ -181,7 +190,7 @@ class Match extends React.Component {
             isFocused: playerName => this.state.focusedPlayer === playerName,
         }
 
-        return <div>
+        return <div id="MatchContainer">
             Match {match.id} {secondsSinceEpoch} {marks.hoveredPlayer}
 
             <p />
@@ -204,7 +213,7 @@ class Match extends React.Component {
 
                     <Map match={match} telemetry={currentTelemetry} mapSize={mapSize} marks={marks} />
                 </MapContainer>
-                <RosterContainer>
+                <RosterContainer mapSize={mapSize}>
                     <Roster match={match} telemetry={currentTelemetry} marks={marks} />
                 </RosterContainer>
             </MatchContainer>

@@ -9,9 +9,9 @@ const PlayerDot = ({ player, mapSize, isHovered, isTracked, setHoveredPlayer, to
             x={toScale(player.getIn(['location', 'x']))}
             y={toScale(player.getIn(['location', 'y']))}
             fill={player.get('color')}
-            stroke="#22222280"
-            width={isHovered ? 13 : 8}
-            height={isHovered ? 13 : 8}
+            stroke="#222222B0"
+            width={isHovered ? 11 : 8}
+            height={isHovered ? 11 : 8}
             strokeWidth="1"
             onMouseEnter={() => setHoveredPlayer(player.get('name'))}
             onMouseLeave={() => setHoveredPlayer('')}
