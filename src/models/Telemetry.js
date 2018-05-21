@@ -1,4 +1,4 @@
-import { get } from 'lodash'
+import { get, clamp } from 'lodash'
 import { Map } from 'immutable'
 import Participants, { setPlayerStatus } from './Participants.js'
 
@@ -62,7 +62,7 @@ export default function Telemetry(matchData, telemetry, focusedPlayerName) {
     })
 
     function stateAt(secondsSinceEpoch) {
-        return cache[secondsSinceEpoch]
+        return cache[clamp(secondsSinceEpoch, 1, currentSecond - 1)]
     }
 
     return {
