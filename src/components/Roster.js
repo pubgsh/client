@@ -1,5 +1,6 @@
 import React from 'react'
 import { map, groupBy, reverse } from 'lodash'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
 const Roster = styled.ul`
@@ -16,9 +17,14 @@ const RosterEntry = styled.li`
     }};
     font-weight: ${props => props.isHovered || props.isTracked ? 800 : 400};
     cursor: pointer;
+
+    & a {
+        font-size: .8em;
+        margin-left: 5px;
+    }
 `
 
-const getRosterEntry = (marks, player) =>
+const rosterEntry = (marks, shardId) => player =>
     <RosterEntry
         key={player.get('name')}
         color={player.get('color')}
@@ -28,7 +34,11 @@ const getRosterEntry = (marks, player) =>
         onMouseLeave={() => marks.setHoveredPlayer('')}
         onClick={() => marks.toggleTrackedPlayer(player.get('name'))}
     >
-        {player.get('name')} ({player.get('kills')} kills)
+        {player.get('name')}
+        ({player.get('kills')} kills)
+        {marks.isHovered(player.get('name')) &&
+            <Link to={`/${player.get('name')}/${shardId}`}>(Go to player)</Link>
+        }
     </RosterEntry>
 
 export default ({ match, telemetry, marks }) => {
@@ -38,15 +48,17 @@ export default ({ match, telemetry, marks }) => {
         return 'alive'
     })
 
+    const getRosterEntry = rosterEntry(marks, match.shardId)
+
     return [
         <Roster key="roster-tracked">
-            {reverse(map(tracked, player => getRosterEntry(marks, player)))}
+            {reverse(map(tracked, player => getRosterEntry(player)))}
         </Roster>,
         <Roster key="roster-alive">
-            {map(alive, player => getRosterEntry(marks, player))}
+            {map(alive, player => getRosterEntry(player))}
         </Roster>,
         <Roster key="roster-dead">
-            {map(dead, player => getRosterEntry(marks, player))}
+            {map(dead, player => getRosterEntry(player))}
         </Roster>,
     ]
 }

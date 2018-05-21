@@ -80,6 +80,7 @@ class Match extends React.Component {
         try {
             const mapSize = document.getElementById('MatchContainer').clientWidth - 250
             if (mapSize !== stateToUse.mapSize) {
+                console.log(`New MapContainer size (${stateToUse.mapSize} --> ${mapSize})`)
                 this.setState({ mapSize })
             }
         } catch (e) {
