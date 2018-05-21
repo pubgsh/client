@@ -43,6 +43,18 @@ const StyledPlayButton = styled(Button)`
     }
 `
 
+const StyledDuration = styled.span`
+    display: flex;
+    line-height: 2.5em;
+    margin-right: 10px;
+`
+
+const getDurationFormat = durationSeconds => {
+    const minutes = Math.floor(durationSeconds / 60)
+    const seconds = durationSeconds - (minutes * 60)
+    return `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
+}
+
 class Match extends React.Component {
     state = {
         matchId: null,
@@ -191,12 +203,8 @@ class Match extends React.Component {
             isFocused: playerName => this.state.focusedPlayer === playerName,
         }
 
-        return <div id="MatchContainer">
-            Match {match.id} {secondsSinceEpoch} {marks.hoveredPlayer}
-
-            <p />
-
-            <MatchContainer>
+        return (
+            <MatchContainer id="MatchContainer">
                 <MapContainer id="MapContainer" hoveredPlayer={marks.hoveredPlayer}>
                     <Container fluid style={{ display: 'flex', marginBottom: '5px' }}>
                         <StyledRangeInput
@@ -206,9 +214,10 @@ class Match extends React.Component {
                             value={secondsSinceEpoch}
                             type="range"
                             min="1"
-                            max={match.durationSeconds + 10}
+                            max={match.durationSeconds}
                             step="1"
                         />
+                        <StyledDuration>{getDurationFormat(secondsSinceEpoch)}</StyledDuration>
                         <StyledPlayButton icon={autoplay ? 'pause' : 'play'} onClick={this.toggleAutoplay} />
                     </Container>
 
@@ -218,7 +227,7 @@ class Match extends React.Component {
                     <Roster match={match} telemetry={currentTelemetry} marks={marks} />
                 </RosterContainer>
             </MatchContainer>
-        </div>
+        )
     }
 }
 
