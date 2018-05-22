@@ -2,11 +2,11 @@ import { OrderedMap, Map } from 'immutable'
 
 const getColor = (focusType, status) => {
     if (focusType === 'player') {
-        return status === 'dead' ? '#895AFFB0' : '#A4D419B0'
+        return status === 'dead' ? '#FF5ABAB0' : '#A4D419B0'
     }
 
     if (focusType === 'teammate') {
-        return status === 'dead' ? '#895AFFB0' : '#18E786B0'
+        return status === 'dead' ? '#FF5ABAB0' : '#18E786B0'
     }
 
     return status === 'dead' ? '#FF000080' : '#FFFFFFB0'

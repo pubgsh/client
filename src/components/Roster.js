@@ -15,7 +15,7 @@ const RosterEntry = styled.li`
         const colorNoAlpha = props.color.substring(0, 7)
         return colorNoAlpha === '#FFFFFF' ? '#000' : colorNoAlpha
     }};
-    font-weight: ${props => props.isHovered || props.isTracked ? 800 : 400};
+    font-weight: ${props => props.isHovered || props.isTracked ? 500 : 300};
     cursor: pointer;
 
     & a {

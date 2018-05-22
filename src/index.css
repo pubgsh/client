@@ -1,5 +1,11 @@
-*, .ui.button {
-    font-family: Raleway,HelveticaNeue,"Helvetica Neue",Helvetica,Arial,sans-serif;
+i.icon {
+    font-family: Icons !important;
+}
+
+*, .ui.button, .ui.input[type="text"] {
+    font-family: 'Abel',sans-serif !important;
+    font-weight: 300;
+    font-size: 11pt;
 }
 
 @media only screen and (min-width: 1400px) {
