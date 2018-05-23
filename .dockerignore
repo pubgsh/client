@@ -1,0 +1,13 @@
+Dockerfile
+.env.local
+
+.git
+.gitignore
+
+dist
+node_modules
+
+util/client-cert.pem
+util/client-key.pem
+util/server-ca.pem
+util/proddb.sh

@@ -27,7 +27,7 @@ export default () =>
                 <p>
                     pubg.sh started as an experiment to work with GraphQL, React, and canvas, but it’s grown
                     into a decently featured 2D replay app that I plan on maintaining and improving as time
-                    allows. I’m happy to consider suggestions, pull requets, and bug reports on GitHub.
+                    allows. I’m happy to consider suggestions, pull requests, and bug reports on GitHub.
                     The project is open-source and available at two repositories:
                 </p>
 
