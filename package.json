@@ -42,6 +42,8 @@
         "start": "react-scripts start",
         "lint": "eslint -c .eslintrc src",
         "build": "react-scripts build",
-        "test": "react-scripts test --env=jsdom"
+        "test": "react-scripts test --env=jsdom",
+        "predeploy": "yarn build",
+        "deploy": "scp -r build pubgsh:/apps/client"
     }
 }
