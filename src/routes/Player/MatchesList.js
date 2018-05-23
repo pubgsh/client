@@ -13,7 +13,7 @@ const StyledTable = styled.table`
     }
 
     & td {
-        padding-right: 50px;
+        padding-right: 30px;
     }
 `
 
