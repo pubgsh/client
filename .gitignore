@@ -9,6 +9,7 @@ coverage
 # production
 dist
 build
+build.tar
 
 # misc
 .cache

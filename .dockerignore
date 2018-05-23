@@ -4,10 +4,16 @@ Dockerfile
 .git
 .gitignore
 
+build
 dist
 node_modules
+build.tar
 
 util/client-cert.pem
 util/client-key.pem
 util/server-ca.pem
 util/proddb.sh
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
