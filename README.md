@@ -26,3 +26,7 @@ Simply run `yarn start` and create-react-app will launch the client app for you.
 ### Testing
 
 Run `yarn test`.
+
+## License
+
+MIT

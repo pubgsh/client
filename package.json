@@ -1,8 +1,13 @@
 {
-    "name": "pubg.sh-frontend",
-    "version": "0.1.0",
+    "name": "pubg.sh-client",
+    "version": "1.0.0",
+    "main": "src/app.js",
     "author": "Andre Azzolini (apazzolini)",
-    "private": true,
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/apazzolini/pubg.sh-client.git"
+    },
+    "license": "MIT",
     "dependencies": {
         "apollo-cache-inmemory": "1.2.1",
         "apollo-client": "2.3.1",
