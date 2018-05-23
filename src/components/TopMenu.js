@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { get } from 'lodash'
 import { Link } from 'react-router-dom'
 import { Form, Button, Input, Dropdown, Menu } from 'semantic-ui-react'
+import { SHARDS } from '../models/Shards.js'
 
 const StyledMenu = styled(Menu)`
     &&& { background: #FFF; margin-left: 0; margin-right: 0;}
@@ -14,7 +15,11 @@ const StyledRightMenu = styled(Menu.Menu)`
 `
 
 const StyledInput = styled(Input)`
-    &&&.input { width: 230px; }
+    &&& input {
+        width: 220px;
+        padding: 0 1em;
+        line-height: 2em;
+    }
 `
 
 const StyledForm = styled(Form)`
@@ -41,11 +46,6 @@ const LogoMenuItem = styled(Menu.Item)`
         }
     }
 `
-
-const SHARDS = [
-    { key: 'pc-na', text: 'pc-na', value: 'pc-na' },
-    { key: 'pc-eu', text: 'pc-eu', value: 'pc-eu' },
-]
 
 const Breadcrumbs = ({ playerName, shardId, matchId }) => {
     const nameCrumb = playerName &&
@@ -77,19 +77,24 @@ class TopMenu extends React.Component {
     static getDerivedStateFromProps(props) {
         return {
             searchText: get(props, 'match.params.playerName', ''),
-            shardId: get(props, 'match.params.shardId', SHARDS[0].value),
+            shardId: get(props, 'match.params.shardId', (localStorage.getItem('shardId') || SHARDS[0].value)),
         }
     }
 
-    handleDropdownChange = (e, { name, value }) => { this.setState({ [name]: value }) }
+    handleDropdownChange = (e, { name, value }) => {
+        this.setState({ [name]: value })
+        if (name === 'shardId') localStorage.setItem('shardId', value)
+    }
+
     handleInputChange = e => { this.setState({ [e.target.name]: e.target.value }) }
+
     search = () => { this.props.history.push(`/${this.state.searchText}/${this.state.shardId}`) }
 
     render() {
         const { shardId, searchText } = this.state
 
         return (
-            <StyledMenu secondary>
+            <StyledMenu secondary id="TopMenu">
                 <LogoMenuItem>
                     <Breadcrumbs {...this.props.match.params} />
                 </LogoMenuItem>
@@ -100,7 +105,6 @@ class TopMenu extends React.Component {
                             <StyledInput
                                 name="searchText"
                                 value={searchText}
-                                icon="search"
                                 placeholder="Player Name (Case Sensitive)"
                                 onChange={this.handleInputChange}
                             />

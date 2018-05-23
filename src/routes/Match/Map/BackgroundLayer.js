@@ -1,7 +1,7 @@
 import React from 'react'
 import { Layer, Image } from 'react-konva'
 
-const getMapAsset = mapName => require(`../../assets/${mapName}.jpg`) // eslint-disable-line
+const getMapAsset = mapName => require(`../../../assets/${mapName}.jpg`) // eslint-disable-line
 
 class BackgroundLayer extends React.Component {
     state = { image: null }

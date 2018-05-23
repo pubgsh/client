@@ -6,6 +6,8 @@ import styled from 'styled-components'
 const Roster = styled.ul`
     list-style-type: none;
     padding-left: 10px;
+    margin-top: 0px;
+    margin-bottom: 20px;
 `
 
 const RosterEntry = styled.li`

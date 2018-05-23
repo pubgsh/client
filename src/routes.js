@@ -2,10 +2,11 @@ import React from 'react'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import { Container } from 'semantic-ui-react'
 import ReactGA from 'react-ga'
-import Home from './Home.js'
-import Player from './Player.js'
-import Match from './Match.js'
-import TopMenu from '../components/TopMenu.js'
+import Home from './routes/Home'
+import About from './routes/About'
+import Player from './routes/Player'
+import Match from './routes/Match'
+import TopMenu from './components/TopMenu.js'
 
 ReactGA.initialize(process.env.REACT_APP_GA)
 
@@ -54,7 +55,8 @@ export default () => (
         <Container>
             <Route path="/" component={Analytics} />
             <Switch>
-                <RouteWithTopMenu path="/" exact component={Home} />
+                <Route path="/" exact component={Home} />
+                <RouteWithTopMenu path="/about" exact component={About} />
                 <RouteWithTopMenu path="/:playerName/:shardId/:matchId" component={Match} />
                 <RouteWithTopMenu path="/:playerName/:shardId" component={Player} />
             </Switch>

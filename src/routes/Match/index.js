@@ -3,12 +3,13 @@ import { get } from 'lodash'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import styled from 'styled-components'
-import { Input, Container, Button } from 'semantic-ui-react'
-import Map from '../components/Map/index.js'
-import Roster from '../components/Roster.js'
-import Telemetry from '../models/Telemetry.js'
+import Map from './Map/index.js'
+import Roster from './Roster/index.js'
+import TimeSlider from './TimeSlider.js'
+import Telemetry from '../../models/Telemetry.js'
 
 const MatchContainer = styled.div`
+    ${props => props.containerSize ? `width: ${props.containerSize}px` : ''}
     display: grid;
     grid-template-columns: 1fr 250px;
     border: 0px solid black;
@@ -27,33 +28,6 @@ const RosterContainer = styled.div`
     overflow-y: scroll;
     height: ${props => props.mapSize + 40}px;
 `
-
-const StyledRangeInput = styled(Input)`
-    &&& {
-        display: flex;
-        width: 100%;
-        margin-right: 10px;
-    }
-`
-
-const StyledPlayButton = styled(Button)`
-    &&& {
-        display: flex;
-        margin-right: 0;
-    }
-`
-
-const StyledDuration = styled.span`
-    display: flex;
-    line-height: 2.5em;
-    margin-right: 10px;
-`
-
-const getDurationFormat = durationSeconds => {
-    const minutes = Math.floor(durationSeconds / 60)
-    const seconds = durationSeconds - (minutes * 60)
-    return `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
-}
 
 class Match extends React.Component {
     state = {
@@ -90,13 +64,19 @@ class Match extends React.Component {
 
     updateMapSize = (stateToUse = this.state) => {
         try {
-            const mapSize = document.getElementById('MatchContainer').clientWidth - 250
+            const availableWidth = document.getElementById('TopMenu').clientWidth - 250
+            const availableHeight = window.innerHeight -
+                document.getElementById('TopMenu').clientHeight -
+                document.getElementById('TimeSlider').clientHeight -
+                30
+
+            const mapSize = Math.min(availableHeight, availableWidth)
+
             if (mapSize !== stateToUse.mapSize) {
-                console.log(`New MapContainer size (${stateToUse.mapSize} --> ${mapSize})`)
-                this.setState({ mapSize })
+                this.setState({ mapSize, containerSize: mapSize + 250 })
             }
         } catch (e) {
-            console.log('No #MatchContainer DOM element')
+            // Do nothing - next state update will hopefully have the element
         }
     }
 
@@ -105,8 +85,8 @@ class Match extends React.Component {
         window.removeEventListener('resize', this.updateMapSize.bind(this))
     }
 
-    onInputChange = e => {
-        this.setState({ [e.target.name]: Number(e.target.value) })
+    onTimeSliderChange = e => {
+        this.setState({ secondsSinceEpoch: Number(e.target.value) })
     }
 
     loadTelemetry = async () => {
@@ -204,23 +184,16 @@ class Match extends React.Component {
         }
 
         return (
-            <MatchContainer id="MatchContainer">
+            <MatchContainer id="MatchContainer" containerSize={this.state.containerSize}>
                 <MapContainer id="MapContainer" hoveredPlayer={marks.hoveredPlayer}>
-                    <Container fluid style={{ display: 'flex', marginBottom: '5px' }}>
-                        <StyledRangeInput
-                            name="secondsSinceEpoch"
-                            onClick={this.stopAutoplay}
-                            onChange={this.onInputChange}
-                            value={secondsSinceEpoch}
-                            type="range"
-                            min="1"
-                            max={match.durationSeconds + 11}
-                            step="1"
-                        />
-                        <StyledDuration>{getDurationFormat(secondsSinceEpoch)}</StyledDuration>
-                        <StyledPlayButton icon={autoplay ? 'pause' : 'play'} onClick={this.toggleAutoplay} />
-                    </Container>
-
+                    <TimeSlider
+                        value={secondsSinceEpoch}
+                        autoplay={autoplay}
+                        stopAutoplay={this.stopAutoplay}
+                        toggleAutoplay={this.toggleAutoplay}
+                        onChange={this.onTimeSliderChange}
+                        durationSeconds={match.durationSeconds}
+                    />
                     <Map match={match} telemetry={currentTelemetry} mapSize={mapSize} marks={marks} />
                 </MapContainer>
                 <RosterContainer mapSize={mapSize}>

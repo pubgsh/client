@@ -2,8 +2,12 @@ i.icon {
     font-family: Icons !important;
 }
 
-*, .ui.button, .ui.input[type="text"] {
-    font-family: 'Abel',sans-serif !important;
+h1, h2, h3, h4, h5 {
+    font-weight: 500;
+}
+
+*, .ui.button, .ui.form input[type="text"] {
+    font-family: 'Palanquin' !important;
     font-weight: 300;
     font-size: 11pt;
 }

@@ -1,9 +1,10 @@
+import moment from 'moment'
 import { get, clamp } from 'lodash'
 import { Map } from 'immutable'
 import Participants, { setPlayerStatus } from './Participants.js'
 
 export default function Telemetry(matchData, telemetry, focusedPlayerName) {
-    const epoch = new Date(matchData.playedAt).getTime()
+    const epoch = moment.utc(matchData.playedAt).valueOf()
 
     let state = Map({
         players: Participants(matchData, focusedPlayerName),
