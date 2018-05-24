@@ -53,7 +53,7 @@ const TimeSlider = ({ value, autoplay, stopAutoplay, toggleAutoplay, onChange, d
     <TimeSliderContainer fluid id="TimeSlider">
         <StyledRangeInput
             name="secondsSinceEpoch"
-            onClick={stopAutoplay}
+            onMouseDown={stopAutoplay}
             onChange={onChange}
             value={value}
             type="range"
