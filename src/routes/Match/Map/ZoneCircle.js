@@ -1,18 +1,18 @@
 import React from 'react'
 import { Circle } from 'react-konva'
 
-const ZoneCircle = ({ mapSize, circle, color, background }) => {
-    const toScale = n => n / 816000 * mapSize
+const toScale = (mapSize, n) => n / 816000 * mapSize
 
+const ZoneCircle = ({ mapSize, mapScale, circle, color, background }) => {
     return (
         <Circle
-            x={toScale(circle.get('x'))}
-            y={toScale(circle.get('y'))}
+            x={toScale(mapSize, circle.get('x'))}
+            y={toScale(mapSize, circle.get('y'))}
             fill={background}
             stroke={color}
-            width={toScale(circle.get('radius') * 2)}
-            height={toScale(circle.get('radius') * 2)}
-            strokeWidth="1"
+            width={toScale(mapSize, circle.get('radius') * 2)}
+            height={toScale(mapSize, circle.get('radius') * 2)}
+            strokeWidth={1 / Math.max(1, mapScale / 1.4)}
         />
     )
 }

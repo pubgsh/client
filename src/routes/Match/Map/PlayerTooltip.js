@@ -1,19 +1,22 @@
 import React from 'react'
 import { Group, Text } from 'react-konva'
 
-const PlayerTooltip = ({ player, mapSize, show }) => {
+const toScale = (mapSize, n) => n / 816000 * mapSize
+
+const PlayerTooltip = ({ player, mapSize, mapScale, show }) => {
     if (!show) return null
 
-    const toScale = n => n / 816000 * mapSize
+    const fontSize = 11 / Math.max(1, mapScale / 1.4)
+    const textOffset = 10 / Math.max(1, mapScale / 1.4)
 
     return (
         <Group>
             <Text
                 fill={player.get('color').substring(0, 7)}
-                x={toScale(player.getIn(['location', 'x'])) + 10}
-                y={toScale(player.getIn(['location', 'y'])) - 10}
+                x={toScale(mapSize, player.getIn(['location', 'x'])) + textOffset}
+                y={toScale(mapSize, player.getIn(['location', 'y'])) - textOffset}
                 text={player.get('name')}
-                fontSize="11"
+                fontSize={fontSize}
                 fontFamily="Palanquin"
             />
         </Group>
