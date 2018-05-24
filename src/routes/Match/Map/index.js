@@ -33,6 +33,7 @@ class Map extends React.Component {
     }
 
     handleMousewheel = e => {
+        e.evt.preventDefault()
         this.setState(prevState => {
             const scaleDelta = e.evt.deltaY > 0 ? -SCALE_STEP : SCALE_STEP
             const newScale = clamp(prevState.mapScale + scaleDelta, MIN_SCALE, MAX_SCALE)
