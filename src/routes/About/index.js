@@ -41,6 +41,7 @@ export default () =>
                 <SectionHeader>Roadmap</SectionHeader>
 
                 <ul>
+                    <li>Adjustable autoplay speed</li>
                     <li>Progress bar during telemetry download</li>
                     <li>Different dot color for knocked down players</li>
                     <li>Pulse animation on a dot when they kill someone</li>
