@@ -54,10 +54,15 @@ const MatchesTable = ({ baseUrl, matches }) => {
     )
 }
 
-const MatchesList = ({ header, ...rest }) =>
-    <div>
+const MatchesColumn = styled.div`
+    grid-column: ${props => props.col};
+`
+
+const MatchesList = ({ header, col, ...rest }) =>
+    <MatchesColumn col={col}>
         <h5>{header}</h5>
         <MatchesTable {...rest} />
-    </div>
+    </MatchesColumn>
+
 
 export default MatchesList

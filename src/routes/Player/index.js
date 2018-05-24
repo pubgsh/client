@@ -1,4 +1,5 @@
 import React from 'react'
+import moment from 'moment'
 import { get, uniqBy } from 'lodash'
 import { graphql } from 'react-apollo'
 import { Link } from 'react-router-dom'
@@ -11,8 +12,8 @@ export const MatchesContainer = styled.div`
     grid-template-columns: 0.3fr 0.3fr 0.3fr;
 `
 
-const MatchesColumn = styled(MatchesList)`
-    grid-column: ${props => props.col};
+const PlayerHeader = styled.p`
+    grid-row: 1;
 `
 
 const RateLimited = ({ data: { loading, error, latestMatch } }) => {
@@ -20,11 +21,14 @@ const RateLimited = ({ data: { loading, error, latestMatch } }) => {
 
     return (
         <div>
-            Oh no! We’re currently rate limited by PUBG. This limit will be increased soon. In the meantime,
-            you can either wait a little while and refresh this page or&nbsp;
-            <Link to={`/${latestMatch.players[0].name}/${latestMatch.shardId}/${latestMatch.id}`}>
-                view the latest available match
-            </Link>.
+            <p>Oh no! We’re currently rate limited by PUBG.</p>
+            <p>
+                This limit will be increased soon. In the meantime,
+                you can either wait a minute and refresh this page or&nbsp;
+                <Link to={`/${latestMatch.players[0].name}/${latestMatch.shardId}/${latestMatch.id}`}>
+                    view the latest available match
+                </Link>.
+            </p>
         </div>
     )
 }
@@ -59,18 +63,27 @@ const Player = class extends React.Component {
     render() {
         const { match, data: { loading, error, player } } = this.props
 
-        if (loading) return 'Loading matches...'
+        if (loading) return <p>Loading matches...</p>
         if (get(error, 'message', '').includes('429')) return <RateLimitedWithData />
-        if (error) return `Error ${error}`
-        if (!player) return 'Player not found'
+        if (error) return <p>An error occurred :(</p>
+        if (!player) {
+            return <p>
+                Player not found. Did you select the correct shard?
+                Has a game been played in the last week?
+            </p>
+        }
 
         const forGameMode = gameMode => player.matches.filter(m => m.gameMode.includes(gameMode))
+        const fetchedMinAgo = moment.utc().diff(moment.utc(player.lastFetchedAt), 'minutes')
 
         return (
             <MatchesContainer>
-                <MatchesColumn col="1" header="Solo" baseUrl={match.url} matches={forGameMode('solo')} />
-                <MatchesColumn col="2" header="Duos" baseUrl={match.url} matches={forGameMode('duo')} />
-                <MatchesColumn col="3" header="Squad" baseUrl={match.url} matches={forGameMode('squad')} />
+                <PlayerHeader>
+                    (Last updated {moment.duration(fetchedMinAgo, 'minutes').humanize()} ago)
+                </PlayerHeader>
+                <MatchesList col="1" header="Solo" baseUrl={match.url} matches={forGameMode('solo')} />
+                <MatchesList col="2" header="Duos" baseUrl={match.url} matches={forGameMode('duo')} />
+                <MatchesList col="3" header="Squad" baseUrl={match.url} matches={forGameMode('squad')} />
             </MatchesContainer>
         )
     }
@@ -81,6 +94,7 @@ export default graphql(gql`
         player(shardId: $shardId, name: $playerName) {
             id
             name
+            lastFetchedAt
             matches {
                 id
                 playedAt
