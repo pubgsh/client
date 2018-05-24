@@ -41,7 +41,6 @@ export default () =>
                 <SectionHeader>Roadmap</SectionHeader>
 
                 <ul>
-                    <li>Interpolate positions in between known telemetry points</li>
                     <li>Progress bar during telemetry download</li>
                     <li>Different dot color for knocked down players</li>
                     <li>Pulse animation on a dot when they kill someone</li>
@@ -58,6 +57,7 @@ export default () =>
                 <h5>2018-05-23</h5>
                 <ul>
                     <li>Added map zooming and panning (scroll wheel)</li>
+                    <li>Interpolate positions in between known telemetry points</li>
                     <li>Show player last fetched time</li>
                 </ul>
 
