@@ -124,7 +124,7 @@ class Match extends React.Component {
                     return { secondsSinceEpoch: 1 }
                 }
 
-                return { secondsSinceEpoch: prevState.secondsSinceEpoch + 3 }
+                return { secondsSinceEpoch: prevState.secondsSinceEpoch + 1 }
             })
         }, 16)
 
