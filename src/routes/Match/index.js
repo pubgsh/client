@@ -50,7 +50,7 @@ class Match extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (!this.state.telemetry && !this.state.telemetryLoading) {
+        if (!this.state.telemetry && !this.state.telemetryLoading && this.props.data.match) {
             console.log(`New match id (${this.state.matchId})`)
             this.loadTelemetry()
         }
@@ -166,7 +166,7 @@ class Match extends React.Component {
         const { telemetry, secondsSinceEpoch, mapSize, autoplay } = this.state
 
         if (loading) return 'Loading...'
-        if (error) return `Error ${error}`
+        if (error) return <p>An error occurred :(</p>
         if (!match) return 'Match not found'
         if (!telemetry) return 'Loading telemetry...'
 

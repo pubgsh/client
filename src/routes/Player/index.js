@@ -1,51 +1,26 @@
 import React from 'react'
 import moment from 'moment'
-import { get, uniqBy } from 'lodash'
+import { get, uniqBy, isEmpty } from 'lodash'
 import { graphql } from 'react-apollo'
-import { Link } from 'react-router-dom'
 import gql from 'graphql-tag'
 import styled from 'styled-components'
 import MatchesList from './MatchesList.js'
+import RateLimited from './RateLimited.js'
 
 export const MatchesContainer = styled.div`
     display: grid;
     grid-template-columns: 0.3fr 0.3fr 0.3fr;
 `
 
-const PlayerHeader = styled.p`
+const PlayerHeader = styled.div`
     grid-row: 1;
+    grid-column-start: 1;
+    grid-column-end: 4;
+    margin-bottom: 15px;
+
 `
 
-const RateLimited = ({ data: { loading, error, latestMatch } }) => {
-    if (loading) return 'Finding latest match...'
-
-    return (
-        <div>
-            <p>Oh no! We’re currently rate limited by PUBG.</p>
-            <p>
-                This limit will be increased soon. In the meantime,
-                you can either wait a minute and refresh this page or&nbsp;
-                <Link to={`/${latestMatch.players[0].name}/${latestMatch.shardId}/${latestMatch.id}`}>
-                    view the latest available match
-                </Link>.
-            </p>
-        </div>
-    )
-}
-
-const RateLimitedWithData = graphql(gql`
-    query {
-        latestMatch {
-            id
-            shardId
-            players {
-                name
-            }
-        }
-    }
-`)(RateLimited)
-
-const Player = class extends React.Component {
+class Player extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         const playerName = get(this.props, 'data.player.name')
 
@@ -64,9 +39,8 @@ const Player = class extends React.Component {
         const { match, data: { loading, error, player } } = this.props
 
         if (loading) return <p>Loading matches...</p>
-        if (get(error, 'message', '').includes('429')) return <RateLimitedWithData />
         if (error) return <p>An error occurred :(</p>
-        if (!player) {
+        if (!player || (isEmpty(player.matches) && !player.rateLimitReset)) {
             return <p>
                 Player not found. Did you select the correct shard?
                 Has a game been played in the last week?
@@ -74,12 +48,19 @@ const Player = class extends React.Component {
         }
 
         const forGameMode = gameMode => player.matches.filter(m => m.gameMode.includes(gameMode))
+
         const fetchedMinAgo = moment.utc().diff(moment.utc(player.lastFetchedAt), 'minutes')
+        const friendlyAgo = moment.duration(fetchedMinAgo, 'minutes').humanize()
 
         return (
             <MatchesContainer>
                 <PlayerHeader>
-                    (Last updated {moment.duration(fetchedMinAgo, 'minutes').humanize()} ago)
+                    {player.rateLimitReset &&
+                        <RateLimited player={player} onUnRateLimited={this.props.data.refetch} />
+                    }
+                    {player.lastFetchedAt &&
+                        <p>(Last updated {friendlyAgo} ago)</p>
+                    }
                 </PlayerHeader>
                 <MatchesList col="1" header="Solo" baseUrl={match.url} matches={forGameMode('solo')} />
                 <MatchesList col="2" header="Duos" baseUrl={match.url} matches={forGameMode('duo')} />
@@ -95,6 +76,9 @@ export default graphql(gql`
             id
             name
             lastFetchedAt
+            rateLimitReset
+            rateLimitAhead
+            rateLimitPlayerKey
             matches {
                 id
                 playedAt

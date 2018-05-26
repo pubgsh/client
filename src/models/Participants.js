@@ -22,7 +22,6 @@ export function setPlayerStatus(player, status) {
 export default function Participants(matchData, focusedPlayerName) {
     const focusedRosterId = matchData.players.find(p => p.name === focusedPlayerName).rosterId
 
-
     // -- Player ---------------------------------------------------------------
 
     function Player(name, rosterId) {
