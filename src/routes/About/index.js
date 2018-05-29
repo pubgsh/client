@@ -41,6 +41,7 @@ export default () =>
                 <SectionHeader>Roadmap</SectionHeader>
 
                 <ul>
+                    <li>Rank and kills on match list plage</li>
                     <li>Markers on time slider for notable events (kills, death, etc)</li>
                     <li>Progress bar during telemetry download</li>
                     <li>Different dot color for knocked down players</li>

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Group, Text } from 'react-konva'
 
-const toScale = (mapSize, n) => n / 816000 * mapSize
+const toScale = (mapSize, n) => n / 816000 * mapSize * 0.996
 
 const PlayerTooltip = ({ player, mapSize, mapScale, show }) => {
     if (!show) return null
