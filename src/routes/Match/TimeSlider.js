@@ -12,7 +12,7 @@ const getDurationFormat = durationSeconds => {
 const SliderWithTooltip = createSliderWithTooltip(Slider)
 
 const StyledSlider = styled(SliderWithTooltip)`
-    padding-top: 1px;
+    padding-top: 5px;
     margin-top: 12px;
 `
 
