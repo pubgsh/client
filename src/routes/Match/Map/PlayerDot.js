@@ -13,8 +13,8 @@ const PlayerDot = ({ player, mapSize, marks, mapScale }) => {
 
     return (
         <Circle
-            x={toScale(mapSize, player.getIn(['location', 'x']))}
-            y={toScale(mapSize, player.getIn(['location', 'y']))}
+            x={toScale(mapSize, player.getIn(['location', 'x']) - 1800)}
+            y={toScale(mapSize, player.getIn(['location', 'y']) - 2100)}
             fill={player.get('color')}
             stroke="#222222B0"
             width={diameter}
