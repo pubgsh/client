@@ -88,6 +88,10 @@ export default function Telemetry(matchData, telemetry, focusedPlayerName) {
         return cache[clamp(secondsSinceEpoch, 1, cache.length - 1)]
     }
 
+    function finalState() {
+        return cache[cache.length - 1]
+    }
+
     console.time('Telemetry-interpolation')
 
     const realBluezoneLocs = {
@@ -176,5 +180,6 @@ export default function Telemetry(matchData, telemetry, focusedPlayerName) {
 
     return {
         stateAt,
+        finalState,
     }
 }

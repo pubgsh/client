@@ -1,6 +1,7 @@
 import React from 'react'
 import { map, clamp } from 'lodash'
 import { Stage, Layer } from 'react-konva'
+import styled from 'styled-components'
 import { Safezone, Bluezone, Redzone } from './ZoneCircle.js'
 import PlayerDot from './PlayerDot.js'
 import PlayerTooltip from './PlayerTooltip.js'
@@ -9,6 +10,13 @@ import BackgroundLayer from './BackgroundLayer.js'
 const SCALE_STEP = 0.4
 const MIN_SCALE = 1
 const MAX_SCALE = 5
+
+const StyledStage = styled(Stage)`
+    div.konvajs-content {
+        overflow: hidden;
+        border-radius: 4px;
+    }
+`
 
 class Map extends React.Component {
     state = { mapScale: 1, offsetX: 0, offsetY: 0 }
@@ -58,7 +66,7 @@ class Map extends React.Component {
         const scale = { x: mapScale, y: mapScale }
 
         return (
-            <Stage
+            <StyledStage
                 width={mapSize}
                 height={mapSize}
                 scale={scale}
@@ -83,17 +91,18 @@ class Map extends React.Component {
                             marks={marks}
                         />,
                     )}
-                    {map(telemetry.get('players'), player =>
-                        <PlayerTooltip
+                    {map(telemetry.get('players'), player => {
+                        const rosterId = player.get('rosterId')
+                        return <PlayerTooltip
                             player={player}
                             mapSize={mapSize}
                             mapScale={mapScale}
                             key={`tooltip-${player.get('name')}`}
-                            show={marks.isTracked(player.get('name')) || marks.isHovered(player.get('name'))}
-                        />,
-                    )}
+                            show={marks.isRosterTracked(rosterId) || marks.isRosterHovered(rosterId)}
+                        />
+                    })}
                 </Layer>
-            </Stage>
+            </StyledStage>
         )
     }
 }

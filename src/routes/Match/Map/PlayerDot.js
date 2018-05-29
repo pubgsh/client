@@ -9,7 +9,7 @@ const getDotDiameter = (mapScale, isHovered) => {
 const toScale = (mapSize, n) => n / 816000 * mapSize
 
 const PlayerDot = ({ player, mapSize, marks, mapScale }) => {
-    const diameter = getDotDiameter(mapScale, marks.isHovered(player.get('name')))
+    const diameter = getDotDiameter(mapScale, marks.isRosterHovered(player.get('rosterId')))
 
     return (
         <Circle
@@ -20,9 +20,9 @@ const PlayerDot = ({ player, mapSize, marks, mapScale }) => {
             width={diameter}
             height={diameter}
             strokeWidth={1 / Math.max(1, mapScale / 1.4)}
-            onMouseEnter={() => marks.setHoveredPlayer(player.get('name'))}
-            onMouseLeave={() => marks.setHoveredPlayer('')}
-            onClick={() => marks.toggleTrackedPlayer(player.get('name'))}
+            onMouseEnter={() => marks.setHoveredRosterId(player.get('rosterId'))}
+            onMouseLeave={() => marks.setHoveredRosterId('')}
+            onClick={() => marks.toggleTrackedRoster(player.get('rosterId'))}
         />
     )
 }

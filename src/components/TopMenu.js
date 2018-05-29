@@ -2,74 +2,66 @@ import React from 'react'
 import styled from 'styled-components'
 import { get } from 'lodash'
 import { Link } from 'react-router-dom'
-import { Form, Button, Input, Dropdown, Menu } from 'semantic-ui-react'
 import { SHARDS } from '../models/Shards.js'
+import Dropdown from './Dropdown.js'
 
-const StyledMenu = styled(Menu)`
-    &&& { background: #FFF; margin-left: 0; margin-right: 0;}
+const FullWidthBlock = styled.div`
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 6.5rem;
+    border-bottom: 1px solid #ebebeb;
+    z-index: 2;
 `
 
-const StyledRightMenu = styled(Menu.Menu)`
-    &&& > .item { margin-right: 0; padding-right: 0; }
-    &&& button { margin-right: 0; }
+const TopMenuContainer = styled.div`
+    height: 100%;
+    line-height: 6.5rem;
+    display: grid;
+    grid-template-columns: 100px 1fr 100px;
+    max-width: 1200px;
+    position: relative;
+    margin: 0 auto;
+    width: 99%;
 `
 
-const StyledInput = styled(Input)`
-    &&& input {
-        width: 220px;
-        padding: 0 1em;
-        line-height: 2em;
+const HeaderLink = styled(Link)`
+    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .2rem;
+    text-decoration: none;
+    color: #222;
+`
+
+const HomeLink = HeaderLink
+const AboutLink = styled(HeaderLink)`
+    position: absolute;
+    right: 0;
+`
+
+const SearchGroup = styled.div`
+    margin: 0 auto;
+
+    form {
+        margin: 0;
     }
 `
 
-const StyledForm = styled(Form)`
-    &&& { display: inherit; }
-`
+const NameInput = styled.input`
+    width: 22.3rem;
 
-const LogoMenuItem = styled(Menu.Item)`
-    &&&.item {
-        padding-left: 0;
-        margin-left: 0;
-
-        ul {
-            list-style-type: none;
-            padding-left: 0;
-
-            li {
-                display: inline-block;
-            }
-
-            li:not(:last-child):after {
-                content: '>';
-                margin: 0 15px;
-            }
-        }
+    &::placeholder {
+        color: #BBB;
     }
 `
-
-const Breadcrumbs = ({ playerName, shardId, matchId }) => {
-    const nameCrumb = playerName &&
-        <li>
-            <Link to={`/${playerName}/${shardId}`}>
-                {playerName} ({shardId})
-            </Link>
-        </li>
-
-    const matchCrumb = matchId &&
-        <li>
-            <Link to={`/${playerName}/${shardId}/${matchId}`}>
-                {matchId}
-            </Link>
-        </li>
-
-    return (
-        <ul>
-            <li><Link to="/">pubg.sh</Link></li>
-            {nameCrumb}
-            {matchCrumb}
-        </ul>
-    )
-}
+const SearchButton = styled.input`
+    && {
+        line-height: 39px;
+        margin-left: 10px;
+    }
+`
 
 class TopMenu extends React.Component {
     state = {}
@@ -77,51 +69,45 @@ class TopMenu extends React.Component {
     static getDerivedStateFromProps(props) {
         return {
             searchText: get(props, 'match.params.playerName', ''),
-            shardId: get(props, 'match.params.shardId', (localStorage.getItem('shardId') || SHARDS[0].value)),
+            shardId: get(props, 'match.params.shardId', (localStorage.getItem('shardId') || SHARDS[0])),
         }
     }
 
-    handleDropdownChange = (e, { name, value }) => {
-        this.setState({ [name]: value })
-        if (name === 'shardId') localStorage.setItem('shardId', value)
+    handleDropdownChange = ({ value }) => {
+        this.setState({ shardId: value })
+        localStorage.setItem('shardId', value)
     }
 
-    handleInputChange = e => { this.setState({ [e.target.name]: e.target.value }) }
+    handleInputChange = e => { this.setState({ searchText: e.target.value }) }
 
-    search = () => { this.props.history.push(`/${this.state.searchText}/${this.state.shardId}`) }
+    search = e => {
+        if (e) e.preventDefault()
+        this.props.history.push(`/${this.state.searchText}/${this.state.shardId}`)
+    }
 
     render() {
         const { shardId, searchText } = this.state
 
         return (
-            <StyledMenu secondary id="TopMenu">
-                <LogoMenuItem>
-                    <Breadcrumbs {...this.props.match.params} />
-                </LogoMenuItem>
-
-                <StyledRightMenu position="right">
-                    <Menu.Item>
-                        <StyledForm onSubmit={this.search}>
-                            <StyledInput
+            <FullWidthBlock>
+                <TopMenuContainer>
+                    <HomeLink to="/">pubg.sh</HomeLink>
+                    <SearchGroup>
+                        {!this.props.hidePlayerSearch && <form onSubmit={this.search}>
+                            <Dropdown value={shardId} options={SHARDS} onChange={this.handleDropdownChange} />
+                            <NameInput
+                                type="text"
                                 name="searchText"
-                                value={searchText}
-                                placeholder="Player Name (Case Sensitive)"
                                 onChange={this.handleInputChange}
+                                placeholder="Player Name (Case Sensitive)"
+                                value={searchText}
                             />
-
-                            <Dropdown
-                                item
-                                name="shardId"
-                                text={shardId}
-                                options={SHARDS}
-                                onChange={this.handleDropdownChange}
-                            />
-
-                            <Button type="submit">Search</Button>
-                        </StyledForm>
-                    </Menu.Item>
-                </StyledRightMenu>
-            </StyledMenu>
+                            <SearchButton className="button" type="submit" value="Search" />
+                        </form>}
+                    </SearchGroup>
+                    <AboutLink to="/about">About</AboutLink>
+                </TopMenuContainer>
+            </FullWidthBlock>
         )
     }
 }

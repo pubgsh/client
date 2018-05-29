@@ -41,7 +41,7 @@ export default () =>
                 <SectionHeader>Roadmap</SectionHeader>
 
                 <ul>
-                    <li>Adjustable autoplay speed</li>
+                    <li>Markers on time slider for notable events (kills, death, etc)</li>
                     <li>Progress bar during telemetry download</li>
                     <li>Different dot color for knocked down players</li>
                     <li>Pulse animation on a dot when they kill someone</li>
@@ -54,6 +54,13 @@ export default () =>
 
             <section>
                 <SectionHeader>Change history</SectionHeader>
+
+                <h5>2018-05-28</h5>
+                <ul>
+                    <li>Queue users and update via Websockets when PUBG is rate limited</li>
+                    <li>Adjustable autoplay speed</li>
+                    <li>UI/UX improvements</li>
+                </ul>
 
                 <h5>2018-05-23</h5>
                 <ul>
@@ -69,3 +76,4 @@ export default () =>
             </section>
         </Wrapper>
     </div>
+

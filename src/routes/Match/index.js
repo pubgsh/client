@@ -1,46 +1,72 @@
 import React from 'react'
-import { get } from 'lodash'
+import { get, clamp, reduce, groupBy, sortBy } from 'lodash'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import styled from 'styled-components'
 import Map from './Map/index.js'
 import Roster from './Roster/index.js'
 import TimeSlider from './TimeSlider.js'
+import AutoplayControls from './AutoplayControls.js'
+import MatchInfo from './MatchInfo.js'
 import Telemetry from '../../models/Telemetry.js'
 
+// -----------------------------------------------------------------------------
+// Styled Components -----------------------------------------------------------
+// -----------------------------------------------------------------------------
+
 const MatchContainer = styled.div`
-    ${props => props.containerSize ? `width: ${props.containerSize}px` : ''}
     display: grid;
-    grid-template-columns: 1fr 250px;
-    border: 0px solid black;
+    grid-template-columns: 1fr 170px;
+    border: 0px solid #eee;
     overflow: hidden;
+    margin: 0 auto;
 `
 
 const MapContainer = styled.div`
     grid-column: 1;
     position: relative;
-    cursor: ${props => props.hoveredPlayer ? 'pointer' : 'normal'}
+    cursor: ${props => props.hoveredRosterId ? 'pointer' : 'normal'}
 `
 
 const RosterContainer = styled.div`
     grid-column: 2;
     position: relative;
     overflow-y: scroll;
-    height: ${props => props.mapSize + 40}px;
+    overflow-x: hidden;
+    height: ${props => props.mapSize + 38}px;
+    margin: 0 auto;
+`
+
+const MatchHeader = styled.div`
+    display: grid;
+    grid-template-columns: max-content 1fr max-content;
+    margin-bottom: 10px;
+    width: ${props => props.mapSize}px;
+`
+
+const RosterHeader = styled.div`
+    text-align: center;
+    font-family: 'Palanquin', sans-serif;
+    font-size: 1.1rem;
 `
 
 class Match extends React.Component {
     state = {
+        autoplaySpeed: 1,
         matchId: null,
-        focusedPlayer: null,
         telemetry: null,
         telemetryLoading: false,
         secondsSinceEpoch: 1,
         autoplay: true,
         mapSize: 0,
-        hoveredPlayer: null,
-        trackedPlayers: {},
+        focusedPlayer: null,
+        hoveredRosterId: null,
+        trackedRosters: {},
     }
+
+    // -------------------------------------------------------------------------
+    // Map Sizing, Telemetry, Lifecycle ----------------------------------------
+    // -------------------------------------------------------------------------
 
     static getDerivedStateFromProps(nextProps, prevState) {
         return {
@@ -60,33 +86,32 @@ class Match extends React.Component {
 
     componentDidMount() {
         window.addEventListener('resize', this.updateMapSize.bind(this))
+        this.updateMapSize()
     }
 
     updateMapSize = (stateToUse = this.state) => {
-        try {
-            const availableWidth = document.getElementById('TopMenu').clientWidth - 250
-            const availableHeight = window.innerHeight -
-                document.getElementById('TopMenu').clientHeight -
-                document.getElementById('TimeSlider').clientHeight -
-                30
+        const mainContainer = document.getElementById('MainContainer')
+        const containerHeight = window.innerHeight - mainContainer.offsetTop
 
-            const mapSize = Math.min(availableHeight, availableWidth)
+        const availableHeight = containerHeight - 95
+        const availableWidth = mainContainer.clientWidth - 170
+        const mapSize = Math.min(availableWidth, availableHeight)
 
-            if (mapSize !== stateToUse.mapSize) {
-                this.setState({ mapSize, containerSize: mapSize + 250 })
-            }
-        } catch (e) {
-            // Do nothing - next state update will hopefully have the element
+        mainContainer.style.height = `${containerHeight}px`
+
+        const matchContainer = document.getElementById('MatchContainer')
+        if (matchContainer) {
+            matchContainer.style.width = `${mapSize + 170}px`
+        }
+
+        if (stateToUse.mapSize !== mapSize) {
+            this.setState({ mapSize })
         }
     }
 
     componentWillUnmount() {
         this.stopAutoplay()
         window.removeEventListener('resize', this.updateMapSize.bind(this))
-    }
-
-    onTimeSliderChange = e => {
-        this.setState({ secondsSinceEpoch: Number(e.target.value) })
     }
 
     loadTelemetry = async () => {
@@ -97,23 +122,34 @@ class Match extends React.Component {
         const telemetryData = await res.json()
         const telemetry = Telemetry(this.props.data.match, telemetryData, this.state.focusedPlayer)
 
-        const defaultTracked = telemetry.stateAt(1).get('players')
-            .filter(p => p.get('focusType') === 'player' || p.get('focusType') === 'teammate')
-            .map(p => p.get('name'))
+        const roster = reduce(
+            groupBy(telemetry.stateAt(1).get('players'), p => p.get('rosterId')),
+            (acc, ps, id) => {
+                acc[id] = sortBy(ps, p => p.get('name'))
+                return acc
+            },
+            {}
+        )
 
         this.setState(prevState => ({
             telemetry,
             telemetryLoading: false,
-            trackedPlayers: {
-                ...prevState.trackedPlayers,
-                ...defaultTracked.reduce((acc, name) => ({ ...acc, [name]: true }), {}),
-            },
+            trackedRosters: Object.keys(roster).reduce((acc, rosterId) => {
+                acc[rosterId] = roster[rosterId].some(p => p.get('name') === prevState.focusedPlayer)
+                return acc
+            }, {}),
         }))
 
         if (this.state.autoplay) {
             setTimeout(this.startAutoplay, 500)
         }
     }
+
+    // -------------------------------------------------------------------------
+    // Time Slider / Autoplay --------------------------------------------------
+    // -------------------------------------------------------------------------
+
+    onTimeSliderChange = val => { this.setState({ secondsSinceEpoch: val }) }
 
     startAutoplay = () => {
         this.autoplayInterval = setInterval(() => {
@@ -124,7 +160,7 @@ class Match extends React.Component {
                     return { secondsSinceEpoch: 1 }
                 }
 
-                return { secondsSinceEpoch: prevState.secondsSinceEpoch + 1 }
+                return { secondsSinceEpoch: prevState.secondsSinceEpoch + prevState.autoplaySpeed }
             })
         }, 16)
 
@@ -147,23 +183,34 @@ class Match extends React.Component {
         }
     }
 
-    setHoveredPlayer = playerName => {
-        this.setState({ hoveredPlayer: playerName })
+    changeAutoplaySpeed = delta => {
+        this.setState(prevState => ({ autoplaySpeed: clamp(prevState.autoplaySpeed + delta, 1, 5) }))
     }
 
-    toggleTrackedPlayer = playerName => {
+    // -------------------------------------------------------------------------
+    // Marks -------------------------------------------------------------------
+    // -------------------------------------------------------------------------
+
+    setHoveredRosterId = rosterId => {
+        this.setState({ hoveredRosterId: rosterId })
+    }
+
+    toggleTrackedRoster = rosterId => {
         this.setState(prevState => ({
-            hoveredPlayer: prevState.trackedPlayers[playerName] ? '' : playerName,
-            trackedPlayers: {
-                ...prevState.trackedPlayers,
-                [playerName]: !prevState.trackedPlayers[playerName],
+            trackedRosters: {
+                ...prevState.trackedRosters,
+                [rosterId]: !prevState.trackedRosters[rosterId],
             },
         }))
     }
 
+    // -------------------------------------------------------------------------
+    // Render ------------------------------------------------------------------
+    // -------------------------------------------------------------------------
+
     render() {
         const { data: { loading, error, match } } = this.props
-        const { telemetry, secondsSinceEpoch, mapSize, autoplay } = this.state
+        const { focusedPlayer, telemetry, secondsSinceEpoch, mapSize, autoplay, autoplaySpeed } = this.state
 
         if (loading) return 'Loading...'
         if (error) return <p>An error occurred :(</p>
@@ -172,32 +219,55 @@ class Match extends React.Component {
 
         const currentTelemetry = telemetry.stateAt(secondsSinceEpoch)
 
+        const roster = reduce(
+            groupBy(currentTelemetry.get('players'), p => p.get('rosterId')),
+            (acc, ps, id) => {
+                acc[id] = sortBy(ps, p => p.get('name'))
+                return acc
+            },
+            {}
+        )
+
+        const getRosterId = playerName => telemetry.finalState().get('players')
+            .find(p => p.get('name') === focusedPlayer)
+            .get('rosterId')
+
         const marks = {
             focusedPlayer: this.state.focusedPlayer,
-            hoveredPlayer: this.state.hoveredPlayer,
-            trackedPlayers: this.state.trackedPlayers,
-            setHoveredPlayer: this.setHoveredPlayer,
-            toggleTrackedPlayer: this.toggleTrackedPlayer,
-            isHovered: playerName => this.state.hoveredPlayer === playerName,
-            isTracked: playerName => !!this.state.trackedPlayers[playerName],
-            isFocused: playerName => this.state.focusedPlayer === playerName,
+            hoveredRosterId: this.state.hoveredRosterId,
+            trackedRosterIds: this.state.trackedRosterIds,
+            setHoveredRosterId: this.setHoveredRosterId,
+            toggleTrackedRoster: this.toggleTrackedRoster,
+            isPlayerTracked: playerName => this.state.trackedRosters[getRosterId(playerName)],
+            isPlayerFocused: playerName => this.state.focusedPlayer === playerName,
+            isRosterHovered: rosterId => this.state.hoveredRosterId === rosterId,
+            isRosterTracked: rosterId => this.state.trackedRosters[rosterId],
+            isRosterFocused: rosterId => this.state.trackedRosters[getRosterId(focusedPlayer)],
         }
 
         return (
-            <MatchContainer id="MatchContainer" containerSize={this.state.containerSize}>
-                <MapContainer id="MapContainer" hoveredPlayer={marks.hoveredPlayer}>
-                    <TimeSlider
-                        value={secondsSinceEpoch}
-                        autoplay={autoplay}
-                        stopAutoplay={this.stopAutoplay}
-                        toggleAutoplay={this.toggleAutoplay}
-                        onChange={this.onTimeSliderChange}
-                        durationSeconds={match.durationSeconds}
-                    />
+            <MatchContainer id="MatchContainer">
+                <MapContainer id="MapContainer" hoveredRosterId={marks.hoveredRosterId}>
+                    <MatchHeader mapSize={mapSize}>
+                        <MatchInfo match={match} marks={marks} />
+                        <TimeSlider
+                            value={secondsSinceEpoch}
+                            stopAutoplay={this.stopAutoplay}
+                            onChange={this.onTimeSliderChange}
+                            durationSeconds={match.durationSeconds}
+                        />
+                        <AutoplayControls
+                            autoplay={autoplay}
+                            autoplaySpeed={autoplaySpeed}
+                            toggleAutoplay={this.toggleAutoplay}
+                            changeSpeed={this.changeAutoplaySpeed}
+                        />
+                    </MatchHeader>
                     <Map match={match} telemetry={currentTelemetry} mapSize={mapSize} marks={marks} />
                 </MapContainer>
                 <RosterContainer mapSize={mapSize}>
-                    <Roster match={match} telemetry={currentTelemetry} marks={marks} />
+                    <RosterHeader>Name (Kills)</RosterHeader>
+                    <Roster match={match} roster={roster} telemetry={currentTelemetry} marks={marks} />
                 </RosterContainer>
             </MatchContainer>
         )
@@ -218,6 +288,10 @@ export default graphql(gql`
                 id
                 name
                 rosterId
+                stats {
+                    kills
+                    winPlace
+                }
             }
         }
     }`, {

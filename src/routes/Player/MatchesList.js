@@ -1,20 +1,30 @@
 import React from 'react'
-import { isEmpty } from 'lodash'
+import { isEmpty, groupBy, map } from 'lodash'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
-const StyledTable = styled.table`
-    margin-left: -3px;
+const MatchesColumn = styled.div`
+    text-align: center;
+    grid-column: ${props => props.col};
+`
 
-    & th {
-        text-align: left;
-        font-weight: 500;
-    }
+const StyledTable = styled.table`
+    margin: 0 auto;
 
     & td {
-        padding-right: 30px;
+        padding: 2px 7px;
+        border: 0;
     }
+
+    th {
+        text-align: center;
+    }
+`
+
+const NoMatches = styled.span`
+    display: inline-block;
+    padding-top: 12px;
 `
 
 const friendlyMapName = name => {
@@ -25,38 +35,37 @@ const friendlyMapName = name => {
 
 const MatchesTable = ({ baseUrl, matches }) => {
     if (isEmpty(matches)) {
-        return <span>No matches found</span>
+        return <NoMatches>No matches found</NoMatches>
     }
+
+    const byDate = groupBy(matches, m => moment(m.playedAt).format('MMM Do'))
 
     return (
         <StyledTable>
-            <thead>
-                <tr>
-                    <th>Played at</th>
-                    <th>Map Name</th>
-                </tr>
-            </thead>
             <tbody>
-                {matches.map(m => (
-                    <tr key={m.id}>
-                        <td>
-                            <Link to={`${baseUrl}/${m.id}`}>
-                                {moment(m.playedAt).format('MMM DD h:mm:ss a')}
-                            </Link>
-                        </td>
-                        <td>
-                            {friendlyMapName(m.mapName)}
-                        </td>
-                    </tr>
-                ))}
+                {map(byDate, (ms, date) => {
+                    return [
+                        <tr key={`header-${date}`}>
+                            <th colSpan="2">{date}</th>
+                        </tr>,
+                        ...ms.map(m => (
+                            <tr key={m.id}>
+                                <td>
+                                    <Link to={`${baseUrl}/${m.id}`}>
+                                        {moment(m.playedAt).format('h:mm a')}
+                                    </Link>
+                                </td>
+                                <td>
+                                    {friendlyMapName(m.mapName)}
+                                </td>
+                            </tr>
+                        )),
+                    ]
+                })}
             </tbody>
         </StyledTable>
     )
 }
-
-const MatchesColumn = styled.div`
-    grid-column: ${props => props.col};
-`
 
 const MatchesList = ({ header, col, ...rest }) =>
     <MatchesColumn col={col}>

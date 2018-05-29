@@ -1,66 +1,74 @@
 import React from 'react'
-import { map, groupBy, reverse } from 'lodash'
-import { Link } from 'react-router-dom'
+import { map, sortBy } from 'lodash'
 import styled from 'styled-components'
 
-const Roster = styled.ul`
+const TeamGroup = styled.ul`
     list-style-type: none;
-    padding-left: 10px;
-    margin-top: 0px;
-    margin-bottom: 20px;
+    border: 1px solid ${props => props.color || '#bbb'};
+    background: ${props => `${props.color}10` || ''};
+    border-radius: 4px;
+    font-size: 1.1rem;
+    font-family: 'Palanquin', sans-serif;
+    letter-spacing: 0.02rem;
+    margin: 3px 10px;
+    padding: 4px;
+
+    li {
+        margin: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        cursor: pointer;
+        display: block;
+    }
 `
 
-const RosterEntry = styled.li`
-    line-height: 1.2em;
-    font-size: .9em;
+const PlayerItem = styled.li`
     color: ${props => {
         const colorNoAlpha = props.color.substring(0, 7)
         return colorNoAlpha === '#FFFFFF' ? '#000' : colorNoAlpha
     }};
-    font-weight: ${props => props.isHovered || props.isTracked ? 500 : 300};
-    cursor: pointer;
-
-    & a {
-        font-size: .8em;
-        margin-left: 5px;
-    }
 `
 
-const rosterEntry = (marks, shardId) => player =>
-    <RosterEntry
-        key={player.get('name')}
-        color={player.get('color')}
-        isHovered={marks.isHovered(player.get('name'))}
-        isTracked={marks.isTracked(player.get('name'))}
-        onMouseEnter={() => marks.setHoveredPlayer(player.get('name'))}
-        onMouseLeave={() => marks.setHoveredPlayer('')}
-        onClick={() => marks.toggleTrackedPlayer(player.get('name'))}
-    >
-        {player.get('name')}
-        ({player.get('kills')} kills)
-        {marks.isHovered(player.get('name')) &&
-            <Link to={`/${player.get('name')}/${shardId}`}>(Go to player)</Link>
-        }
-    </RosterEntry>
+const Player = ({ player: p, rosterId, marks, match }) => {
+    return (
+        <PlayerItem
+            key={p.get('name')}
+            color={p.get('color')}
+            onClick={() => marks.toggleTrackedRoster(rosterId)}
+        >
+            {p.get('name')} ({p.get('kills')})
+        </PlayerItem>
+    )
+}
 
-export default ({ match, telemetry, marks }) => {
-    const { tracked, alive, dead } = groupBy(telemetry.get('players'), p => {
-        if (marks.isTracked(p.get('name'))) return 'tracked'
-        if (p.get('status') === 'dead') return 'dead'
-        return 'alive'
+export default ({ match, telemetry, marks, roster }) => {
+    const sortedTeams = sortBy(Object.keys(roster), rosterId => {
+        const players = roster[rosterId]
+        if (players.find(p => marks.isPlayerFocused(p.get('name')))) return -10
+        return -players.filter(p => p.get('status') !== 'dead').length
     })
 
-    const getRosterEntry = rosterEntry(marks, match.shardId)
+    const teams = map(sortedTeams, rosterId => {
+        const players = roster[rosterId]
+        return (
+            <TeamGroup
+                key={rosterId}
+                color={marks.isRosterTracked(rosterId) ? '#3AC2EE' : ''}
+                onMouseEnter={() => marks.setHoveredRosterId(rosterId)}
+                onMouseLeave={() => marks.setHoveredRosterId('')}
+            >
+                {players.map(p =>
+                    <Player
+                        key={p.get('name')}
+                        player={p}
+                        rosterId={rosterId}
+                        marks={marks}
+                        match={match}
+                    />
+                )}
+            </TeamGroup>
+        )
+    })
 
-    return [
-        <Roster key="roster-tracked">
-            {reverse(map(tracked, player => getRosterEntry(player)))}
-        </Roster>,
-        <Roster key="roster-alive">
-            {map(alive, player => getRosterEntry(player))}
-        </Roster>,
-        <Roster key="roster-dead">
-            {map(dead, player => getRosterEntry(player))}
-        </Roster>,
-    ]
+    return teams
 }

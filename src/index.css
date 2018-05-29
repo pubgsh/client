@@ -1,20 +1,15 @@
-i.icon {
-    font-family: Icons !important;
+html, body {
+    margin: 0;
+    padding: 0;
+    background: #FFF;
 }
 
-h1, h2, h3, h4, h5 {
-    font-weight: 500;
+.rc-slider-tooltip .rc-slider-tooltip-inner {
+    color: #222;
+    background: none;
+    box-shadow: none;
 }
 
-*, .ui.button, .ui.form input[type="text"] {
-    font-family: 'Palanquin' !important;
-    font-weight: 300;
-    font-size: 11pt;
+.rc-slider-tooltip-placement-top .rc-slider-tooltip-arrow {
+    display: none;
 }
-
-@media only screen and (min-width: 1400px) {
-    .ui.container{
-        width: 1330px;
-    }
-}
-

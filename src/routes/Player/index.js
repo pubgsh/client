@@ -9,15 +9,20 @@ import RateLimited from './RateLimited.js'
 
 export const MatchesContainer = styled.div`
     display: grid;
-    grid-template-columns: 0.3fr 0.3fr 0.3fr;
+    grid-template-columns: 1fr 1fr 1fr;
+    margin-top: 4rem;
 `
 
 const PlayerHeader = styled.div`
     grid-row: 1;
     grid-column-start: 1;
     grid-column-end: 4;
-    margin-bottom: 15px;
+    margin: 0 auto 1rem;
+    text-align: center;
+`
 
+const PlayerName = styled.h3`
+    text-align: center;
 `
 
 class Player extends React.Component {
@@ -41,10 +46,21 @@ class Player extends React.Component {
         if (loading) return <p>Loading matches...</p>
         if (error) return <p>An error occurred :(</p>
         if (!player || (isEmpty(player.matches) && !player.rateLimitReset)) {
-            return <p>
-                Player not found. Did you select the correct shard?
-                Has a game been played in the last week?
-            </p>
+            return (
+                <PlayerHeader>
+                    <PlayerName>
+                        {this.props.match.params.playerName} - {this.props.match.params.shardId}
+                    </PlayerName>
+                    <p>
+                        Player not found. Check that:
+                    </p>
+                    <p>
+                        You selected the correct region<br />
+                        The user has played a game in the last week<br />
+                        The name was typed exactly as in-game. Capitalization matters.
+                    </p>
+                </PlayerHeader>
+            )
         }
 
         const forGameMode = gameMode => player.matches.filter(m => m.gameMode.includes(gameMode))
@@ -55,11 +71,12 @@ class Player extends React.Component {
         return (
             <MatchesContainer>
                 <PlayerHeader>
+                    <PlayerName>{player.name}</PlayerName>
                     {player.rateLimitReset &&
                         <RateLimited player={player} onUnRateLimited={this.props.data.refetch} />
                     }
                     {player.lastFetchedAt &&
-                        <p>(Last updated {friendlyAgo} ago)</p>
+                        <p>(Matches last updated {friendlyAgo} ago)</p>
                     }
                 </PlayerHeader>
                 <MatchesList col="1" header="Solo" baseUrl={match.url} matches={forGameMode('solo')} />

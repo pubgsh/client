@@ -2,55 +2,28 @@ import React from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import { isEmpty } from 'lodash'
-import { Form, Button, Input, Dropdown } from 'semantic-ui-react'
 import { SHARDS } from '../../models/Shards.js'
-
-const StyledDropdown = styled(Dropdown)`
-    &&& {
-        margin: 0 1em;
-
-        .visible.menu {
-            top: 20px;
-        }
-    }
-`
-
-const StyledForm = styled(Form)`
-    margin-top: 50px;
-    zoom: 1.3;
-`
-
-const StyledInput = styled(Input)`
-    &&& input {
-        width: 17em;
-        padding: 0.2em 1em;
-        line-height: 2.3em;
-    }
-`
+import Dropdown from '../../components/Dropdown.js'
 
 const CenteredContainer = styled.div`
     text-align: center;
-    margin: 0 auto;
-    padding-top: 50px;
-    padding-bottom: 75px;
+    margin: 4rem auto 0;
+    padding-top: 20px;
 `
 
 const RecentPlayersHeader = styled.h5`
     margin-top: 50px;
+    font-size: 1.5rem;
 `
 
 const RecentPlayersUl = styled.ul`
     list-style-type: none;
     padding-left: 0;
-`
 
-const Footer = styled.div`
-    position: fixed;
-    left: 0;
-    width: 100%;
-    bottom: 0;
-    background: white;
-    padding-bottom: 10px;
+    li {
+        margin-bottom: 0;
+        font-size: 1.2rem;
+    }
 `
 
 const RecentPlayers = () => {
@@ -72,17 +45,47 @@ const RecentPlayers = () => {
     ]
 }
 
-class Home extends React.Component {
-    state = { searchText: '', shardId: localStorage.getItem('shardId') || SHARDS[0].value }
+const NameInput = styled.input`
+    width: 34rem;
+`
 
-    handleDropdownChange = (e, { name, value }) => {
-        this.setState({ [name]: value })
-        if (name === 'shardId') localStorage.setItem('shardId', value)
+const SearchButton = styled.input`
+    && {
+        line-height: 39px;
+        margin-left: 10px;
+    }
+`
+
+const StyledDropdown = styled(Dropdown)`
+        top: 30px;
+        right: -1px;
+`
+
+const Header = styled.h3`
+    text-align: center;
+    margin-bottom: 5rem;
+`
+
+const StyledForm = styled.form`
+    margin-bottom: 0;
+`
+
+const RandomMatchLink = styled(Link)`
+    font-size: 1.1rem;
+`
+
+class Home extends React.Component {
+    state = { searchText: '', shardId: localStorage.getItem('shardId') || SHARDS[0] }
+
+    handleDropdownChange = ({ value }) => {
+        this.setState({ shardId: value })
+        localStorage.setItem('shardId', value)
     }
 
-    handleInputChange = e => { this.setState({ [e.target.name]: e.target.value }) }
+    handleInputChange = e => { this.setState({ searchText: e.target.value }) }
 
-    search = () => {
+    search = e => {
+        if (e) e.preventDefault()
         if (this.state.searchText && this.state.shardId) {
             this.props.history.push(`/${this.state.searchText}/${this.state.shardId}`)
         }
@@ -95,36 +98,30 @@ class Home extends React.Component {
     render() {
         const { shardId, searchText } = this.state
 
-        return <CenteredContainer>
-            <h1>pubg.sh</h1>
+        return (
+            <CenteredContainer>
+                <Header>pubg.sh</Header>
 
-            <StyledForm onSubmit={this.search}>
-                <StyledInput
-                    id="HomeSearchInput"
-                    name="searchText"
-                    value={searchText}
-                    placeholder="Player Name (Case Sensitive)"
-                    onChange={this.handleInputChange}
-                />
+                <StyledForm onSubmit={this.search}>
+                    <StyledDropdown value={shardId} options={SHARDS} onChange={this.handleDropdownChange} />
+                    <NameInput
+                        id="HomeSearchInput"
+                        type="text"
+                        name="searchText"
+                        onChange={this.handleInputChange}
+                        placeholder="Player Name (Case Sensitive)"
+                        value={searchText}
+                    />
+                    <SearchButton className="button-primary" type="submit" value="Search" />
+                </StyledForm>
 
-                <StyledDropdown
-                    item
-                    name="shardId"
-                    text={shardId}
-                    options={SHARDS}
-                    onChange={this.handleDropdownChange}
-                />
+                <RandomMatchLink to="/DrDisRespect/pc-na/22216e2a-2dee-4ba4-9668-7297d7d97729">
+                    (Or just view a random match)
+                </RandomMatchLink>
 
-                <Button type="submit">Search</Button>
-            </StyledForm>
-
-            <RecentPlayers />
-
-            <Footer>
-                <Link to="/about">About</Link>
-                <p>Site not affiliated with Player Unknown’s Battlegrounds or Bluehole.</p>
-            </Footer>
-        </CenteredContainer>
+                <RecentPlayers />
+            </CenteredContainer>
+        )
     }
 }
 

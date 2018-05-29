@@ -1,6 +1,6 @@
 import React from 'react'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
-import { Container } from 'semantic-ui-react'
+import styled from 'styled-components'
 import ReactGA from 'react-ga'
 import Home from './routes/Home'
 import About from './routes/About'
@@ -8,14 +8,40 @@ import Player from './routes/Player'
 import Match from './routes/Match'
 import TopMenu from './components/TopMenu.js'
 
-ReactGA.initialize(process.env.REACT_APP_GA)
+if (process.env.REACT_APP_GA) {
+    ReactGA.initialize(process.env.REACT_APP_GA)
+}
 
-const RouteWithTopMenu = ({ component: Component, ...rest }) =>
+const Wrapper = styled.div`
+`
+
+const MainContainer = styled.div`
+    z-index: 1;
+    margin-top: 7rem;
+    background: white;
+    padding: 20px 0 0 0;
+    min-height: 600px;
+`
+
+const Background = styled.div`
+    position: absolute;
+    display: block;
+    top: 6.5rem;
+    left: 0;
+    z-index: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(309deg, #cb3688 0%, #82c2d2 100%);
+`
+
+const RouteWithTopMenu = ({ hidePlayerSearch, component: Component, ...rest }) =>
     <Route
         {...rest}
         render={props => [
-            <TopMenu key="topMenu" {...props} />,
-            <Component key="Component" {...props} />,
+            <TopMenu key="topMenu" {...props} hidePlayerSearch={hidePlayerSearch} />,
+            <MainContainer className="container" key="mainContainer" id="MainContainer">
+                <Component key="Component" {...props} />
+            </MainContainer>,
         ]}
     />
 
@@ -52,14 +78,15 @@ class Analytics extends React.Component {
 
 export default () => (
     <BrowserRouter>
-        <Container>
+        <Wrapper>
             <Route path="/" component={Analytics} />
             <Switch>
-                <Route path="/" exact component={Home} />
+                <RouteWithTopMenu path="/" exact component={Home} hidePlayerSearch />
                 <RouteWithTopMenu path="/about" exact component={About} />
                 <RouteWithTopMenu path="/:playerName/:shardId/:matchId" component={Match} />
                 <RouteWithTopMenu path="/:playerName/:shardId" component={Player} />
             </Switch>
-        </Container>
+            <Background />
+        </Wrapper>
     </BrowserRouter>
 )

@@ -1,4 +1,5 @@
 import React from 'react'
+import moment from 'moment'
 import io from 'socket.io-client'
 
 class RateLimited extends React.Component {
@@ -24,14 +25,17 @@ class RateLimited extends React.Component {
 
     render() {
         const fetchTime = Math.ceil((this.props.player.rateLimitAhead + 1) / 10)
+        const fetchEstimate = moment().add(fetchTime + 1, 'minute')
 
         return (
             <div>
                 <p>
-                    Oh no! We’re currently rate limited by PUBG. (Limit will increase soon)
+                    Oh no! We’re currently rate limited by PUBG. (Limit should increase soon)
                     <br />
-                    As long as you keep this tab open, you’re in queue to be fetched.&nbsp;
-                    Estimated fetch time is under {fetchTime} minute(s).
+                    Sit tight - as long as you keep this page open and connected to the
+                    internet, you’re in queue to be fetched.
+                    <br />
+                    Estimated fetch time is {fetchEstimate.format('h:mm a')}.
                 </p>
             </div>
         )
