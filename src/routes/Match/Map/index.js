@@ -7,9 +7,9 @@ import PlayerDot from './PlayerDot.js'
 import PlayerTooltip from './PlayerTooltip.js'
 import BackgroundLayer from './BackgroundLayer.js'
 
-const SCALE_STEP = 0.4
+const SCALE_STEP = 1
 const MIN_SCALE = 1
-const MAX_SCALE = 5
+const MAX_SCALE = 50
 
 const StyledStage = styled(Stage)`
     div.konvajs-content {

@@ -2,7 +2,7 @@ import React from 'react'
 import { Circle } from 'react-konva'
 
 const getDotDiameter = (mapScale, isHovered) => {
-    const baseDiameter = 8 / Math.max(1, mapScale / 1.4)
+    const baseDiameter = 8 / Math.max(1, mapScale / 1.25)
     return isHovered ? baseDiameter * 1.375 : baseDiameter
 }
 
@@ -13,8 +13,8 @@ const PlayerDot = ({ player, mapSize, marks, mapScale }) => {
 
     return (
         <Circle
-            x={toScale(mapSize, player.getIn(['location', 'x']) - 1800)}
-            y={toScale(mapSize, player.getIn(['location', 'y']) - 2100)}
+            x={toScale(mapSize, player.getIn(['location', 'x']) - 1000)}
+            y={toScale(mapSize, player.getIn(['location', 'y']) - 2000)}
             fill={player.get('color')}
             stroke="#222222B0"
             width={diameter}
