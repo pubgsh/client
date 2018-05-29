@@ -6,10 +6,10 @@ const getColor = (focusType, status) => {
     }
 
     if (focusType === 'teammate') {
-        return status === 'dead' ? '#7C2A2A80' : '#18E786B0'
+        return status === 'dead' ? '#D2252580' : '#18E786B0'
     }
 
-    return status === 'dead' ? '#7C2A2A80' : '#FFFFFFB0'
+    return status === 'dead' ? '#D2252580' : '#FFFFFFB0'
 }
 
 export function setPlayerStatus(player, status) {
