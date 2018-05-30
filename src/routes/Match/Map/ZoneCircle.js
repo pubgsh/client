@@ -1,7 +1,6 @@
 import React from 'react'
 import { Circle } from 'react-konva'
-
-const toScale = (mapSize, n) => n / 816000 * mapSize
+import { toScale } from '../../../lib/canvas-math.js'
 
 const ZoneCircle = ({ mapSize, mapScale, circle, color, background }) => {
     return (

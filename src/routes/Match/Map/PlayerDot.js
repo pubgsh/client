@@ -1,12 +1,11 @@
 import React from 'react'
 import { Circle } from 'react-konva'
+import { toScale } from '../../../lib/canvas-math.js'
 
 const getDotDiameter = (mapScale, isHovered) => {
     const baseDiameter = 8 / Math.max(1, mapScale / 1.25)
     return isHovered ? baseDiameter * 1.375 : baseDiameter
 }
-
-const toScale = (mapSize, n) => n / 816000 * mapSize * 0.996
 
 const PlayerDot = ({ player, mapSize, marks, mapScale }) => {
     const diameter = getDotDiameter(mapScale, marks.isRosterHovered(player.get('rosterId')))
