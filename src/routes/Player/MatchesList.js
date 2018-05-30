@@ -3,6 +3,7 @@ import { isEmpty, groupBy, map } from 'lodash'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
+import { ordinalSuffix } from 'ordinal-js'
 
 const MatchesColumn = styled.div`
     text-align: center;
@@ -46,7 +47,7 @@ const MatchesTable = ({ baseUrl, matches }) => {
                 {map(byDate, (ms, date) => {
                     return [
                         <tr key={`header-${date}`}>
-                            <th colSpan="2">{date}</th>
+                            <th colSpan="4">{date}</th>
                         </tr>,
                         ...ms.map(m => (
                             <tr key={m.id}>
@@ -57,6 +58,12 @@ const MatchesTable = ({ baseUrl, matches }) => {
                                 </td>
                                 <td>
                                     {friendlyMapName(m.mapName)}
+                                </td>
+                                <td>
+                                    <strong>{m.stats.winPlace}</strong>{ordinalSuffix(m.stats.winPlace)}
+                                </td>
+                                <td>
+                                    <strong>{m.stats.kills}</strong> kills
                                 </td>
                             </tr>
                         )),

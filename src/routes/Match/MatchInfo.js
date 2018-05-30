@@ -1,7 +1,7 @@
 import React from 'react'
 import moment from 'moment'
 import styled from 'styled-components'
-import ordinal from 'ordinal-js'
+import { ordinalSuffix } from 'ordinal-js'
 
 const StyledMatchInfo = styled.p`
     font-size: 1.3rem;
@@ -17,7 +17,8 @@ const MatchInfo = ({ match, marks }) => {
     return (
         <StyledMatchInfo>
             {playedAt}<br />
-            <strong>{ordinal.toOrdinal(stats.winPlace)}</strong> place, <strong>{stats.kills}</strong> kills
+            <strong>{stats.winPlace}</strong>{ordinalSuffix(stats.winPlace)} place,&nbsp;
+            <strong>{stats.kills}</strong> kills
         </StyledMatchInfo>
     )
 }

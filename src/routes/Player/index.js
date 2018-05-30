@@ -102,6 +102,10 @@ export default graphql(gql`
                 gameMode
                 mapName
                 durationSeconds
+                stats {
+                    winPlace
+                    kills
+                }
             }
         }
     }`, {

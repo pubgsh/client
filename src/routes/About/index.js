@@ -41,7 +41,6 @@ export default () =>
                 <SectionHeader>Roadmap</SectionHeader>
 
                 <ul>
-                    <li>Rank and kills on match list plage</li>
                     <li>Markers on time slider for notable events (kills, death, etc)</li>
                     <li>Progress bar during telemetry download</li>
                     <li>Different dot color for knocked down players</li>
@@ -50,6 +49,7 @@ export default () =>
                     <li>Additional default tracked players including victims, killer, winners</li>
                     <li>Indicator when riding in a vehicle</li>
                     <li>Bullet trails</li>
+                    <li>Responsive design for mobile</li>
                 </ul>
             </section>
 
@@ -59,6 +59,7 @@ export default () =>
                 <h5>2018-05-29</h5>
                 <ul>
                     <li>Finer grain control of autoplay speed</li>
+                    <li>Rank and kills on match list page</li>
                 </ul>
 
                 <h5>2018-05-28</h5>
