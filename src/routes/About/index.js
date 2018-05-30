@@ -60,6 +60,8 @@ export default () =>
                 <ul>
                     <li>Finer grain control of autoplay speed</li>
                     <li>Rank and kills on match list page</li>
+                    <li>Sub-second interpolation</li>
+                    <li>Use requestAnimationFrame instead of setInterval</li>
                 </ul>
 
                 <h5>2018-05-28</h5>
