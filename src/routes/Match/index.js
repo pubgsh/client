@@ -85,6 +85,7 @@ class Match extends React.Component {
     }
 
     componentDidMount() {
+        this.mounted = true
         window.addEventListener('resize', this.updateMapSize.bind(this))
         this.updateMapSize()
     }
@@ -110,7 +111,8 @@ class Match extends React.Component {
     }
 
     componentWillUnmount() {
-        this.stopAutoplay()
+        cancelAnimationFrame(this.rafId)
+        this.mounted = false
         window.removeEventListener('resize', this.updateMapSize.bind(this))
     }
 
@@ -141,7 +143,7 @@ class Match extends React.Component {
         }))
 
         if (this.state.autoplay) {
-            setTimeout(this.startAutoplay, 500)
+            setTimeout(this.startAutoplay, 1000)
         }
     }
 
@@ -151,8 +153,13 @@ class Match extends React.Component {
 
     onTimeSliderChange = msSinceEpoch => { this.setState({ msSinceEpoch }) }
 
-    startAutoplay = () => {
-        this.autoplayInterval = setInterval(() => {
+    loop = time => {
+        if (!this.state.autoplay || !this.mounted) return
+
+        const elapsedTime = time - this.rafLastTime
+        if (elapsedTime > 16) {
+            this.rafLastTime = time
+
             this.setState(prevState => {
                 const prev = prevState.msSinceEpoch
 
@@ -160,18 +167,21 @@ class Match extends React.Component {
                     return { msSinceEpoch: 1000 }
                 }
 
-                return { msSinceEpoch: prevState.msSinceEpoch + (prevState.autoplaySpeed * 30) }
+                return { msSinceEpoch: prevState.msSinceEpoch + (prevState.autoplaySpeed * elapsedTime) }
             })
-        }, 64)
+        }
 
+        this.rafId = requestAnimationFrame(this.loop)
+    }
+
+    startAutoplay = () => {
+        this.rafLastTime = performance.now()
         this.setState({ autoplay: true })
+        this.rafId = requestAnimationFrame(this.loop)
     }
 
     stopAutoplay = () => {
-        if (this.autoplayInterval) {
-            clearInterval(this.autoplayInterval)
-        }
-
+        cancelAnimationFrame(this.rafId)
         this.setState({ autoplay: false })
     }
 
