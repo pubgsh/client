@@ -12,11 +12,11 @@ const StyledSlider = styled(SliderWithTooltip)`
     min-width: 80px;
 `
 
-const MediaButton = styled.button`
+const PlayButton = styled.button`
     padding: 0;
     font-size: 2rem;
     border: 0;
-    margin-bottom: 0;
+    margin: 0 10px 0 5px;
     width: 25px;
     grid-column: 1;
 
@@ -32,9 +32,9 @@ const ControlsWrapper = styled.div`
 const AutoplayControls = ({ autoplay, toggleAutoplay, changeSpeed, autoplaySpeed }) => {
     return (
         <ControlsWrapper>
-            <MediaButton className="button" type="submit" onClick={toggleAutoplay}>
+            <PlayButton className="button" type="submit" onClick={toggleAutoplay}>
                 <i className={`fi-${autoplay ? 'pause' : 'play'}`} />
-            </MediaButton>
+            </PlayButton>
             <StyledSlider
                 min={1}
                 max={40}
