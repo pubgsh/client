@@ -56,6 +56,11 @@ export default () =>
             <section>
                 <SectionHeader>Change history</SectionHeader>
 
+                <h5>2018-05-29</h5>
+                <ul>
+                    <li>Finer grain control of autoplay speed</li>
+                </ul>
+
                 <h5>2018-05-28</h5>
                 <ul>
                     <li>Queue users and update via Websockets when PUBG is rate limited</li>

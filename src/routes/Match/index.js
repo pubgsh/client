@@ -52,11 +52,11 @@ const RosterHeader = styled.div`
 
 class Match extends React.Component {
     state = {
-        autoplaySpeed: 1,
+        autoplaySpeed: 20,
         matchId: null,
         telemetry: null,
         telemetryLoading: false,
-        secondsSinceEpoch: 1,
+        msSinceEpoch: 1000,
         autoplay: true,
         mapSize: 0,
         focusedPlayer: null,
@@ -149,18 +149,18 @@ class Match extends React.Component {
     // Time Slider / Autoplay --------------------------------------------------
     // -------------------------------------------------------------------------
 
-    onTimeSliderChange = val => { this.setState({ secondsSinceEpoch: val }) }
+    onTimeSliderChange = val => { this.setState({ msSinceEpoch: val * 1000 }) }
 
     startAutoplay = () => {
         this.autoplayInterval = setInterval(() => {
             this.setState(prevState => {
-                const prev = prevState.secondsSinceEpoch
+                const prev = prevState.msSinceEpoch
 
-                if (prev > get(this.props, 'data.match.durationSeconds')) {
-                    return { secondsSinceEpoch: 1 }
+                if (Math.floor(prev / 1000) > get(this.props, 'data.match.durationSeconds')) {
+                    return { msSinceEpoch: 1000 }
                 }
 
-                return { secondsSinceEpoch: prevState.secondsSinceEpoch + prevState.autoplaySpeed }
+                return { msSinceEpoch: prevState.msSinceEpoch + (prevState.autoplaySpeed * 60) }
             })
         }, 16)
 
@@ -183,8 +183,8 @@ class Match extends React.Component {
         }
     }
 
-    changeAutoplaySpeed = delta => {
-        this.setState(prevState => ({ autoplaySpeed: clamp(prevState.autoplaySpeed + delta, 1, 5) }))
+    changeAutoplaySpeed = val => {
+        this.setState({ autoplaySpeed: clamp(val, 1, 50) })
     }
 
     // -------------------------------------------------------------------------
@@ -210,13 +210,14 @@ class Match extends React.Component {
 
     render() {
         const { data: { loading, error, match } } = this.props
-        const { focusedPlayer, telemetry, secondsSinceEpoch, mapSize, autoplay, autoplaySpeed } = this.state
+        const { focusedPlayer, telemetry, msSinceEpoch, mapSize, autoplay, autoplaySpeed } = this.state
 
         if (loading) return 'Loading...'
         if (error) return <p>An error occurred :(</p>
         if (!match) return 'Match not found'
         if (!telemetry) return 'Loading telemetry...'
 
+        const secondsSinceEpoch = Math.floor(msSinceEpoch / 1000)
         const currentTelemetry = telemetry.stateAt(secondsSinceEpoch)
 
         const roster = reduce(
