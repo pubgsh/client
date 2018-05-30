@@ -16,7 +16,7 @@ const PlayButton = styled.button`
     padding: 0;
     font-size: 2rem;
     border: 0;
-    margin: 0 10px 0 5px;
+    margin: 0 10px;
     width: 25px;
     grid-column: 1;
 
