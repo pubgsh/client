@@ -15,7 +15,8 @@ const PlayerDot = ({ player, mapSize, marks, mapScale }) => {
             x={toScale(mapSize, player.getIn(['location', 'x']))}
             y={toScale(mapSize, player.getIn(['location', 'y']))}
             fill={player.get('color')}
-            stroke="#222222B0"
+            fillPatternOffsetX={5}
+            stroke={player.get('healthColor')}
             width={diameter}
             height={diameter}
             strokeWidth={1 / Math.max(1, mapScale / 1.4)}

@@ -42,4 +42,9 @@ describe('Telemetry', () => {
         expect(telemetry.stateAt(600000).getIn(['redzone', 'radius'])).toBe(50000)
         expect(telemetry.stateAt(600000).getIn(['safezone', 'radius'])).toBe(231887.484375)
     })
+
+    test('parses players health', () => {
+        expect(telemetry.stateAt(600000).get('players')[97].get('health')).toEqual(98)
+        expect(telemetry.stateAt(1200000).get('players')[10].get('health')).toEqual(0)
+    })
 })
