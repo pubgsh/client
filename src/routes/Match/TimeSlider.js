@@ -3,10 +3,11 @@ import styled from 'styled-components'
 import Slider, { createSliderWithTooltip } from 'rc-slider'
 import 'rc-slider/assets/index.css'
 
-const getDurationFormat = durationSeconds => {
-    const minutes = Math.floor(durationSeconds / 60)
-    const seconds = durationSeconds - (minutes * 60)
-    return `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
+const getDurationFormat = ms => {
+    const minutes = Math.floor(ms / 1000 / 60)
+    const seconds = Math.floor((ms - (minutes * 60 * 1000)) / 1000)
+    const decis = Math.floor((ms - (minutes * 60 * 1000) - (seconds * 1000)) / 100)
+    return `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}.${decis}`
 }
 
 const SliderWithTooltip = createSliderWithTooltip(Slider)
@@ -18,8 +19,9 @@ const StyledSlider = styled(SliderWithTooltip)`
 
 const TimeSlider = ({ value, stopAutoplay, onChange, durationSeconds }) => (
     <StyledSlider
-        min={1}
-        max={durationSeconds + 11}
+        min={1000}
+        max={(durationSeconds + 11) * 1000}
+        step={100}
         onChange={onChange}
         onBeforeChange={stopAutoplay}
         value={value}

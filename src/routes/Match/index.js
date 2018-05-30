@@ -52,7 +52,7 @@ const RosterHeader = styled.div`
 
 class Match extends React.Component {
     state = {
-        autoplaySpeed: 20,
+        autoplaySpeed: 10,
         matchId: null,
         telemetry: null,
         telemetryLoading: false,
@@ -149,7 +149,7 @@ class Match extends React.Component {
     // Time Slider / Autoplay --------------------------------------------------
     // -------------------------------------------------------------------------
 
-    onTimeSliderChange = val => { this.setState({ msSinceEpoch: val * 1000 }) }
+    onTimeSliderChange = msSinceEpoch => { this.setState({ msSinceEpoch }) }
 
     startAutoplay = () => {
         this.autoplayInterval = setInterval(() => {
@@ -160,9 +160,9 @@ class Match extends React.Component {
                     return { msSinceEpoch: 1000 }
                 }
 
-                return { msSinceEpoch: prevState.msSinceEpoch + (prevState.autoplaySpeed * 60) }
+                return { msSinceEpoch: prevState.msSinceEpoch + (prevState.autoplaySpeed * 30) }
             })
-        }, 16)
+        }, 64)
 
         this.setState({ autoplay: true })
     }
@@ -217,8 +217,7 @@ class Match extends React.Component {
         if (!match) return 'Match not found'
         if (!telemetry) return 'Loading telemetry...'
 
-        const secondsSinceEpoch = Math.floor(msSinceEpoch / 1000)
-        const currentTelemetry = telemetry.stateAt(secondsSinceEpoch)
+        const currentTelemetry = telemetry.stateAt(msSinceEpoch)
 
         const roster = reduce(
             groupBy(currentTelemetry.get('players'), p => p.get('rosterId')),
@@ -252,7 +251,7 @@ class Match extends React.Component {
                     <MatchHeader mapSize={mapSize}>
                         <MatchInfo match={match} marks={marks} />
                         <TimeSlider
-                            value={secondsSinceEpoch}
+                            value={msSinceEpoch}
                             stopAutoplay={this.stopAutoplay}
                             onChange={this.onTimeSliderChange}
                             durationSeconds={match.durationSeconds}

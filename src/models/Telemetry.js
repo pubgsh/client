@@ -9,6 +9,8 @@ function interpolate(lowerVal, upperVal, span, idx) {
     return lowerVal + (yStep * idx)
 }
 
+const INTERVALS_PER_SECOND = 4
+
 export default function Telemetry(matchData, telemetry, focusedPlayerName) {
     const epoch = moment.utc(matchData.playedAt).valueOf()
 
@@ -21,27 +23,26 @@ export default function Telemetry(matchData, telemetry, focusedPlayerName) {
         redzone: Map({ x: 0, y: 0, radius: 0 }),
     })
 
-    const cache = new Array(matchData.durationSeconds + 10)
-    let currentSecond = 0
+    const cache = new Array((matchData.durationSeconds + 10) * INTERVALS_PER_SECOND)
+    let currentInterval = 0
 
     telemetry.forEach((d, i) => {
-        if (new Date(d._D).getTime() - epoch > currentSecond * 1000) {
+        if (new Date(d._D).getTime() - epoch > currentInterval * 1000 / INTERVALS_PER_SECOND) {
             const playersArray = state.get('players').reverse().valueSeq().toArray()
                 .filter(p => p.get('name'))
 
-            const finalizedState = state.set('players', playersArray)
-            cache[currentSecond] = finalizedState
-
-            currentSecond++
-
-            // cache[currentSecond++] = state
+            while (new Date(d._D).getTime() - epoch > currentInterval * 1000 / INTERVALS_PER_SECOND) {
+                const finalizedState = state.set('players', playersArray)
+                cache[currentInterval] = finalizedState
+                currentInterval++
+            }
         }
 
         if (get(d, 'character.name')) {
             const { name, location } = d.character
 
             state = state.withMutations(s => {
-                s.setIn(['players', name, 'location'], { ...location, atSecond: currentSecond })
+                s.setIn(['players', name, 'location'], { ...location, atInterval: currentInterval })
             })
         }
 
@@ -68,7 +69,7 @@ export default function Telemetry(matchData, telemetry, focusedPlayerName) {
                 s.set('bluezone', Map({
                     ...gs.safetyZonePosition,
                     radius: gs.safetyZoneRadius,
-                    atSecond: currentSecond,
+                    atInterval: currentInterval,
                 }))
                 s.set('safezone', Map({ ...gs.poisonGasWarningPosition, radius: gs.poisonGasWarningRadius }))
                 s.set('redzone', Map({ ...gs.redZonePosition, radius: gs.redZoneRadius }))
@@ -78,14 +79,15 @@ export default function Telemetry(matchData, telemetry, focusedPlayerName) {
 
     // Sometimes we don't load telemetry until the match duration, ensure that we don't get a cache
     // miss later on.
-    for (currentSecond; currentSecond < cache.length; currentSecond++) {
-        cache[currentSecond] = cache[currentSecond - 1]
+    for (currentInterval; currentInterval < cache.length; currentInterval++) {
+        cache[currentInterval] = cache[currentInterval - 1]
     }
 
     console.timeEnd('Telemetry-eventParsing')
 
-    function stateAt(secondsSinceEpoch) {
-        return cache[clamp(secondsSinceEpoch, 1, cache.length - 1)]
+    function stateAt(msSinceEpoch) {
+        const intervalsSinceEpoch = Math.floor(msSinceEpoch / 1000 * INTERVALS_PER_SECOND)
+        return cache[clamp(intervalsSinceEpoch, INTERVALS_PER_SECOND, cache.length - 1)]
     }
 
     function finalState() {
@@ -95,14 +97,14 @@ export default function Telemetry(matchData, telemetry, focusedPlayerName) {
     console.time('Telemetry-interpolation')
 
     const realBluezoneLocs = {
-        realDPSeconds: [],
+        realDPIntervals: [],
         realDPs: {},
     }
 
     const playerNames = cache[cache.length - 1].get('players').map(p => p.get('name'))
     const realPlayerLocs = playerNames.reduce((acc, playerName) => {
         acc[playerName] = {
-            realDPSeconds: [],
+            realDPIntervals: [],
             realDPs: {},
         }
         return acc
@@ -110,14 +112,14 @@ export default function Telemetry(matchData, telemetry, focusedPlayerName) {
 
     for (let i = 1; i < cache.length; i++) {
         const zone = cache[i].get('bluezone')
-        if (zone.get('atSecond') === i) {
-            realBluezoneLocs.realDPSeconds.push(i)
+        if (zone.get('atInterval') === i) {
+            realBluezoneLocs.realDPIntervals.push(i)
             realBluezoneLocs.realDPs[i] = zone
         }
 
         cache[i].get('players').forEach(player => {
-            if (player.get('location').atSecond === i) {
-                realPlayerLocs[player.get('name')].realDPSeconds.push(i)
+            if (player.get('location').atInterval === i) {
+                realPlayerLocs[player.get('name')].realDPIntervals.push(i)
                 realPlayerLocs[player.get('name')].realDPs[i] = player.get('location')
             }
         })
@@ -126,9 +128,9 @@ export default function Telemetry(matchData, telemetry, focusedPlayerName) {
     for (let i = 2; i < cache.length; i++) {
         let interpolatedBluezone = cache[i].get('bluezone')
 
-        if (interpolatedBluezone.get('atSecond') !== i) {
-            const lowerIdx = realBluezoneLocs.realDPSeconds.find((s, si, arr) => s < i && arr[si + 1] > i)
-            const upperIdx = realBluezoneLocs.realDPSeconds.find((s, si, arr) => s > i && arr[si - 1] < i)
+        if (interpolatedBluezone.get('atInterval') !== i) {
+            const lowerIdx = realBluezoneLocs.realDPIntervals.find((s, si, arr) => s < i && arr[si + 1] > i)
+            const upperIdx = realBluezoneLocs.realDPIntervals.find((s, si, arr) => s > i && arr[si - 1] < i)
 
             if (lowerIdx && upperIdx) {
                 const lowerLoc = realBluezoneLocs.realDPs[lowerIdx].toJS()
@@ -149,11 +151,11 @@ export default function Telemetry(matchData, telemetry, focusedPlayerName) {
         const interpolatedPlayers = cache[i].get('players').map(player => {
             const name = player.get('name')
 
-            if (player.get('location').atSecond !== i) {
+            if (player.get('location').atInterval !== i) {
                 const realLocs = realPlayerLocs[name]
 
-                const lowerIdx = realLocs.realDPSeconds.find((s, si, arr) => s < i && arr[si + 1] > i)
-                const upperIdx = realLocs.realDPSeconds.find((s, si, arr) => s > i && arr[si - 1] < i)
+                const lowerIdx = realLocs.realDPIntervals.find((s, si, arr) => s < i && arr[si + 1] > i)
+                const upperIdx = realLocs.realDPIntervals.find((s, si, arr) => s > i && arr[si - 1] < i)
 
                 if (!lowerIdx || !upperIdx) {
                     return player
