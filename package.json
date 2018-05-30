@@ -44,6 +44,7 @@
         "unfetch": "3.0.0"
     },
     "scripts": {
+        "check": "yarn run lint && CI=true yarn run test",
         "start": "react-scripts start",
         "lint": "eslint -c .eslintrc src",
         "build": "react-scripts build",
