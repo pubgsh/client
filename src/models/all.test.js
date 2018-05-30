@@ -19,24 +19,27 @@ describe('Participants', () => {
 })
 
 describe('Telemetry', () => {
+    let telemetry
+
+    beforeAll(() => {
+        telemetry = Telemetry(matchData, telemetryData, 'BOT_Andre')
+    })
+
     test('parses player locations', () => {
-        const telemetry = Telemetry(matchData, telemetryData, 'BOT_Andre')
-        expect(telemetry.stateAt(600).get('players')[97].get('location')).toEqual({
-            x: 603807.15,
-            y: 489202.20625,
+        expect(telemetry.stateAt(600000).get('players')[97].get('location')).toEqual({
+            x: 603765.63125,
+            y: 489161.1583333333,
         })
     })
 
     test('parses player status', () => {
-        const telemetry = Telemetry(matchData, telemetryData, 'BOT_Andre')
-        expect(telemetry.stateAt(600).get('players')[97].get('status')).toEqual('alive')
-        expect(telemetry.stateAt(1200).get('players')[10].get('status')).toEqual('dead')
+        expect(telemetry.stateAt(600000).get('players')[97].get('status')).toEqual('alive')
+        expect(telemetry.stateAt(1200000).get('players')[10].get('status')).toEqual('dead')
     })
 
     test('parses zone circles', () => {
-        const telemetry = Telemetry(matchData, telemetryData, 'BOT_Andre')
-        expect(telemetry.stateAt(600).getIn(['bluezone', 'radius'])).toBe(372669.5625)
-        expect(telemetry.stateAt(600).getIn(['redzone', 'radius'])).toBe(50000)
-        expect(telemetry.stateAt(600).getIn(['safezone', 'radius'])).toBe(231887.484375)
+        expect(telemetry.stateAt(600000).getIn(['bluezone', 'radius'])).toBe(372669.5625)
+        expect(telemetry.stateAt(600000).getIn(['redzone', 'radius'])).toBe(50000)
+        expect(telemetry.stateAt(600000).getIn(['safezone', 'radius'])).toBe(231887.484375)
     })
 })
