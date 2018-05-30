@@ -64,6 +64,13 @@ export default function Telemetry(matchData, telemetry, focusedPlayerName) {
             })
         }
 
+        if (d._T === 'LogPlayerTakeDamage') {
+            state = state.withMutations(s => {
+                const playerPath = ['players', d.victim.name]
+                const player = setHealth(s.getIn(playerPath), d.victim.health - d.damage)
+                s.setIn(playerPath, player)
+            })
+        }
         if (d._T === 'LogGameStatePeriodic') {
             const gs = d.gameState
 
