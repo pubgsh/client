@@ -9,8 +9,8 @@ const getDotDiameter = (mapScale, isHovered) => {
 
 const PlayerDot = ({ player, mapSize, marks, mapScale }) => {
     const diameter = getDotDiameter(mapScale, marks.isRosterHovered(player.get('rosterId')))
-    const currHealth = player.get('health');
-    const diameterMultiplier = currHealth / 100 * diameter;
+    const currHealth = player.get('health')
+    const diameterMultiplier = currHealth / 100 * diameter
     return (
         <Circle
             x={toScale(mapSize, player.getIn(['location', 'x']))}
