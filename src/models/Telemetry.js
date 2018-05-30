@@ -9,7 +9,7 @@ function interpolate(lowerVal, upperVal, span, idx) {
     return lowerVal + (yStep * idx)
 }
 
-const INTERVALS_PER_SECOND = 4
+const INTERVALS_PER_SECOND = 6
 
 export default function Telemetry(matchData, telemetry, focusedPlayerName) {
     const epoch = moment.utc(matchData.playedAt).valueOf()
@@ -179,6 +179,7 @@ export default function Telemetry(matchData, telemetry, focusedPlayerName) {
     }
 
     console.timeEnd('Telemetry-interpolation')
+    console.log(`Telemetry-${cache.length} cached intervals`)
 
     return {
         stateAt,
