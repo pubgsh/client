@@ -11,16 +11,18 @@ const PlayerDot = ({ player, mapSize, marks, mapScale }) => {
     const diameter = getDotDiameter(mapScale, marks.isRosterHovered(player.get('rosterId')))
     const currHealth = player.get('health')
     const diameterMultiplier = currHealth / 100 * diameter
+    // Let's think about the colors.
+    const knockColor = '#FD6A02B0'
     return (
         <Circle
             x={toScale(mapSize, player.getIn(['location', 'x']))}
             y={toScale(mapSize, player.getIn(['location', 'y']))}
-            fill={player.get('color')}
+            fill={player.get('status') !== 'dead' && currHealth === 0 ? knockColor : player.get('color')}
             stroke="#222222B0"
             fillRadialGradientColorStops={[0, '#00FF00B0', 0.5, '#FFFF00B0', 1, '#FF0000B0']}
             fillRadialGradientStartRadius={0}
             fillRadialGradientEndRadius={diameterMultiplier}
-            fillPriority={currHealth > 0 ? 'radial-gradient' : 'color'}
+            fillPriority={player.get('status') === 'dead' || currHealth === 0 ? 'color' : 'radial-gradient'}
             width={diameter}
             height={diameter}
             strokeWidth={1 / Math.max(1, mapScale / 1.4)}
