@@ -1,5 +1,5 @@
 import React from 'react'
-import { map, sortBy } from 'lodash'
+import { map, sortBy, reduce, groupBy } from 'lodash'
 import styled from 'styled-components'
 
 const TeamGroup = styled.ul`
@@ -41,7 +41,12 @@ const Player = ({ player: p, rosterId, marks, match }) => {
     )
 }
 
-export default ({ match, telemetry, marks, roster }) => {
+export default ({ match, telemetry, marks }) => {
+    const roster = reduce(groupBy(telemetry.get('players'), p => p.get('rosterId')), (acc, players, id) => {
+        acc[id] = sortBy(players, p => p.get('name'))
+        return acc
+    }, {})
+
     const sortedTeams = sortBy(Object.keys(roster), rosterId => {
         const players = roster[rosterId]
         if (players.find(p => marks.isPlayerFocused(p.get('name')))) return -10
