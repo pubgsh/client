@@ -1,7 +1,7 @@
 import moment from 'moment'
 import { get, clamp } from 'lodash'
 import { Map } from 'immutable'
-import Participants, { setPlayerStatus, setHealth } from './Participants.js'
+import Participants from './Participants.js'
 
 function interpolate(lowerVal, upperVal, span, idx) {
     const yDelta = upperVal - lowerVal
@@ -43,32 +43,23 @@ export default function Telemetry(matchData, telemetry, focusedPlayerName) {
 
             state = state.withMutations(s => {
                 s.setIn(['players', name, 'location'], { ...location, atInterval: currentInterval })
-                // setting health
-                const playerPath = ['players', name]
-                const player = setHealth(s.getIn(playerPath), health)
-                s.setIn(playerPath, player)
+                s.setIn(['players', name, 'health'], health)
             })
         }
 
         if (d._T === 'LogPlayerKill') {
             state = state.withMutations(s => {
-                const victimPath = ['players', d.victim.name]
-                const victim = setPlayerStatus(s.getIn(victimPath), 'dead')
-                s.setIn(victimPath, victim)
+                s.setIn(['players', d.victim.name, 'status'], 'dead')
 
                 if (d.killer.name) {
-                    const killerPath = ['players', d.killer.name]
-                    const killer = s.getIn(killerPath)
-                    s.setIn(killerPath, killer.set('kills', killer.get('kills') + 1))
+                    s.updateIn(['players', d.killer.name, 'kills'], kills => kills + 1)
                 }
             })
         }
 
         if (d._T === 'LogPlayerTakeDamage') {
             state = state.withMutations(s => {
-                const playerPath = ['players', d.victim.name]
-                const player = setHealth(s.getIn(playerPath), d.victim.health - d.damage)
-                s.setIn(playerPath, player)
+                s.setIn(['players', d.victim.name, 'health'], d.victim.health - d.damage)
             })
         }
         if (d._T === 'LogGameStatePeriodic') {

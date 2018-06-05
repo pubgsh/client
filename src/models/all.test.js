@@ -7,10 +7,6 @@ describe('Participants', () => {
     test('parses players / teammates / opponents', () => {
         const participants = Participants(matchData, 'BOT_Andre')
 
-        expect(participants.get('BOT_Andre').get('focusType')).toBe('player')
-        expect(participants.get('Goobeez').get('focusType')).toBe('teammate')
-        expect(participants.get('Urmay').get('focusType')).toBe('none')
-
         // We expect the order of players to be the focus, their teammates, and then everyone else
         const arr = participants.toArray()
         expect(arr[0][0]).toBe('BOT_Andre')
