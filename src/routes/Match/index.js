@@ -35,8 +35,9 @@ const RosterContainer = styled.div`
     position: relative;
     overflow-y: scroll;
     overflow-x: hidden;
-    height: ${props => props.mapSize + 38}px;
+    height: ${props => props.mapSize + 48}px;
     margin: 0 auto;
+    padding-right: 5px;
 `
 
 const MatchHeader = styled.div`
