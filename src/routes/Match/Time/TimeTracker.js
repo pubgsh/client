@@ -13,7 +13,7 @@ class TimeTracker extends React.Component {
 
     componentDidMount() {
         this.mounted = true
-        setTimeout(this.startAutoplay, 300)
+        if (this.state.autoplay) setTimeout(this.startAutoplay, 300)
     }
 
     componentWillUnmount() {
