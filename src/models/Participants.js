@@ -1,9 +1,9 @@
-import { OrderedMap, Map } from 'immutable'
+import { Map } from 'immutable'
 
 export default function Participants(matchData, focusedPlayerName) {
     // -- Player ---------------------------------------------------------------
 
-    function Player(name, rosterId) {
+    function Player(name, rosterId, teammates) {
         const player = {
             name,
             rosterId,
@@ -11,6 +11,7 @@ export default function Participants(matchData, focusedPlayerName) {
             kills: 0,
             location: { x: 0, y: 0, z: 0 },
             status: 'alive',
+            teammates,
         }
 
         return Map(player)
@@ -18,24 +19,13 @@ export default function Participants(matchData, focusedPlayerName) {
 
     // -- Initialize participants map ------------------------------------------
 
-    return OrderedMap().withMutations(map => {
-        // We want the focused player to be the first entry in our OrdredMap...
-        const focusedPlayer = matchData.players.find(p => p.name === focusedPlayerName)
-        map.set(focusedPlayerName, Player(focusedPlayer.name, focusedPlayer.rosterId))
+    return Map().withMutations(map => {
+        matchData.players.forEach(p => {
+            const teammates = matchData.players
+                .filter(op => op.rosterId === p.rosterId && op.name !== p.name)
+                .map(t => t.name)
 
-        // ...followed by their teammates...
-        matchData.players
-            .filter(p => p.name !== focusedPlayer.name)
-            .filter(p => p.rosterId === focusedPlayer.rosterId)
-            .forEach(p => {
-                map.set(p.name, Player(p.name, p.rosterId))
-            })
-
-        // ...followed by everyone else
-        matchData.players
-            .filter(p => p.rosterId !== focusedPlayer.rosterId)
-            .forEach(p => {
-                map.set(p.name, Player(p.name, p.rosterId))
-            })
+            map.set(p.name, Player(p.name, p.rosterId, teammates))
+        })
     })
 }
