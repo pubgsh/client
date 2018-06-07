@@ -1,15 +1,15 @@
 import React from 'react'
-import { map, clamp } from 'lodash'
+import { map, clamp, sortBy } from 'lodash'
 import { Stage, Layer } from 'react-konva'
 import styled from 'styled-components'
 import { Safezone, Bluezone, Redzone } from './ZoneCircle.js'
 import PlayerDot from './PlayerDot.js'
-import PlayerTooltip from './PlayerTooltip.js'
 import BackgroundLayer from './BackgroundLayer.js'
 
-const SCALE_STEP = 1
+const SCALE_STEP = 1.4
 const MIN_SCALE = 1
 const MAX_SCALE = 50
+const CLAMP_MAP = true // TODO: This should be a configurable option
 
 const StyledStage = styled(Stage)`
     div.konvajs-content {
@@ -29,8 +29,11 @@ class Map extends React.Component {
     }
 
     dragBoundFunc = pos => {
-        const x = clamp(pos.x, -(this.state.mapScale - 1) * this.props.mapSize, 0)
-        const y = clamp(pos.y, -(this.state.mapScale - 1) * this.props.mapSize, 0)
+        let { x, y } = pos
+        if (CLAMP_MAP) {
+            x = clamp(x, -(this.state.mapScale - 1) * this.props.mapSize, 0)
+            y = clamp(y, -(this.state.mapScale - 1) * this.props.mapSize, 0)
+        }
 
         this.setState({
             offsetX: x,
@@ -42,20 +45,26 @@ class Map extends React.Component {
 
     handleMousewheel = e => {
         e.evt.preventDefault()
+        const scaleDelta = e.evt.deltaY > 0 ? 1 / SCALE_STEP : SCALE_STEP
+
         this.setState(prevState => {
-            const scaleDelta = e.evt.deltaY > 0 ? -SCALE_STEP : SCALE_STEP
-            const newScale = clamp(prevState.mapScale + scaleDelta, MIN_SCALE, MAX_SCALE)
+            const newScale = clamp(prevState.mapScale * scaleDelta, MIN_SCALE, MAX_SCALE)
 
             const mousePointX = e.evt.layerX / prevState.mapScale - prevState.offsetX / prevState.mapScale
             const mousePointY = e.evt.layerY / prevState.mapScale - prevState.offsetY / prevState.mapScale
 
-            const offsetX = -(mousePointX - e.evt.layerX / newScale) * newScale
-            const offsetY = -(mousePointY - e.evt.layerY / newScale) * newScale
+            let offsetX = -(mousePointX - e.evt.layerX / newScale) * newScale
+            let offsetY = -(mousePointY - e.evt.layerY / newScale) * newScale
+
+            if (CLAMP_MAP) {
+                offsetX = clamp(offsetX, -(newScale - 1) * this.props.mapSize, 0)
+                offsetY = clamp(offsetY, -(newScale - 1) * this.props.mapSize, 0)
+            }
 
             return {
                 mapScale: newScale,
-                offsetX: clamp(offsetX, -(newScale - 1) * this.props.mapSize, 0),
-                offsetY: clamp(offsetY, -(newScale - 1) * this.props.mapSize, 0),
+                offsetX,
+                offsetY,
             }
         })
     }
@@ -64,6 +73,13 @@ class Map extends React.Component {
         const { match, telemetry, mapSize, marks } = this.props
         const { mapScale, offsetX, offsetY } = this.state
         const scale = { x: mapScale, y: mapScale }
+
+        const focusedPlayer = telemetry.get('players').find(p => p.get('name') === marks.focusedPlayer())
+        const sortedPlayers = sortBy(telemetry.get('players'), player => {
+            if (marks.isPlayerFocused(player.get('name'))) return 1000
+            if (focusedPlayer.get('teammates').includes(player.get('name'))) return 900
+            return marks.trackedPlayers().indexOf(player.get('name'))
+        })
 
         return (
             <StyledStage
@@ -76,31 +92,23 @@ class Map extends React.Component {
                 onDragEnd={this.handleDragEnd}
                 onWheel={this.handleMousewheel}
                 draggable="true"
+                hitGraphEnabled={false}
             >
                 <BackgroundLayer mapName={match.mapName} mapSize={mapSize} />
                 <Layer>
                     {<Safezone mapSize={mapSize} mapScale={mapScale} circle={telemetry.get('safezone')} />}
                     {<Bluezone mapSize={mapSize} mapScale={mapScale} circle={telemetry.get('bluezone')} />}
                     {<Redzone mapSize={mapSize} mapScale={mapScale} circle={telemetry.get('redzone')} />}
-                    {map(telemetry.get('players'), player =>
+                    {map(sortedPlayers, player =>
                         <PlayerDot
                             player={player}
                             mapSize={mapSize}
                             mapScale={mapScale}
                             key={`dot-${player.get('name')}`}
                             marks={marks}
+                            showName={marks.isPlayerTracked(player.get('name'))}
                         />,
                     )}
-                    {map(telemetry.get('players'), player => {
-                        const rosterId = player.get('rosterId')
-                        return <PlayerTooltip
-                            player={player}
-                            mapSize={mapSize}
-                            mapScale={mapScale}
-                            key={`tooltip-${player.get('name')}`}
-                            show={marks.isRosterTracked(rosterId) || marks.isRosterHovered(rosterId)}
-                        />
-                    })}
                 </Layer>
             </StyledStage>
         )

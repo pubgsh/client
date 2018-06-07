@@ -7,10 +7,6 @@ describe('Participants', () => {
     test('parses players / teammates / opponents', () => {
         const participants = Participants(matchData, 'BOT_Andre')
 
-        expect(participants.get('BOT_Andre').get('focusType')).toBe('player')
-        expect(participants.get('Goobeez').get('focusType')).toBe('teammate')
-        expect(participants.get('Urmay').get('focusType')).toBe('none')
-
         // We expect the order of players to be the focus, their teammates, and then everyone else
         const arr = participants.toArray()
         expect(arr[0][0]).toBe('BOT_Andre')
@@ -41,5 +37,10 @@ describe('Telemetry', () => {
         expect(telemetry.stateAt(600000).getIn(['bluezone', 'radius'])).toBe(372669.5625)
         expect(telemetry.stateAt(600000).getIn(['redzone', 'radius'])).toBe(50000)
         expect(telemetry.stateAt(600000).getIn(['safezone', 'radius'])).toBe(231887.484375)
+    })
+
+    test('parses players health', () => {
+        expect(telemetry.stateAt(600000).get('players')[97].get('health')).toEqual(98)
+        expect(telemetry.stateAt(1200000).get('players')[10].get('health')).toEqual(0)
     })
 })

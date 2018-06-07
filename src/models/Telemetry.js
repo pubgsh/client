@@ -1,7 +1,7 @@
 import moment from 'moment'
 import { get, clamp } from 'lodash'
 import { Map } from 'immutable'
-import Participants, { setPlayerStatus } from './Participants.js'
+import Participants from './Participants.js'
 
 function interpolate(lowerVal, upperVal, span, idx) {
     const yDelta = upperVal - lowerVal
@@ -39,29 +39,29 @@ export default function Telemetry(matchData, telemetry, focusedPlayerName) {
         }
 
         if (get(d, 'character.name')) {
-            const { name, location } = d.character
+            const { name, location, health } = d.character
 
             state = state.withMutations(s => {
                 s.setIn(['players', name, 'location'], { ...location, atInterval: currentInterval })
+                s.setIn(['players', name, 'health'], health)
             })
         }
 
         if (d._T === 'LogPlayerKill') {
             state = state.withMutations(s => {
-                const victimPath = ['players', d.victim.name]
-
-                const victim = setPlayerStatus(s.getIn(victimPath), 'dead')
-                s.deleteIn(victimPath)
-                s.setIn(victimPath, victim)
+                s.setIn(['players', d.victim.name, 'status'], 'dead')
 
                 if (d.killer.name) {
-                    const killerPath = ['players', d.killer.name]
-                    const killer = s.getIn(killerPath)
-                    s.setIn(killerPath, killer.set('kills', killer.get('kills') + 1))
+                    s.updateIn(['players', d.killer.name, 'kills'], kills => kills + 1)
                 }
             })
         }
 
+        if (d._T === 'LogPlayerTakeDamage') {
+            state = state.withMutations(s => {
+                s.setIn(['players', d.victim.name, 'health'], d.victim.health - d.damage)
+            })
+        }
         if (d._T === 'LogGameStatePeriodic') {
             const gs = d.gameState
 

@@ -11,7 +11,7 @@ const ZoneCircle = ({ mapSize, mapScale, circle, color, background }) => {
             stroke={color}
             width={toScale(mapSize, circle.get('radius') * 2)}
             height={toScale(mapSize, circle.get('radius') * 2)}
-            strokeWidth={1 / Math.max(1, mapScale / 1.4)}
+            strokeWidth={1 / mapScale}
         />
     )
 }

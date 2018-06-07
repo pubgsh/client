@@ -12,7 +12,7 @@ const StyledMatchInfo = styled.p`
 
 const MatchInfo = ({ match, marks }) => {
     const playedAt = moment(match.playedAt).format('MMM Do h:mm a')
-    const { stats } = match.players.find(p => p.name === marks.focusedPlayer)
+    const { stats } = match.players.find(p => p.name === marks.focusedPlayer())
 
     return (
         <StyledMatchInfo>

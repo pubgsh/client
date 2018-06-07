@@ -43,7 +43,6 @@ export default () =>
                 <ul>
                     <li>Markers on time slider for notable events (kills, death, etc)</li>
                     <li>Progress bar during telemetry download</li>
-                    <li>Different dot color for knocked down players</li>
                     <li>Pulse animation on a dot when they kill someone</li>
                     <li>Pulse animation on a dot when they are revived</li>
                     <li>Additional default tracked players including victims, killer, winners</li>
@@ -55,6 +54,16 @@ export default () =>
 
             <section>
                 <SectionHeader>Change history</SectionHeader>
+
+                <h5>2018-06-07</h5>
+                <ul>
+                    <li>Show player health on dots</li>
+                    <li>Track knocked-down state</li>
+                    <li>New player tooltips</li>
+                    <li>Add XBOX support</li>
+                    <li>Track players by clicking on them, shift+click to track full squad</li>
+                    <li>Several small UI and UX improvements</li>
+                </ul>
 
                 <h5>2018-05-29</h5>
                 <ul>
