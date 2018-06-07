@@ -7,30 +7,31 @@ describe('Participants', () => {
     test('parses players / teammates / opponents', () => {
         const participants = Participants(matchData, 'BOT_Andre')
 
-        // We expect the order of players to be the focus, their teammates, and then everyone else
-        const arr = participants.toArray()
-        expect(arr[0][0]).toBe('BOT_Andre')
-        expect(arr[1][0]).toBe('Goobeez')
+        expect(participants.get('BOT_Andre')).toBeDefined()
+        expect(participants.get('BOT_Andre').get('health')).toBe(100)
     })
 })
 
 describe('Telemetry', () => {
     let telemetry
 
+    const playerAtTime = (ms, playerName) =>
+        telemetry.stateAt(ms).get('players').find(p => p.get('name') === playerName)
+
     beforeAll(() => {
         telemetry = Telemetry(matchData, telemetryData, 'BOT_Andre')
     })
 
     test('parses player locations', () => {
-        expect(telemetry.stateAt(600000).get('players')[97].get('location')).toEqual({
+        expect(playerAtTime(600000, 'BOT_Andre').get('location')).toEqual({
             x: 603765.63125,
             y: 489161.1583333333,
         })
     })
 
     test('parses player status', () => {
-        expect(telemetry.stateAt(600000).get('players')[97].get('status')).toEqual('alive')
-        expect(telemetry.stateAt(1200000).get('players')[10].get('status')).toEqual('dead')
+        expect(playerAtTime(600000, 'BOT_Andre').get('status')).toEqual('alive')
+        expect(playerAtTime(1200000, 'Roxxxi').get('status')).toEqual('dead')
     })
 
     test('parses zone circles', () => {
@@ -40,7 +41,7 @@ describe('Telemetry', () => {
     })
 
     test('parses players health', () => {
-        expect(telemetry.stateAt(600000).get('players')[97].get('health')).toEqual(98)
-        expect(telemetry.stateAt(1200000).get('players')[10].get('health')).toEqual(0)
+        expect(playerAtTime(600000, 'BOT_Andre').get('health')).toEqual(98)
+        expect(playerAtTime(1200000, 'Roxxxi').get('health')).toEqual(0)
     })
 })
