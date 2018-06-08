@@ -9,7 +9,6 @@ const getDurationFormat = ms => {
     const decis = Math.floor((ms - (minutes * 60 * 1000) - (seconds * 1000)) / 100)
     return `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}.${decis}`
 }
-
 const SliderWithTooltip = createSliderWithTooltip(Slider)
 
 const StyledSlider = styled(SliderWithTooltip)`
@@ -17,7 +16,7 @@ const StyledSlider = styled(SliderWithTooltip)`
     margin-top: 12px;
 `
 
-const TimeSlider = ({ value, stopAutoplay, onChange, durationSeconds }) => (
+const TimeSlider = ({ value, stopAutoplay, onChange, durationSeconds, telemetry }) => (
     <StyledSlider
         min={1000}
         max={(durationSeconds + 11) * 1000}
@@ -32,6 +31,7 @@ const TimeSlider = ({ value, stopAutoplay, onChange, durationSeconds }) => (
             align: { offset: [0, 8] },
             overlayStyle: { zIndex: 1 },
         }}
+        marks={telemetry.get('marks').toObject()}
     />
 )
 

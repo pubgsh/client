@@ -21,6 +21,7 @@ export default function Telemetry(matchData, telemetry, focusedPlayerName) {
         safezone: Map({ x: 0, y: 0, radius: 0 }),
         bluezone: Map({ x: 0, y: 0, radius: 0 }),
         redzone: Map({ x: 0, y: 0, radius: 0 }),
+        marks: Map(),
     })
 
     const cache = new Array((matchData.durationSeconds + 10) * INTERVALS_PER_SECOND)
@@ -53,6 +54,14 @@ export default function Telemetry(matchData, telemetry, focusedPlayerName) {
 
                 if (d.killer.name) {
                     s.updateIn(['players', d.killer.name, 'kills'], kills => kills + 1)
+                }
+                if ((d.killer.name === focusedPlayerName || d.victim.name === focusedPlayerName)
+                    && d.damage !== 0) {
+                    if (d.victim.name === focusedPlayerName) {
+                        s.setIn(['marks', new Date(d._D).getTime() - epoch], 'Dead')
+                    } else {
+                        s.setIn(['marks', new Date(d._D).getTime() - epoch], 'Kill')
+                    }
                 }
             })
         }

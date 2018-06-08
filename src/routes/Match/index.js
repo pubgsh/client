@@ -182,6 +182,7 @@ class Match extends React.Component {
                                             stopAutoplay={timeControls.stopAutoplay}
                                             onChange={timeControls.setMsSinceEpoch}
                                             durationSeconds={match.durationSeconds}
+                                            telemetry={telemetry.finalState()}
                                         />
                                         <AutoplayControls
                                             autoplay={timeControls.autoplay}
