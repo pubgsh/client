@@ -141,7 +141,6 @@ class Match extends React.Component {
     loadTelemetry = async () => {
         console.log('Loading telemetry...')
         this.setState({ telemetry: null, telemetryLoading: true })
-
         const res = await fetch(this.props.data.match.telemetryUrl)
         const telemetryData = await res.json()
         const telemetry = Telemetry(this.props.data.match, telemetryData, this.state.focusedPlayer)

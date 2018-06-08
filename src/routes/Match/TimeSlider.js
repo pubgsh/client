@@ -4,6 +4,7 @@ import Slider, { createSliderWithTooltip } from 'rc-slider'
 import 'rc-slider/assets/index.css'
 import killIcon from '../../assets/icons/killIcon.png'
 import ripIcon from '../../assets/icons/ripIcon.png'
+import knockIcon from '../../assets/icons/knockIcon.png'
 
 const getDurationFormat = ms => {
     const minutes = Math.floor(ms / 1000 / 60)
@@ -17,35 +18,43 @@ const basicStyles = {
     backgroundSize: '16px',
     backgroundPosition: 'center top',
     color: 'transparent',
-    height: '32px', 
+    height: '32px',
+    marginTop: '-4px',
 }
 const formatMarks = marks => {
-    return marks.map((status, time) => {
+    return marks.map(mark => {
+        const status = mark.get('status')
         if (status === 'Kill') {
-            return (time,
-            {
+            return {
                 style:
                 {
                     backgroundImage: `url(${killIcon})`,
-                    marginTop: '-4px',
                     ...basicStyles,
                 },
                 label: status,
-            })
+            }
         }
         if (status === 'Dead') {
-            return (time,
-            {
+            return {
                 style:
                 {
                     backgroundImage: `url(${ripIcon})`,
-                    marginTop: '-20px',
                     ...basicStyles,
                 },
                 label: status,
-            })
+            }
         }
-        return (time, status)
+        if (status === 'Knock') {
+            return {
+                style:
+                {
+                    backgroundImage: `url(${knockIcon})`,
+                    ...basicStyles,
+                },
+                label: status,
+            }
+        }
+        return status
     }).toObject()
 }
 const SliderWithTooltip = createSliderWithTooltip(Slider)

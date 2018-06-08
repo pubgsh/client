@@ -57,10 +57,15 @@ export default function Telemetry(matchData, telemetry, focusedPlayerName) {
                 }
                 if ((d.killer.name === focusedPlayerName || d.victim.name === focusedPlayerName)
                     && d.damage !== 0) {
+                    const timeStampPath = ['marks', new Date(d._D).getTime() - epoch]
+                    const lastTimeStamp = s.get('marks').keySeq().last()
                     if (d.victim.name === focusedPlayerName) {
-                        s.setIn(['marks', new Date(d._D).getTime() - epoch], 'Dead')
+                        s.setIn(timeStampPath, Map({ status: 'Dead', victim: d.victim.name }))
+                    } else if (s.getIn(['marks', lastTimeStamp, 'victim']) === d.victim.name &&
+                        s.getIn(['marks', lastTimeStamp, 'status']) === 'Knock') {
+                        s.updateIn(['marks', lastTimeStamp, 'status'], status => 'Kill')
                     } else {
-                        s.setIn(['marks', new Date(d._D).getTime() - epoch], 'Kill')
+                        s.setIn(timeStampPath, Map({ status: 'Kill', victim: d.victim.name }))
                     }
                 }
             })
@@ -69,6 +74,11 @@ export default function Telemetry(matchData, telemetry, focusedPlayerName) {
         if (d._T === 'LogPlayerTakeDamage') {
             state = state.withMutations(s => {
                 s.setIn(['players', d.victim.name, 'health'], d.victim.health - d.damage)
+                if (d.attacker.name === focusedPlayerName && (d.victim.health - d.damage <= 0)) {
+                    // check for kill
+                    s.setIn(['marks', new Date(d._D).getTime() - epoch],
+                        Map({ status: 'Knock', victim: d.victim.name }))
+                }
             })
         }
         if (d._T === 'LogGameStatePeriodic') {
