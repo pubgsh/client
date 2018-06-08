@@ -32,24 +32,20 @@ export default () =>
                 </p>
 
                 <ul style={{ listStyleType: 'none' }}>
-                    <li><a href="https://github.com/apazzolini/pubg.sh-api">apazzolini/pubg.sh-api</a></li>
-                    <li><a href="https://github.com/apazzolini/pubg.sh-client">apazzolini/pubg.sh-client</a></li>
+                    <li><a href="https://github.com/pubgsh/api">pubgsh/pubg.sh-api</a></li>
+                    <li><a href="https://github.com/pubgsh/client">pubgsh/pubg.sh-client</a></li>
                 </ul>
             </section>
 
             <section>
                 <SectionHeader>Roadmap</SectionHeader>
 
-                <ul>
-                    <li>Markers on time slider for notable events (kills, death, etc)</li>
-                    <li>Progress bar during telemetry download</li>
-                    <li>Pulse animation on a dot when they kill someone</li>
-                    <li>Pulse animation on a dot when they are revived</li>
-                    <li>Additional default tracked players including victims, killer, winners</li>
-                    <li>Indicator when riding in a vehicle</li>
-                    <li>Bullet trails</li>
-                    <li>Responsive design for mobile</li>
-                </ul>
+                <p>
+                    The current roadmap is
+                    <a href="https://github.com/orgs/pubgsh/projects/1">&nbsp;available on GitHub&nbsp;</a>.
+                    If you’d like to see what’s coming up next or submit a feature request or bug, please
+                    do so on GitHub.
+                </p>
             </section>
 
             <section>

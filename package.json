@@ -5,7 +5,7 @@
     "author": "Andre Azzolini (apazzolini)",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/apazzolini/pubg.sh-client.git"
+        "url": "git+https://github.com/pubgsh/client.git"
     },
     "license": "MIT",
     "dependencies": {
