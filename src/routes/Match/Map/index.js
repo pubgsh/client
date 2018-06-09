@@ -124,6 +124,7 @@ class Map extends React.Component {
                             key={tracer.key}
                             mapSize={mapSize}
                             mapScale={mapScale}
+                            players={telemetry.get('players')}
                             tracer={tracer}
                         />,
                     )}

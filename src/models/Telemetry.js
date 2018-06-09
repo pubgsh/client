@@ -70,18 +70,12 @@ export default function Telemetry(matchData, telemetry, focusedPlayerName) {
 
         if (d._T === 'LogPlayerTakeDamage') {
             if (d.damageTypeCategory === 'Damage_Gun') {
-                const attackerLocation = state.getIn(['players', d.attacker.name, 'location'])
-                const victimLocation = d.victim.location
-
-                if (attackerLocation && victimLocation) {
-                    state = state.update('tracers', tracers => tracers.push({
-                        key: i,
-                        attackerName: d.attacker.name,
-                        from: { ...attackerLocation },
-                        to: { ...victimLocation },
-                        atInterval: currentInterval,
-                    }))
-                }
+                state = state.update('tracers', tracers => tracers.push({
+                    key: i,
+                    attackerName: d.attacker.name,
+                    victimName: d.victim.name,
+                    atInterval: currentInterval,
+                }))
             }
 
             state = state.setIn(['players', d.victim.name, 'health'], d.victim.health - d.damage)
