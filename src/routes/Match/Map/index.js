@@ -5,8 +5,10 @@ import styled from 'styled-components'
 import { Safezone, Bluezone, Redzone } from './ZoneCircle.js'
 import PlayerDot from './PlayerDot.js'
 import BackgroundLayer from './BackgroundLayer.js'
+import CarePackage from './CarePackage.js'
+import Tracer from './Tracer.js'
 
-const SCALE_STEP = 1.4
+const SCALE_STEP = 1.2
 const MIN_SCALE = 1
 const MAX_SCALE = 50
 const CLAMP_MAP = true // TODO: This should be a configurable option
@@ -99,6 +101,14 @@ class Map extends React.Component {
                     {<Safezone mapSize={mapSize} mapScale={mapScale} circle={telemetry.get('safezone')} />}
                     {<Bluezone mapSize={mapSize} mapScale={mapScale} circle={telemetry.get('bluezone')} />}
                     {<Redzone mapSize={mapSize} mapScale={mapScale} circle={telemetry.get('redzone')} />}
+                    {telemetry.get('packages').map(carePackage =>
+                        <CarePackage
+                            key={carePackage.key}
+                            mapSize={mapSize}
+                            mapScale={mapScale}
+                            carePackage={carePackage}
+                        />,
+                    )}
                     {map(sortedPlayers, player =>
                         <PlayerDot
                             player={player}
@@ -107,6 +117,15 @@ class Map extends React.Component {
                             key={`dot-${player.get('name')}`}
                             marks={marks}
                             showName={marks.isPlayerTracked(player.get('name'))}
+                        />,
+                    )}
+                    {telemetry.get('tracers').map(tracer =>
+                        <Tracer
+                            key={tracer.key}
+                            mapSize={mapSize}
+                            mapScale={mapScale}
+                            players={telemetry.get('players')}
+                            tracer={tracer}
                         />,
                     )}
                 </Layer>

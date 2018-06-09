@@ -1,6 +1,6 @@
 import moment from 'moment'
 import { get, clamp } from 'lodash'
-import { Map } from 'immutable'
+import { Map, List } from 'immutable'
 import Participants from './Participants.js'
 
 function interpolate(lowerVal, upperVal, span, idx) {
@@ -10,6 +10,7 @@ function interpolate(lowerVal, upperVal, span, idx) {
 }
 
 const INTERVALS_PER_SECOND = 6
+const TRACER_LIFETIME = 5
 
 export default function Telemetry(matchData, telemetry, focusedPlayerName) {
     const epoch = moment.utc(matchData.playedAt).valueOf()
@@ -21,18 +22,28 @@ export default function Telemetry(matchData, telemetry, focusedPlayerName) {
         safezone: Map({ x: 0, y: 0, radius: 0 }),
         bluezone: Map({ x: 0, y: 0, radius: 0 }),
         redzone: Map({ x: 0, y: 0, radius: 0 }),
+        packages: List(),
+        tracers: List(),
     })
 
     const cache = new Array((matchData.durationSeconds + 10) * INTERVALS_PER_SECOND)
     let currentInterval = 0
 
+    const updateTracers = tracers =>
+        tracers.filter(t => t.atInterval + (INTERVALS_PER_SECOND * TRACER_LIFETIME) > currentInterval)
+
     telemetry.forEach((d, i) => {
-        if (new Date(d._D).getTime() - epoch > currentInterval * 1000 / INTERVALS_PER_SECOND) {
+        const msSinceEpoch = new Date(d._D).getTime() - epoch
+
+        if (msSinceEpoch > currentInterval * 1000 / INTERVALS_PER_SECOND) {
             const playersArray = state.get('players').reverse().valueSeq().toArray()
                 .filter(p => p.get('name'))
 
-            while (new Date(d._D).getTime() - epoch > currentInterval * 1000 / INTERVALS_PER_SECOND) {
-                const finalizedState = state.set('players', playersArray)
+            while (msSinceEpoch > currentInterval * 1000 / INTERVALS_PER_SECOND) {
+                const finalizedState = state
+                    .set('players', playersArray)
+                    .update('tracers', updateTracers)
+
                 cache[currentInterval] = finalizedState
                 currentInterval++
             }
@@ -58,10 +69,18 @@ export default function Telemetry(matchData, telemetry, focusedPlayerName) {
         }
 
         if (d._T === 'LogPlayerTakeDamage') {
-            state = state.withMutations(s => {
-                s.setIn(['players', d.victim.name, 'health'], d.victim.health - d.damage)
-            })
+            if (d.damageTypeCategory === 'Damage_Gun') {
+                state = state.update('tracers', tracers => tracers.push({
+                    key: i,
+                    attackerName: d.attacker.name,
+                    victimName: d.victim.name,
+                    atInterval: currentInterval,
+                }))
+            }
+
+            state = state.setIn(['players', d.victim.name, 'health'], d.victim.health - d.damage)
         }
+
         if (d._T === 'LogGameStatePeriodic') {
             const gs = d.gameState
 
@@ -74,6 +93,15 @@ export default function Telemetry(matchData, telemetry, focusedPlayerName) {
                 s.set('safezone', Map({ ...gs.poisonGasWarningPosition, radius: gs.poisonGasWarningRadius }))
                 s.set('redzone', Map({ ...gs.redZonePosition, radius: gs.redZoneRadius }))
             })
+        }
+
+        if (d._T === 'LogCarePackageLand') {
+            const ip = d.itemPackage
+
+            state = state.update('packages', packages => packages.push({
+                key: i,
+                ...ip.location,
+            }))
         }
     })
 
