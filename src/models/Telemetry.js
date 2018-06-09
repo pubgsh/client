@@ -29,19 +29,20 @@ export default function Telemetry(matchData, telemetry, focusedPlayerName) {
     const cache = new Array((matchData.durationSeconds + 10) * INTERVALS_PER_SECOND)
     let currentInterval = 0
 
-    const updateTracers = tracers => {
-        return tracers.filter(tracer => {
-            return tracer.atInterval + INTERVALS_PER_SECOND * TRACER_LIFETIME > currentInterval
-        })
-    }
+    const updateTracers = tracers =>
+        tracers.filter(t => t.atInterval + (INTERVALS_PER_SECOND * TRACER_LIFETIME) > currentInterval)
 
     telemetry.forEach((d, i) => {
-        if (new Date(d._D).getTime() - epoch > currentInterval * 1000 / INTERVALS_PER_SECOND) {
+        const msSinceEpoch = new Date(d._D).getTime() - epoch
+
+        if (msSinceEpoch > currentInterval * 1000 / INTERVALS_PER_SECOND) {
             const playersArray = state.get('players').reverse().valueSeq().toArray()
                 .filter(p => p.get('name'))
 
-            while (new Date(d._D).getTime() - epoch > currentInterval * 1000 / INTERVALS_PER_SECOND) {
-                const finalizedState = state.set('players', playersArray).update('tracers', updateTracers)
+            while (msSinceEpoch > currentInterval * 1000 / INTERVALS_PER_SECOND) {
+                const finalizedState = state
+                    .set('players', playersArray)
+                    .update('tracers', updateTracers)
 
                 cache[currentInterval] = finalizedState
                 currentInterval++
@@ -69,26 +70,21 @@ export default function Telemetry(matchData, telemetry, focusedPlayerName) {
 
         if (d._T === 'LogPlayerTakeDamage') {
             if (d.damageTypeCategory === 'Damage_Gun') {
-                const attackerLocationPath = ['players', d.attacker.name, 'location']
-                const attackerLocation = state.getIn(attackerLocationPath)
+                const attackerLocation = state.getIn(['players', d.attacker.name, 'location'])
                 const victimLocation = d.victim.location
 
                 if (attackerLocation && victimLocation) {
-                    state = state.withMutations(s => {
-                        s.update('tracers', tracers => tracers.push({
-                            key: i,
-                            attackerName: d.attacker.name,
-                            from: { ...attackerLocation },
-                            to: { ...victimLocation },
-                            atInterval: currentInterval,
-                        }))
-                    })
+                    state = state.update('tracers', tracers => tracers.push({
+                        key: i,
+                        attackerName: d.attacker.name,
+                        from: { ...attackerLocation },
+                        to: { ...victimLocation },
+                        atInterval: currentInterval,
+                    }))
                 }
             }
 
-            state = state.withMutations(s => {
-                s.setIn(['players', d.victim.name, 'health'], d.victim.health - d.damage)
-            })
+            state = state.setIn(['players', d.victim.name, 'health'], d.victim.health - d.damage)
         }
 
         if (d._T === 'LogGameStatePeriodic') {
@@ -108,12 +104,10 @@ export default function Telemetry(matchData, telemetry, focusedPlayerName) {
         if (d._T === 'LogCarePackageLand') {
             const ip = d.itemPackage
 
-            state = state.withMutations(s => {
-                s.update('packages', packages => packages.push({
-                    key: i,
-                    ...ip.location,
-                }))
-            })
+            state = state.update('packages', packages => packages.push({
+                key: i,
+                ...ip.location,
+            }))
         }
     })
 
