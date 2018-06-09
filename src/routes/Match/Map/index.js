@@ -8,7 +8,7 @@ import BackgroundLayer from './BackgroundLayer.js'
 import CarePackage from './CarePackage.js'
 import Tracer from './Tracer.js'
 
-const SCALE_STEP = 1.4
+const SCALE_STEP = 1.2
 const MIN_SCALE = 1
 const MAX_SCALE = 50
 const CLAMP_MAP = true // TODO: This should be a configurable option
