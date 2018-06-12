@@ -63,7 +63,7 @@ class Player extends React.Component {
             )
         }
 
-        const forGameMode = gameMode => player.matches.filter(m => m.gameMode.includes(gameMode))
+        const forTeamSize = teamSize => player.matches.filter(m => m.teamSize === teamSize)
 
         const fetchedMinAgo = moment.utc().diff(moment.utc(player.lastFetchedAt), 'minutes')
         const friendlyAgo = moment.duration(fetchedMinAgo, 'minutes').humanize()
@@ -79,9 +79,9 @@ class Player extends React.Component {
                         <p>(Matches last updated {friendlyAgo} ago)</p>
                     }
                 </PlayerHeader>
-                <MatchesList col="1" header="Solo" baseUrl={match.url} matches={forGameMode('solo')} />
-                <MatchesList col="2" header="Duos" baseUrl={match.url} matches={forGameMode('duo')} />
-                <MatchesList col="3" header="Squad" baseUrl={match.url} matches={forGameMode('squad')} />
+                <MatchesList col="1" header="Solo" baseUrl={match.url} matches={forTeamSize(1)} />
+                <MatchesList col="2" header="Duos" baseUrl={match.url} matches={forTeamSize(2)} />
+                <MatchesList col="3" header="Squad" baseUrl={match.url} matches={forTeamSize(4)} />
             </MatchesContainer>
         )
     }
@@ -102,6 +102,7 @@ export default graphql(gql`
                 gameMode
                 mapName
                 durationSeconds
+                teamSize
                 stats {
                     winPlace
                     kills
