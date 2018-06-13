@@ -4,33 +4,33 @@ import styled from 'styled-components'
 const Wrapper = styled.div`
     position: absolute;
     top: 15px;
-    right: 15px;
-`
-
-const commonStyles = styled.div`
+    left: 15px;
+    grid-template-columns: 27px;
+    text-align: center;
+    display: grid;
     font-family: 'Teko';
     font-weight: 300;
-    font-size: 27px;
+    font-size: 2.5rem;
+    line-height: 2.5rem;
+    padding: 0.2rem;
     opacity: 0.8;
-    padding: 0.2em;
-    padding-bottom: 0.04em
-    line-height: 1;
     text-transform: uppercase;
-    float: left;
     user-select: none;
     pointer-events: none;
-    text-align: right;
 `
 
-const AliveCountNumber = commonStyles.extend`
-    color: #fff;
-    background-color: #777;
-    width: 0.7em;
+const AliveCountNumber = styled.div`
+    grid-column: 1;
+    color: #FFFFFF;
+    background-color: #777777;
+    padding: 0.5rem 0.5rem 0;
 `
 
-const AliveText = commonStyles.extend`
-    color: #ccc;
-    background-color: #333;
+const AliveText = styled.div`
+    grid-column: 2;
+    color: #CCCCCC;
+    background-color: #333333;
+    padding: 0.5rem 0.5rem 0;
 `
 
 const AliveCount = ({ players }) => {
