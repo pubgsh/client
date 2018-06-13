@@ -32,8 +32,8 @@ export default () =>
                 </p>
 
                 <ul style={{ listStyleType: 'none' }}>
-                    <li><a href="https://github.com/pubgsh/api">pubgsh/pubg.sh-api</a></li>
-                    <li><a href="https://github.com/pubgsh/client">pubgsh/pubg.sh-client</a></li>
+                    <li><a href="https://github.com/pubgsh/api">pubgsh/api</a></li>
+                    <li><a href="https://github.com/pubgsh/client">pubgsh/client</a></li>
                 </ul>
             </section>
 
@@ -51,10 +51,20 @@ export default () =>
             <section>
                 <SectionHeader>Change history</SectionHeader>
 
+                <h5>2018-06-12</h5>
+                <ul>
+                    <li>Render alive players count (Thanks @mikkokeskinen)</li>
+                    <li>Render care packages (Thanks @mikkokeskinen)</li>
+                    <li>Render bullet tracers (Thanks @mikkokeskinen)</li>
+                    <li>Add custom game support</li>
+                    <li>Add direct link to player page from roster</li>
+                </ul>
+
                 <h5>2018-06-07</h5>
                 <ul>
                     <li>Show player health on dots</li>
-                    <li>Track knocked-down state</li>
+                    <li>Track player health (Thanks @sevirinov)</li>
+                    <li>Track knocked-down state (Thanks @sevirinov)</li>
                     <li>New player tooltips</li>
                     <li>Add XBOX support</li>
                     <li>Track players by clicking on them, shift+click to track full squad</li>
