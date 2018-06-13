@@ -42,20 +42,26 @@ export default () =>
 
                 <p>
                     The current roadmap is
-                    <a href="https://github.com/orgs/pubgsh/projects/1">&nbsp;available on GitHub&nbsp;</a>.
+                    <a href="https://github.com/orgs/pubgsh/projects/1">&nbsp;available on GitHub</a>.&nbsp;
                     If you’d like to see what’s coming up next or submit a feature request or bug, please
-                    do so on GitHub.
+                    do so there. Otherwise, you can also contact me via&nbsp;
+                    <a href="https://www.twitter.com/apazzolini">Twitter</a>.
                 </p>
             </section>
 
             <section>
                 <SectionHeader>Change history</SectionHeader>
 
+                <h5>2018-06-13</h5>
+                <ul>
+                    <li>Add play/pause and time/speed controls with space and arrow keys</li>
+                </ul>
+
                 <h5>2018-06-12</h5>
                 <ul>
-                    <li>Render alive players count (Thanks @mikkokeskinen)</li>
-                    <li>Render care packages (Thanks @mikkokeskinen)</li>
-                    <li>Render bullet tracers (Thanks @mikkokeskinen)</li>
+                    <li>Render alive players count (Credit @mikkokeskinen)</li>
+                    <li>Render care packages (Credit @mikkokeskinen)</li>
+                    <li>Render bullet tracers (Credit @mikkokeskinen)</li>
                     <li>Add custom game support</li>
                     <li>Add direct link to player page from roster</li>
                 </ul>
@@ -63,8 +69,8 @@ export default () =>
                 <h5>2018-06-07</h5>
                 <ul>
                     <li>Show player health on dots</li>
-                    <li>Track player health (Thanks @sevirinov)</li>
-                    <li>Track knocked-down state (Thanks @sevirinov)</li>
+                    <li>Track player health (Credit @sevirinov)</li>
+                    <li>Track knocked-down state (Credit @sevirinov)</li>
                     <li>New player tooltips</li>
                     <li>Add XBOX support</li>
                     <li>Track players by clicking on them, shift+click to track full squad</li>
