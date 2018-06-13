@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { map, sortBy, reduce, groupBy } from 'lodash'
 import styled from 'styled-components'
 import { getRosterColor } from '../../../lib/player-color.js'
@@ -26,7 +27,22 @@ const TeamGroup = styled.ul`
 const PlayerItem = styled.li`
     color: ${props => props.color};
     text-decoration: ${props => props.isTracked ? 'underline' : ''};
+
+    i {
+        margin-left: 5px;
+        font-size: 1.1rem;
+        line-height: 0.5rem;
+    }
 `
+
+const PlayerLink = ({ match, marks, player }) => {
+    if (!marks.isPlayerHovered(player.get('name'))) return null
+    return (
+        <Link to={`/${player.get('name')}/${match.shardId}`}>
+            <i className="fi-link" />
+        </Link>
+    )
+}
 
 export default ({ match, telemetry, marks }) => {
     const roster = reduce(groupBy(telemetry.get('players'), p => p.get('rosterId')), (acc, players, id) => {
@@ -56,6 +72,7 @@ export default ({ match, telemetry, marks }) => {
                         onMouseLeave={() => marks.setHoveredPlayer(null)}
                     >
                         {p.get('name')} ({p.get('kills')})
+                        <PlayerLink match={match} marks={marks} player={p} />
                     </PlayerItem>
                 )}
             </TeamGroup>

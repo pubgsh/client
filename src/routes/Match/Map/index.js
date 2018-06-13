@@ -5,11 +5,18 @@ import styled from 'styled-components'
 import { Safezone, Bluezone, Redzone } from './ZoneCircle.js'
 import PlayerDot from './PlayerDot.js'
 import BackgroundLayer from './BackgroundLayer.js'
+import CarePackage from './CarePackage.js'
+import Tracer from './Tracer.js'
+import AliveCount from './AliveCount.js'
 
-const SCALE_STEP = 1.4
+const SCALE_STEP = 1.2
 const MIN_SCALE = 1
 const MAX_SCALE = 50
 const CLAMP_MAP = true // TODO: This should be a configurable option
+
+const StageWrapper = styled.div`
+    position: relative;
+`
 
 const StyledStage = styled(Stage)`
     div.konvajs-content {
@@ -82,35 +89,67 @@ class Map extends React.Component {
         })
 
         return (
-            <StyledStage
-                width={mapSize}
-                height={mapSize}
-                scale={scale}
-                x={offsetX}
-                y={offsetY}
-                dragBoundFunc={this.dragBoundFunc}
-                onDragEnd={this.handleDragEnd}
-                onWheel={this.handleMousewheel}
-                draggable="true"
-                hitGraphEnabled={false}
-            >
-                <BackgroundLayer mapName={match.mapName} mapSize={mapSize} />
-                <Layer>
-                    {<Safezone mapSize={mapSize} mapScale={mapScale} circle={telemetry.get('safezone')} />}
-                    {<Bluezone mapSize={mapSize} mapScale={mapScale} circle={telemetry.get('bluezone')} />}
-                    {<Redzone mapSize={mapSize} mapScale={mapScale} circle={telemetry.get('redzone')} />}
-                    {map(sortedPlayers, player =>
-                        <PlayerDot
-                            player={player}
+            <StageWrapper>
+                <StyledStage
+                    width={mapSize}
+                    height={mapSize}
+                    scale={scale}
+                    x={offsetX}
+                    y={offsetY}
+                    dragBoundFunc={this.dragBoundFunc}
+                    onDragEnd={this.handleDragEnd}
+                    onWheel={this.handleMousewheel}
+                    draggable="true"
+                    hitGraphEnabled={false}
+                >
+                    <BackgroundLayer mapName={match.mapName} mapSize={mapSize} />
+                    <Layer>
+                        {<Safezone
                             mapSize={mapSize}
                             mapScale={mapScale}
-                            key={`dot-${player.get('name')}`}
-                            marks={marks}
-                            showName={marks.isPlayerTracked(player.get('name'))}
-                        />,
-                    )}
-                </Layer>
-            </StyledStage>
+                            circle={telemetry.get('safezone')}
+                        />}
+                        {<Bluezone
+                            mapSize={mapSize}
+                            mapScale={mapScale}
+                            circle={telemetry.get('bluezone')}
+                        />}
+                        {<Redzone
+                            mapSize={mapSize}
+                            mapScale={mapScale}
+                            circle={telemetry.get('redzone')}
+                        />}
+                        {telemetry.get('packages').map(carePackage =>
+                            <CarePackage
+                                key={carePackage.key}
+                                mapSize={mapSize}
+                                mapScale={mapScale}
+                                carePackage={carePackage}
+                            />,
+                        )}
+                        {map(sortedPlayers, player =>
+                            <PlayerDot
+                                player={player}
+                                mapSize={mapSize}
+                                mapScale={mapScale}
+                                key={`dot-${player.get('name')}`}
+                                marks={marks}
+                                showName={marks.isPlayerTracked(player.get('name'))}
+                            />,
+                        )}
+                        {telemetry.get('tracers').map(tracer =>
+                            <Tracer
+                                key={tracer.key}
+                                mapSize={mapSize}
+                                mapScale={mapScale}
+                                players={telemetry.get('players')}
+                                tracer={tracer}
+                            />,
+                        )}
+                    </Layer>
+                </StyledStage>
+                <AliveCount players={telemetry.get('players')} />
+            </StageWrapper>
         )
     }
 }
