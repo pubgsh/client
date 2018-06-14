@@ -115,7 +115,7 @@ class Home extends React.Component {
                     <SearchButton className="button-primary" type="submit" value="Search" />
                 </StyledForm>
 
-                <RandomMatchLink to="/DrDisRespect/pc-na/22216e2a-2dee-4ba4-9668-7297d7d97729">
+                <RandomMatchLink to="/DrDisRespect/pc-na/fef5a840-3139-4464-b587-94a7d9fa177a">
                     (Or just view a random match)
                 </RandomMatchLink>
 
