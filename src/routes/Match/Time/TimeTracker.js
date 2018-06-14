@@ -8,17 +8,55 @@ class TimeTracker extends React.Component {
         autoplay: true,
     }
 
-    setMsSinceEpoch = msSinceEpoch => { this.setState({ msSinceEpoch }) }
-    setAutoplaySpeed = val => { this.setState({ autoplaySpeed: clamp(val, 1, 50) }) }
+    clampAutoplaySpeed = val => clamp(val, 1, 40)
+    clampMsSinceEpoch = val => clamp(val, 1000, this.props.durationSeconds * 1000)
+    setMsSinceEpoch = val => { this.setState({ msSinceEpoch: this.clampMsSinceEpoch(val) }) }
+    setAutoplaySpeed = val => { this.setState({ autoplaySpeed: this.clampAutoplaySpeed(val) }) }
+
+    onKeydown = e => {
+        if (e.keyCode === 32) { // Space
+            this.toggleAutoplay()
+        }
+
+        if (e.keyCode === 37) { // Left Arrow
+            if (this.state.autoplay) this.stopAutoplay()
+
+            this.setState(({ msSinceEpoch, autoplaySpeed }) => ({
+                msSinceEpoch: this.clampMsSinceEpoch(msSinceEpoch - (autoplaySpeed * 100)),
+            }))
+        }
+
+        if (e.keyCode === 39) { // Right Arrow
+            if (this.state.autoplay) this.stopAutoplay()
+
+            this.setState(({ msSinceEpoch, autoplaySpeed }) => ({
+                msSinceEpoch: this.clampMsSinceEpoch(msSinceEpoch + (autoplaySpeed * 100)),
+            }))
+        }
+
+        if (e.keyCode === 40) { // Down Arrow
+            this.setState(({ autoplaySpeed }) => ({
+                autoplaySpeed: this.clampAutoplaySpeed(autoplaySpeed - 1),
+            }))
+        }
+
+        if (e.keyCode === 38) { // Up Arrow
+            this.setState(({ autoplaySpeed }) => ({
+                autoplaySpeed: this.clampAutoplaySpeed(autoplaySpeed + 1),
+            }))
+        }
+    }
 
     componentDidMount() {
         this.mounted = true
         if (this.state.autoplay) setTimeout(this.startAutoplay, 300)
+        window.addEventListener('keydown', this.onKeydown)
     }
 
     componentWillUnmount() {
         cancelAnimationFrame(this.rafId)
         this.mounted = false
+        window.removeEventListener('keydown', this.onKeydown)
     }
 
     loop = time => {
