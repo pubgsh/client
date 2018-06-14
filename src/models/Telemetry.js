@@ -24,6 +24,7 @@ export default function Telemetry(matchData, telemetry, focusedPlayerName) {
         redzone: Map({ x: 0, y: 0, radius: 0 }),
         packages: List(),
         tracers: List(),
+        marks: List(),
     })
 
     const cache = new Array((matchData.durationSeconds + 10) * INTERVALS_PER_SECOND)
@@ -65,20 +66,46 @@ export default function Telemetry(matchData, telemetry, focusedPlayerName) {
                 if (d.killer.name) {
                     s.updateIn(['players', d.killer.name, 'kills'], kills => kills + 1)
                 }
+
+                if (d.victim.name === focusedPlayerName) {
+                    s.update('marks', marks => marks.push({
+                        timestamp: new Date(d._D).getTime() - epoch,
+                        type: 'death',
+                        killerName: d.killer.name,
+                    }))
+                }
+
+                if (d.killer.name === focusedPlayerName) {
+                    s.update('marks', marks => marks.push({
+                        timestamp: new Date(d._D).getTime() - epoch,
+                        type: 'kill',
+                        victimName: d.victim.name,
+                    }))
+                }
             })
         }
 
         if (d._T === 'LogPlayerTakeDamage') {
-            if (d.damageTypeCategory === 'Damage_Gun') {
-                state = state.update('tracers', tracers => tracers.push({
-                    key: i,
-                    attackerName: d.attacker.name,
-                    victimName: d.victim.name,
-                    atInterval: currentInterval,
-                }))
-            }
+            state = state.withMutations(s => {
+                if (d.damageTypeCategory === 'Damage_Gun') {
+                    s.update('tracers', tracers => tracers.push({
+                        key: i,
+                        attackerName: d.attacker.name,
+                        victimName: d.victim.name,
+                        atInterval: currentInterval,
+                    }))
+                }
 
-            state = state.setIn(['players', d.victim.name, 'health'], d.victim.health - d.damage)
+                s.setIn(['players', d.victim.name, 'health'], d.victim.health - d.damage)
+
+                if (d.attacker.name === focusedPlayerName && (d.victim.health - d.damage <= 0)) {
+                    s.update('marks', marks => marks.push({
+                        timestamp: new Date(d._D).getTime() - epoch,
+                        type: 'knock',
+                        victimName: d.victim.name,
+                    }))
+                }
+            })
         }
 
         if (d._T === 'LogGameStatePeriodic') {

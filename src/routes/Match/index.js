@@ -7,6 +7,7 @@ import Map from './Map/index.js'
 import Roster from './Roster/index.js'
 import TimeTracker from './Time/TimeTracker.js'
 import MatchInstant from './Time/MatchInstant.js'
+import { generateMarks } from './Time/generateMarks.js'
 import TimeSlider from './TimeSlider.js'
 import AutoplayControls from './AutoplayControls.js'
 import MatchInfo from './MatchInfo.js'
@@ -148,6 +149,7 @@ class Match extends React.Component {
 
         this.setState(prevState => ({
             telemetry,
+            marks: generateMarks(telemetry.finalState().get('marks')),
             telemetryLoading: false,
         }))
     }
@@ -158,7 +160,7 @@ class Match extends React.Component {
 
     render() {
         const { data: { loading, error, match } } = this.props
-        const { telemetry, mapSize } = this.state
+        const { telemetry, mapSize, marks } = this.state
 
         if (loading) return 'Loading...'
         if (error) return <p>An error occurred :(</p>
@@ -182,6 +184,8 @@ class Match extends React.Component {
                                             stopAutoplay={timeControls.stopAutoplay}
                                             onChange={timeControls.setMsSinceEpoch}
                                             durationSeconds={match.durationSeconds}
+                                            telemetry={telemetry.finalState()}
+                                            marks={marks}
                                         />
                                         <AutoplayControls
                                             autoplay={timeControls.autoplay}

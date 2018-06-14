@@ -17,7 +17,7 @@ const StyledSlider = styled(SliderWithTooltip)`
     margin-top: 12px;
 `
 
-const TimeSlider = ({ value, stopAutoplay, onChange, durationSeconds }) => (
+const TimeSlider = ({ value, stopAutoplay, onChange, durationSeconds, telemetry, marks }) => (
     <StyledSlider
         min={1000}
         max={(durationSeconds + 11) * 1000}
@@ -32,6 +32,7 @@ const TimeSlider = ({ value, stopAutoplay, onChange, durationSeconds }) => (
             align: { offset: [0, 8] },
             overlayStyle: { zIndex: 1 },
         }}
+        marks={marks}
     />
 )
 
