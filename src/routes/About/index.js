@@ -52,6 +52,11 @@ export default () =>
             <section>
                 <SectionHeader>Change history</SectionHeader>
 
+                <h5>2018-06-16</h5>
+                <ul>
+                    <li>Add help screen (press ? on map)</li>
+                </ul>
+
                 <h5>2018-06-13</h5>
                 <ul>
                     <li>Add play/pause and time/speed controls with space and arrow keys</li>
