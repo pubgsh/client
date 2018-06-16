@@ -10,6 +10,7 @@ import MatchInstant from './Time/MatchInstant.js'
 import TimeSlider from './TimeSlider.js'
 import AutoplayControls from './AutoplayControls.js'
 import MatchInfo from './MatchInfo.js'
+import HelpModal from './HelpModal.js'
 import Telemetry from '../../models/Telemetry.js'
 
 // -----------------------------------------------------------------------------
@@ -196,6 +197,7 @@ class Match extends React.Component {
                                         mapSize={mapSize}
                                         marks={this.marks}
                                     />
+                                    <HelpModal mapSize={mapSize} />
                                 </MapContainer>
                                 <RosterContainer mapSize={mapSize}>
                                     <RosterHeader>Name (Kills)</RosterHeader>

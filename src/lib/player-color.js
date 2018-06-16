@@ -1,4 +1,4 @@
-const palette = {
+export const palette = {
     focused: '#34B67ED0',
     teammate: '#8FD431D0',
     enemy: '#FFFFFFC0',
