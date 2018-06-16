@@ -9,7 +9,7 @@ class TimeTracker extends React.Component {
     }
 
     clampAutoplaySpeed = val => clamp(val, 1, 40)
-    clampMsSinceEpoch = val => clamp(val, 1000, this.props.durationSeconds * 1000)
+    clampMsSinceEpoch = val => clamp(val, 1000, (this.props.durationSeconds + 10) * 1000)
     setMsSinceEpoch = val => { this.setState({ msSinceEpoch: this.clampMsSinceEpoch(val) }) }
     setAutoplaySpeed = val => { this.setState({ autoplaySpeed: this.clampAutoplaySpeed(val) }) }
 
