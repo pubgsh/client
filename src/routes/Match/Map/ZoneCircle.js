@@ -2,15 +2,15 @@ import React from 'react'
 import { Circle } from 'react-konva'
 import { toScale } from '../../../lib/canvas-math.js'
 
-const ZoneCircle = ({ mapSize, mapScale, circle, color, background }) => {
+const ZoneCircle = ({ pubgMapSize, mapSize, mapScale, circle, color, background }) => {
     return (
         <Circle
-            x={toScale(mapSize, circle.get('x'))}
-            y={toScale(mapSize, circle.get('y'))}
+            x={toScale(pubgMapSize, mapSize, circle.get('x'))}
+            y={toScale(pubgMapSize, mapSize, circle.get('y'))}
             fill={background}
             stroke={color}
-            width={toScale(mapSize, circle.get('radius') * 2)}
-            height={toScale(mapSize, circle.get('radius') * 2)}
+            width={toScale(pubgMapSize, mapSize, circle.get('radius') * 2)}
+            height={toScale(pubgMapSize, mapSize, circle.get('radius') * 2)}
             strokeWidth={1 / mapScale}
         />
     )

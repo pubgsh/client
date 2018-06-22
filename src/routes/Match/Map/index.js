@@ -77,9 +77,11 @@ class Map extends React.Component {
     }
 
     render() {
-        const { match, telemetry, mapSize, marks } = this.props
+        const { match: { mapName }, telemetry, mapSize, marks } = this.props
         const { mapScale, offsetX, offsetY } = this.state
         const scale = { x: mapScale, y: mapScale }
+
+        const pubgMapSize = mapName === 'Savage_Main' ? 408000 : 816000
 
         const focusedPlayer = telemetry.get('players').find(p => p.get('name') === marks.focusedPlayer())
         const sortedPlayers = sortBy(telemetry.get('players'), player => {
@@ -102,20 +104,23 @@ class Map extends React.Component {
                     draggable="true"
                     hitGraphEnabled={false}
                 >
-                    <BackgroundLayer mapName={match.mapName} mapSize={mapSize} />
+                    <BackgroundLayer mapName={mapName} mapSize={mapSize} />
                     <Layer>
                         {<Safezone
                             mapSize={mapSize}
+                            pubgMapSize={pubgMapSize}
                             mapScale={mapScale}
                             circle={telemetry.get('safezone')}
                         />}
                         {<Bluezone
                             mapSize={mapSize}
+                            pubgMapSize={pubgMapSize}
                             mapScale={mapScale}
                             circle={telemetry.get('bluezone')}
                         />}
                         {<Redzone
                             mapSize={mapSize}
+                            pubgMapSize={pubgMapSize}
                             mapScale={mapScale}
                             circle={telemetry.get('redzone')}
                         />}
@@ -123,6 +128,7 @@ class Map extends React.Component {
                             <CarePackage
                                 key={carePackage.key}
                                 mapSize={mapSize}
+                                pubgMapSize={pubgMapSize}
                                 mapScale={mapScale}
                                 carePackage={carePackage}
                             />,
@@ -131,6 +137,7 @@ class Map extends React.Component {
                             <PlayerDot
                                 player={player}
                                 mapSize={mapSize}
+                                pubgMapSize={pubgMapSize}
                                 mapScale={mapScale}
                                 key={`dot-${player.get('name')}`}
                                 marks={marks}
@@ -141,6 +148,7 @@ class Map extends React.Component {
                             <Tracer
                                 key={tracer.key}
                                 mapSize={mapSize}
+                                pubgMapSize={pubgMapSize}
                                 mapScale={mapScale}
                                 players={telemetry.get('players')}
                                 tracer={tracer}

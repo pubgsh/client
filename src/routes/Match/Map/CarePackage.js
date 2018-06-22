@@ -4,13 +4,13 @@ import { toScale } from '../../../lib/canvas-math.js'
 
 const RECT_SIZE = 11
 
-const CarePackage = ({ mapSize, mapScale, carePackage }) => {
+const CarePackage = ({ pubgMapSize, mapSize, mapScale, carePackage }) => {
     if (!carePackage) return null
 
     return (
         <Group
-            x={toScale(mapSize, carePackage.x)}
-            y={toScale(mapSize, carePackage.y)}
+            x={toScale(pubgMapSize, mapSize, carePackage.x)}
+            y={toScale(pubgMapSize, mapSize, carePackage.y)}
             scale={{ x: 1 / mapScale, y: 1 / mapScale }}
         >
             <Rect

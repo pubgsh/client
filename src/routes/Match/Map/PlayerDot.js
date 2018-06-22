@@ -31,7 +31,7 @@ const PlayerLabel = ({ visible, player, strokeColor }) => {
     )
 }
 
-const PlayerDot = ({ player, mapSize, marks, mapScale, showName }) => {
+const PlayerDot = ({ player, pubgMapSize, mapSize, marks, mapScale, showName }) => {
     const diameter = marks.isPlayerHovered(player.get('name')) ? 11 : 8
     const scaledDiameter = diameter * clamp(mapScale / 1.4, 1, 1.3)
     const health = player.get('health') / 100
@@ -63,8 +63,8 @@ const PlayerDot = ({ player, mapSize, marks, mapScale, showName }) => {
 
     return (
         <Group
-            x={toScale(mapSize, player.getIn(['location', 'x']))}
-            y={toScale(mapSize, player.getIn(['location', 'y']))}
+            x={toScale(pubgMapSize, mapSize, player.getIn(['location', 'x']))}
+            y={toScale(pubgMapSize, mapSize, player.getIn(['location', 'y']))}
             scale={{ x: 1 / mapScale, y: 1 / mapScale }}
         >
             <Circle

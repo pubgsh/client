@@ -124,7 +124,6 @@ class HelpModal extends React.PureComponent {
                             <h5>Info</h5>
                             <ul>
                                 <li>Matches are usually available ~10 minutes after completion</li>
-                                <li>We only refresh your matches once per 15 minutes due to rate limits</li>
                             </ul>
                         </section>
                     </HelpText>
