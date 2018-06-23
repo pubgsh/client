@@ -2,6 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import { isEmpty } from 'lodash'
+import { graphql } from 'react-apollo'
+import gql from 'graphql-tag'
 import { SHARDS } from '../../models/Shards.js'
 import Dropdown from '../../components/Dropdown.js'
 
@@ -97,6 +99,7 @@ class Home extends React.Component {
 
     render() {
         const { shardId, searchText } = this.state
+        const { data: { sampleMatch: sm } } = this.props
 
         return (
             <CenteredContainer>
@@ -115,9 +118,11 @@ class Home extends React.Component {
                     <SearchButton className="button-primary" type="submit" value="Search" />
                 </StyledForm>
 
-                <RandomMatchLink to="/DrDisRespect/pc-na/fef5a840-3139-4464-b587-94a7d9fa177a">
-                    (Or just view a random match)
-                </RandomMatchLink>
+                {sm &&
+                    <RandomMatchLink to={`/${sm.playerName}/${sm.shardId}/${sm.id}`}>
+                        (Or just view a random match)
+                    </RandomMatchLink>
+                }
 
                 <RecentPlayers />
             </CenteredContainer>
@@ -125,4 +130,17 @@ class Home extends React.Component {
     }
 }
 
-export default Home
+export default graphql(gql`
+    query($shardId: String!) {
+        sampleMatch(shardId: $shardId) {
+            id
+            playerName
+            shardId
+        }
+    }`, {
+    options: () => ({
+        variables: {
+            shardId: localStorage.getItem('shardId') || SHARDS[0],
+        },
+    }),
+})(Home)
