@@ -92,6 +92,7 @@ class HelpModal extends React.PureComponent {
                         <section>
                             <h5>General Usage</h5>
                             <ul>
+                                <li>Zoom in and out by scrolling, click and drag to pan</li>
                                 <li>Click on dot or roster entry to toggle pinning of their name</li>
                                 <li>Shift+Click on player dot to toggle pinning of their name + teammates</li>
                                 <li>Tracked player names are underlined on the roster</li>
@@ -124,6 +125,7 @@ class HelpModal extends React.PureComponent {
                             <h5>Info</h5>
                             <ul>
                                 <li>Matches are usually available ~10 minutes after completion</li>
+                                <li>Player HP is represented by the % of the circle that’s filled in</li>
                             </ul>
                         </section>
                     </HelpText>
