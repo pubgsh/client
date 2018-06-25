@@ -31,7 +31,7 @@ const Background = styled.div`
     z-index: 0;
     width: 100%;
     height: 2px;
-    background: linear-gradient(309deg, #cb3688 0%, #82c2d2 100%);
+    background: linear-gradient(309deg, #cb3688 0%, #76bcde 100%);
 `
 
 const RouteWithTopMenu = ({ hidePlayerSearch, component: Component, ...rest }) =>
