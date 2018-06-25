@@ -47,19 +47,21 @@ class Player extends React.Component {
         if (error) return <p>An error occurred :(</p>
         if (!player || (isEmpty(player.matches) && !player.rateLimitReset)) {
             return (
-                <PlayerHeader>
-                    <PlayerName>
-                        {this.props.match.params.playerName} - {this.props.match.params.shardId}
-                    </PlayerName>
-                    <p>
-                        Player not found. Check that:
-                    </p>
-                    <p>
-                        You selected the correct region<br />
-                        The user has played a game in the last week<br />
-                        The name was typed exactly as in-game. Capitalization matters.
-                    </p>
-                </PlayerHeader>
+                <MatchesContainer>
+                    <PlayerHeader>
+                        <PlayerName>
+                            {this.props.match.params.playerName} - {this.props.match.params.shardId}
+                        </PlayerName>
+                        <p>
+                            Player not found. Check that:
+                        </p>
+                        <p>
+                            You selected the correct region<br />
+                            The user has played a game in the last week<br />
+                            The name was typed exactly as in-game. Capitalization matters.
+                        </p>
+                    </PlayerHeader>
+                </MatchesContainer>
             )
         }
 

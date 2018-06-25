@@ -10,7 +10,6 @@ import Dropdown from '../../components/Dropdown.js'
 const CenteredContainer = styled.div`
     text-align: center;
     margin: 4rem auto 0;
-    padding-top: 20px;
 `
 
 const RecentPlayersHeader = styled.h5`
