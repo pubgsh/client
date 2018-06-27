@@ -58,7 +58,8 @@ class Player extends React.Component {
                         <p>
                             You selected the correct region<br />
                             The user has played a game in the last week<br />
-                            The name was typed exactly as in-game. Capitalization matters.
+                            The name was typed exactly as in-game - capitalization matters<br />
+                            If you have recently changed your name, please retry after playing a match
                         </p>
                     </PlayerHeader>
                 </MatchesContainer>
