@@ -1,6 +1,6 @@
 import React from 'react'
 import { xor, union, difference } from 'lodash'
-import { graphql } from 'react-apollo'
+import { graphql, compose } from 'react-apollo'
 import gql from 'graphql-tag'
 import styled from 'styled-components'
 import Map from './Map/index.js'
@@ -144,12 +144,22 @@ class Match extends React.Component {
         this.setState({ telemetry: null, telemetryLoading: true })
 
         const res = await fetch(this.props.data.match.telemetryUrl)
+
+        let { focusedPlayer } = this.state
+        if (!this.props.data.match.players.some(p => this.marks.isPlayerFocused(p.name))) {
+            // The user is viewing a match they played under a previous name. We should be able to find
+            // their previous id based on their account id.
+            const { playerId } = this.props.playerId
+            focusedPlayer = this.props.data.match.players.find(p => p.id === playerId).name
+        }
+
         const telemetryData = await res.json()
-        const telemetry = Telemetry(this.props.data.match, telemetryData, this.state.focusedPlayer)
+        const telemetry = Telemetry(this.props.data.match, telemetryData, focusedPlayer)
 
         this.setState(prevState => ({
             telemetry,
             telemetryLoading: false,
+            focusedPlayer,
         }))
     }
 
@@ -216,7 +226,7 @@ class Match extends React.Component {
     }
 }
 
-export default graphql(gql`
+const matchQuery = graphql(gql`
     query($matchId: String!) {
         match(id: $matchId) {
             id
@@ -237,10 +247,26 @@ export default graphql(gql`
             }
         }
     }`, {
+    name: 'data',
     options: ({ match }) => ({
         fetchPolicy: 'network-only',
         variables: {
             matchId: match.params.matchId,
         },
     }),
-})(Match)
+})
+
+const playerIdQuery = graphql(gql`
+    query($playerName: String!) {
+        playerId(name: $playerName)
+    }`, {
+    name: 'playerId',
+    options: ({ match }) => ({
+        fetchPolicy: 'network-only',
+        variables: {
+            playerName: match.params.playerName,
+        },
+    }),
+})
+
+export default compose(matchQuery, playerIdQuery)(Match)
