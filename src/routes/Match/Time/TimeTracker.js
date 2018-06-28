@@ -73,14 +73,12 @@ class TimeTracker extends React.Component {
         if (elapsedTime > 16) {
             this.rafLastTime = time
 
-            this.setState(prevState => {
-                const prev = prevState.msSinceEpoch
-
-                if (Math.floor(prev / 1000) > this.props.durationSeconds) {
+            this.setState(({ msSinceEpoch, autoplaySpeed }) => {
+                if (Math.floor(msSinceEpoch / 1000) > this.props.durationSeconds) {
                     return { msSinceEpoch: 1000 }
                 }
 
-                return { msSinceEpoch: prevState.msSinceEpoch + (prevState.autoplaySpeed * elapsedTime) }
+                return { msSinceEpoch: msSinceEpoch + (autoplaySpeed * elapsedTime) }
             })
         }
 

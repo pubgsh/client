@@ -19,10 +19,6 @@ const PlayButton = styled.button`
     margin: 0 10px;
     width: 25px;
     grid-column: 1;
-
-    &:disabled {
-        color: #bbb;
-    }
 `
 
 const ControlsWrapper = styled.div`
