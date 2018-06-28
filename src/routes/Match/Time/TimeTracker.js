@@ -14,11 +14,15 @@ class TimeTracker extends React.Component {
     setAutoplaySpeed = val => { this.setState({ autoplaySpeed: this.clampAutoplaySpeed(val) }) }
 
     onKeydown = e => {
+        if (e.target.tagName.toLowerCase() === 'input') return
+
         if (e.keyCode === 32) { // Space
+            e.preventDefault()
             this.toggleAutoplay()
         }
 
         if (e.keyCode === 37) { // Left Arrow
+            e.preventDefault()
             if (this.state.autoplay) this.stopAutoplay()
 
             this.setState(({ msSinceEpoch, autoplaySpeed }) => ({
@@ -27,6 +31,7 @@ class TimeTracker extends React.Component {
         }
 
         if (e.keyCode === 39) { // Right Arrow
+            e.preventDefault()
             if (this.state.autoplay) this.stopAutoplay()
 
             this.setState(({ msSinceEpoch, autoplaySpeed }) => ({
@@ -35,12 +40,14 @@ class TimeTracker extends React.Component {
         }
 
         if (e.keyCode === 40) { // Down Arrow
+            e.preventDefault()
             this.setState(({ autoplaySpeed }) => ({
                 autoplaySpeed: this.clampAutoplaySpeed(autoplaySpeed - 1),
             }))
         }
 
         if (e.keyCode === 38) { // Up Arrow
+            e.preventDefault()
             this.setState(({ autoplaySpeed }) => ({
                 autoplaySpeed: this.clampAutoplaySpeed(autoplaySpeed + 1),
             }))
