@@ -52,6 +52,12 @@ export default () =>
             <section>
                 <SectionHeader>Change history</SectionHeader>
 
+                <h5>2018-06-27</h5>
+                <ul>
+                    <li>Handle player renaming feature</li>
+                    <li>Improve performance</li>
+                </ul>
+
                 <h5>2018-06-22</h5>
                 <ul>
                     <li>Add Sanhok map support</li>
