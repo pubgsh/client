@@ -29,27 +29,30 @@ const ControlsWrapper = styled.div`
     display: grid;
 `
 
-const AutoplayControls = ({ autoplay, toggleAutoplay, changeSpeed, autoplaySpeed }) => {
-    return (
-        <ControlsWrapper>
-            <PlayButton className="button" type="submit" onClick={toggleAutoplay}>
-                <i className={`fi-${autoplay ? 'pause' : 'play'}`} />
-            </PlayButton>
-            <StyledSlider
-                min={1}
-                max={40}
-                value={autoplaySpeed}
-                onChange={changeSpeed}
-                tipFormatter={v => `${v}x`}
-                tipProps={{
-                    visible: true,
-                    placement: 'top',
-                    align: { offset: [0, 8] },
-                    overlayStyle: { zIndex: 1 },
-                }}
-            />
-        </ControlsWrapper>
-    )
+class AutoplayControls extends React.PureComponent {
+    render() {
+        const { autoplay, toggleAutoplay, changeSpeed, autoplaySpeed } = this.props
+        return (
+            <ControlsWrapper>
+                <PlayButton className="button" type="submit" onClick={toggleAutoplay}>
+                    <i className={`fi-${autoplay ? 'pause' : 'play'}`} />
+                </PlayButton>
+                <StyledSlider
+                    min={1}
+                    max={40}
+                    value={autoplaySpeed}
+                    onChange={changeSpeed}
+                    tipFormatter={v => `${v}x`}
+                    tipProps={{
+                        visible: true,
+                        placement: 'top',
+                        align: { offset: [0, 8] },
+                        overlayStyle: { zIndex: 1 },
+                    }}
+                />
+            </ControlsWrapper>
+        )
+    }
 }
 
 export default AutoplayControls

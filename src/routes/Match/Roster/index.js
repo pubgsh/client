@@ -6,27 +6,21 @@ import { getRosterColor } from '../../../lib/player-color.js'
 
 const TeamGroup = styled.ul`
     list-style-type: none;
-    border: 1px solid ${props => props.color || '#bbb'};
-    background: ${props => `${props.color}10` || ''};
+    border: 1px solid #bbb;
     border-radius: 4px;
     font-size: 1.1rem;
     font-family: 'Palanquin', sans-serif;
     letter-spacing: 0.02rem;
     margin: 3px 0;
     padding: 4px;
-
-    li {
-        margin: 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        cursor: pointer;
-        display: block;
-    }
 `
 
 const PlayerItem = styled.li`
-    color: ${props => props.color};
-    text-decoration: ${props => props.isTracked ? 'underline' : ''};
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    display: block;
 
     i {
         margin-left: 5px;
@@ -44,40 +38,47 @@ const PlayerLink = ({ match, marks, player }) => {
     )
 }
 
-export default ({ match, telemetry, marks }) => {
-    const roster = reduce(groupBy(telemetry.get('players'), p => p.get('rosterId')), (acc, players, id) => {
-        acc[id] = sortBy(players, p => p.get('name'))
-        return acc
-    }, {})
+class Roster extends React.Component {
+    render() {
+        const { match, telemetry, marks } = this.props
 
-    const sortedTeams = sortBy(Object.keys(roster), rosterId => {
-        const players = roster[rosterId]
-        if (players.find(p => marks.isPlayerFocused(p.get('name')))) return -10
-        return -players.filter(p => p.get('status') !== 'dead').length
-    })
+        const rosterPlayers = groupBy(telemetry.get('players'), p => p.get('rosterId'))
+        const roster = reduce(rosterPlayers, (acc, players, id) => {
+            acc[id] = sortBy(players, p => p.get('name'))
+            return acc
+        }, {})
 
-    const teams = map(sortedTeams, rosterId => {
-        const players = roster[rosterId]
-        return (
-            <TeamGroup
-                key={rosterId}
-            >
-                {players.map(p =>
-                    <PlayerItem
-                        key={p.get('name')}
-                        color={getRosterColor(marks, p)}
-                        isTracked={marks.isPlayerTracked(p.get('name'))}
-                        onClick={() => marks.toggleTrackedPlayer(p.get('name'))}
-                        onMouseEnter={() => marks.setHoveredPlayer(p.get('name'))}
-                        onMouseLeave={() => marks.setHoveredPlayer(null)}
-                    >
-                        {p.get('name')} ({p.get('kills')})
-                        <PlayerLink match={match} marks={marks} player={p} />
-                    </PlayerItem>
-                )}
-            </TeamGroup>
-        )
-    })
+        const sortedTeams = sortBy(Object.keys(roster), rosterId => {
+            const players = roster[rosterId]
+            if (players.find(p => marks.isPlayerFocused(p.get('name')))) return -10
+            return -players.filter(p => p.get('status') !== 'dead').length
+        })
 
-    return teams
+        const teams = map(sortedTeams, rosterId => {
+            const players = roster[rosterId]
+            return (
+                <TeamGroup key={rosterId}>
+                    {players.map(p =>
+                        <PlayerItem
+                            key={p.get('name')}
+                            onClick={() => marks.toggleTrackedPlayer(p.get('name'))}
+                            onMouseEnter={() => marks.setHoveredPlayer(p.get('name'))}
+                            onMouseLeave={() => marks.setHoveredPlayer(null)}
+                            style={{
+                                color: getRosterColor(marks, p),
+                                textDecoration: marks.isPlayerTracked(p.get('name')) ? 'underline' : '',
+                            }}
+                        >
+                            {p.get('name')} ({p.get('kills')})
+                            <PlayerLink match={match} marks={marks} player={p} />
+                        </PlayerItem>
+                    )}
+                </TeamGroup>
+            )
+        })
+
+        return teams
+    }
 }
+
+export default Roster

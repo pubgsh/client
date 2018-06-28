@@ -17,22 +17,28 @@ const StyledSlider = styled(SliderWithTooltip)`
     margin-top: 12px;
 `
 
-const TimeSlider = ({ value, stopAutoplay, onChange, durationSeconds }) => (
-    <StyledSlider
-        min={1000}
-        max={(durationSeconds + 11) * 1000}
-        step={100}
-        onChange={onChange}
-        onBeforeChange={stopAutoplay}
-        value={value}
-        tipFormatter={getDurationFormat}
-        tipProps={{
-            visible: true,
-            placement: 'top',
-            align: { offset: [0, 8] },
-            overlayStyle: { zIndex: 1 },
-        }}
-    />
-)
+class TimeSlider extends React.PureComponent {
+    render() {
+        const { value, stopAutoplay, onChange, durationSeconds } = this.props
+
+        return (
+            <StyledSlider
+                min={1000}
+                max={(durationSeconds + 11) * 1000}
+                step={100}
+                onChange={onChange}
+                onBeforeChange={stopAutoplay}
+                value={value}
+                tipFormatter={getDurationFormat}
+                tipProps={{
+                    visible: true,
+                    placement: 'top',
+                    align: { offset: [0, 8] },
+                    overlayStyle: { zIndex: 1 },
+                }}
+            />
+        )
+    }
+}
 
 export default TimeSlider

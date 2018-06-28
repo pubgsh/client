@@ -10,17 +10,21 @@ const StyledMatchInfo = styled.p`
     margin-right: 20px;
 `
 
-const MatchInfo = ({ match, marks }) => {
-    const playedAt = moment(match.playedAt).format('MMM Do h:mm a')
-    const { stats } = match.players.find(p => p.name === marks.focusedPlayer())
+class MatchInfo extends React.PureComponent {
+    render() {
+        const { match, marks } = this.props
 
-    return (
-        <StyledMatchInfo>
-            {playedAt}<br />
-            <strong>{stats.winPlace}</strong>{ordinalSuffix(stats.winPlace)} place,&nbsp;
-            <strong>{stats.kills}</strong> kills
-        </StyledMatchInfo>
-    )
+        const playedAt = moment(match.playedAt).format('MMM Do h:mm a')
+        const { stats } = match.players.find(p => p.name === marks.focusedPlayer())
+
+        return (
+            <StyledMatchInfo>
+                {playedAt}<br />
+                <strong>{stats.winPlace}</strong>{ordinalSuffix(stats.winPlace)} place,&nbsp;
+                <strong>{stats.kills}</strong> kills
+            </StyledMatchInfo>
+        )
+    }
 }
 
 
