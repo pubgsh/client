@@ -9,7 +9,7 @@ class TimeTracker extends React.Component {
     }
 
     clampAutoplaySpeed = val => clamp(val, 1, 40)
-    clampMsSinceEpoch = val => clamp(val, 1000, (this.props.durationSeconds + 10) * 1000)
+    clampMsSinceEpoch = val => clamp(val, 1000, this.props.durationSeconds * 1000)
     setMsSinceEpoch = val => { this.setState({ msSinceEpoch: this.clampMsSinceEpoch(val) }) }
     setAutoplaySpeed = val => { this.setState({ autoplaySpeed: this.clampAutoplaySpeed(val) }) }
 
@@ -70,17 +70,16 @@ class TimeTracker extends React.Component {
         if (!this.state.autoplay || !this.mounted) return
 
         const elapsedTime = time - this.rafLastTime
-        if (elapsedTime > 16) {
-            this.rafLastTime = time
+        this.rafLastTime = time
 
-            this.setState(({ msSinceEpoch, autoplaySpeed }) => {
-                if (Math.floor(msSinceEpoch / 1000) > this.props.durationSeconds) {
-                    return { msSinceEpoch: 1000 }
-                }
+        this.setState(({ msSinceEpoch, autoplaySpeed }) => {
+            if (Math.floor(msSinceEpoch / 1000) >= this.props.durationSeconds) {
+                cancelAnimationFrame(this.rafId)
+                return { autoplay: false }
+            }
 
-                return { msSinceEpoch: msSinceEpoch + (autoplaySpeed * elapsedTime) }
-            })
-        }
+            return { msSinceEpoch: msSinceEpoch + (autoplaySpeed * elapsedTime) }
+        })
 
         this.rafId = requestAnimationFrame(this.loop)
     }
@@ -100,6 +99,9 @@ class TimeTracker extends React.Component {
         if (this.state.autoplay) {
             this.stopAutoplay()
         } else {
+            if (this.state.msSinceEpoch === this.props.durationSeconds * 1000) {
+                this.setState({ msSinceEpoch: 1000 })
+            }
             this.startAutoplay()
         }
     }

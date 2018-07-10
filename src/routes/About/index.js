@@ -52,6 +52,13 @@ export default () =>
             <section>
                 <SectionHeader>Change history</SectionHeader>
 
+                <h5>2018-07-12</h5>
+                <ul>
+                    <li>Major rewrite for performance</li>
+                    <li>Tracers render as bullets instead of lines</li>
+                    <li>Care packages render flight status, items on hover</li>
+                </ul>
+
                 <h5>2018-06-27</h5>
                 <ul>
                     <li>Handle player renaming feature</li>

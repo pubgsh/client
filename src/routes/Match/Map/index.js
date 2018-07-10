@@ -77,17 +77,23 @@ class Map extends React.Component {
     }
 
     render() {
-        const { match: { mapName }, telemetry, mapSize, marks } = this.props
+        const { match: { mapName }, telemetry, mapSize, marks, msSinceEpoch } = this.props
         const { mapScale, offsetX, offsetY } = this.state
         const scale = { x: mapScale, y: mapScale }
 
         const pubgMapSize = mapName === 'Savage_Main' ? 408000 : 816000
 
-        const focusedPlayer = telemetry.get('players').find(p => p.get('name') === marks.focusedPlayer())
-        const sortedPlayers = sortBy(telemetry.get('players'), player => {
-            if (marks.isPlayerFocused(player.get('name'))) return 1000
-            if (focusedPlayer.get('teammates').includes(player.get('name'))) return 900
-            return marks.trackedPlayers().indexOf(player.get('name'))
+        // The order players are added to the canvas determines their relative z-index. We want to render
+        // focused players on top, then tracked, etc, so we need to sort the players. We want dead players
+        // below everything else, so we have to do this sort on every render. We use ~ and @ as they wrap
+        // the ASCII range and we want a stable sort, so we use the player's name as the default value.
+        const sortedPlayers = sortBy(telemetry.players, player => {
+            if (marks.isPlayerFocused(player.name)) return '~z'
+            if (marks.isPlayerTracked(player.name)) return '~y'
+            if (telemetry.players[marks.focusedPlayer()].teammates.includes(player.name)) return '~x'
+            if (player.health === 0) return '@z'
+            if (player.status === 'dead') return '@y'
+            return player.name
         })
 
         return (
@@ -106,32 +112,32 @@ class Map extends React.Component {
                 >
                     <BackgroundLayer mapName={mapName} mapSize={mapSize} />
                     <Layer>
-                        {<Safezone
+                        {telemetry.safezone && <Safezone
                             mapSize={mapSize}
                             pubgMapSize={pubgMapSize}
                             mapScale={mapScale}
-                            circle={telemetry.get('safezone')}
+                            circle={telemetry.safezone}
                         />}
-                        {<Bluezone
+                        {telemetry.bluezone && <Bluezone
                             mapSize={mapSize}
                             pubgMapSize={pubgMapSize}
                             mapScale={mapScale}
-                            circle={telemetry.get('bluezone')}
+                            circle={telemetry.bluezone}
                         />}
-                        {<Redzone
+                        {telemetry.redzone && <Redzone
                             mapSize={mapSize}
                             pubgMapSize={pubgMapSize}
                             mapScale={mapScale}
-                            circle={telemetry.get('redzone')}
+                            circle={telemetry.redzone}
                         />}
-                        {telemetry.get('packages').map(carePackage =>
+                        {telemetry.carePackages.map(carePackage =>
                             <CarePackage
                                 key={carePackage.key}
                                 mapSize={mapSize}
                                 pubgMapSize={pubgMapSize}
                                 mapScale={mapScale}
                                 carePackage={carePackage}
-                            />,
+                            />
                         )}
                         {map(sortedPlayers, player =>
                             <PlayerDot
@@ -139,24 +145,25 @@ class Map extends React.Component {
                                 mapSize={mapSize}
                                 pubgMapSize={pubgMapSize}
                                 mapScale={mapScale}
-                                key={`dot-${player.get('name')}`}
+                                key={`dot-${player.name}`}
                                 marks={marks}
-                                showName={marks.isPlayerTracked(player.get('name'))}
-                            />,
+                                showName={marks.isPlayerTracked(player.name)}
+                            />
                         )}
-                        {telemetry.get('tracers').map(tracer =>
+                        {telemetry.tracers.map(tracer =>
                             <Tracer
                                 key={tracer.key}
                                 mapSize={mapSize}
                                 pubgMapSize={pubgMapSize}
                                 mapScale={mapScale}
-                                players={telemetry.get('players')}
+                                players={telemetry.players}
                                 tracer={tracer}
-                            />,
+                                msSinceEpoch={msSinceEpoch}
+                            />
                         )}
                     </Layer>
                 </StyledStage>
-                <AliveCount players={telemetry.get('players')} />
+                <AliveCount players={telemetry.players} />
             </StageWrapper>
         )
     }

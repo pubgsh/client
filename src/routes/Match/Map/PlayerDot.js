@@ -22,7 +22,7 @@ const PlayerLabel = ({ visible, player, strokeColor }) => {
                 fill={strokeColor}
                 lineHeight={1}
                 padding={5}
-                text={player.get('name')}
+                text={player.name}
                 fontSize={10}
                 fontFamily="Palanquin"
                 align="center"
@@ -32,13 +32,13 @@ const PlayerLabel = ({ visible, player, strokeColor }) => {
 }
 
 const PlayerDot = ({ player, pubgMapSize, mapSize, marks, mapScale, showName }) => {
-    const diameter = marks.isPlayerHovered(player.get('name')) ? 11 : 8
+    const diameter = marks.isPlayerHovered(player.name) ? 11 : 8
     const scaledDiameter = diameter * clamp(mapScale / 1.4, 1, 1.3)
-    const health = player.get('health') / 100
+    const health = player.health / 100
 
     const mouseEvents = {
         onMouseOver(e) {
-            marks.setHoveredPlayer(player.get('name'))
+            marks.setHoveredPlayer(player.name)
         },
 
         onMouseOut() {
@@ -46,13 +46,13 @@ const PlayerDot = ({ player, pubgMapSize, mapSize, marks, mapScale, showName }) 
         },
 
         onClick(e) {
-            const toToggle = [player.get('name')]
+            const toToggle = [player.name]
 
             if (e.evt.shiftKey) {
-                toToggle.push(...player.get('teammates'))
+                toToggle.push(...player.teammates)
             }
 
-            if (marks.isPlayerTracked(player.get('name'))) {
+            if (marks.isPlayerTracked(player.name)) {
                 marks.setHoveredPlayer(null)
             }
 
@@ -60,11 +60,10 @@ const PlayerDot = ({ player, pubgMapSize, mapSize, marks, mapScale, showName }) 
         },
     }
 
-
     return (
         <Group
-            x={toScale(pubgMapSize, mapSize, player.getIn(['location', 'x']))}
-            y={toScale(pubgMapSize, mapSize, player.getIn(['location', 'y']))}
+            x={toScale(pubgMapSize, mapSize, player.location.x)}
+            y={toScale(pubgMapSize, mapSize, player.location.y)}
             scale={{ x: 1 / mapScale, y: 1 / mapScale }}
         >
             <Circle
@@ -83,7 +82,7 @@ const PlayerDot = ({ player, pubgMapSize, mapSize, marks, mapScale, showName }) 
             />
             <PlayerLabel
                 player={player}
-                visible={showName || marks.isPlayerHovered(player.get('name'))}
+                visible={showName || marks.isPlayerHovered(player.name)}
                 strokeColor={getPlayerColor(marks, player)}
             />
         </Group>

@@ -21,9 +21,9 @@ const rosterPalette = {
 }
 
 export const getPlayerColor = (marks, player) => {
-    if (marks.focusedPlayer() === player.get('name')) {
+    if (marks.focusedPlayer() === player.name) {
         return palette.focused
-    } else if (player.get('teammates').includes(marks.focusedPlayer())) {
+    } else if (player.teammates.includes(marks.focusedPlayer())) {
         return palette.teammate
     }
 
@@ -31,14 +31,14 @@ export const getPlayerColor = (marks, player) => {
 }
 
 export const getRosterColor = (marks, player) => {
-    const dead = player.get('status') === 'dead'
-    const knocked = player.get('status') !== 'dead' && player.get('health') === 0
+    const dead = player.status === 'dead'
+    const knocked = player.status !== 'dead' && player.health === 0
 
     if (knocked) {
         return rosterPalette.knocked
-    } else if (marks.focusedPlayer() === player.get('name')) {
+    } else if (marks.focusedPlayer() === player.name) {
         return dead ? rosterPalette.deadTeammate : rosterPalette.focused
-    } else if (player.get('teammates').includes(marks.focusedPlayer())) {
+    } else if (player.teammates.includes(marks.focusedPlayer())) {
         return dead ? rosterPalette.deadTeammate : rosterPalette.teammate
     }
 
@@ -46,9 +46,9 @@ export const getRosterColor = (marks, player) => {
 }
 
 export const getStatusColor = (marks, player) => {
-    if (player.get('status') === 'dead') {
-        const isTeammate = player.get('teammates').includes(marks.focusedPlayer())
-        const isFocused = marks.focusedPlayer() === player.get('name')
+    if (player.status === 'dead') {
+        const isTeammate = player.teammates.includes(marks.focusedPlayer())
+        const isFocused = marks.focusedPlayer() === player.name
 
         if (isTeammate || isFocused) {
             return palette.deadTeammate
@@ -57,7 +57,7 @@ export const getStatusColor = (marks, player) => {
         return palette.dead
     }
 
-    if (player.get('status') !== 'dead' && player.get('health') === 0) {
+    if (player.status !== 'dead' && player.health === 0) {
         return palette.knocked
     }
 

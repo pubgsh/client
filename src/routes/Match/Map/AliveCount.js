@@ -1,4 +1,5 @@
 import React from 'react'
+import { filter } from 'lodash'
 import styled from 'styled-components'
 
 const Wrapper = styled.div`
@@ -38,7 +39,7 @@ const AliveCount = ({ players }) => {
         return null
     }
 
-    const aliveCount = players.filter(p => p.get('status') === 'alive').length
+    const aliveCount = Object.keys(players).length - filter(players, p => p.status === 'dead').length
 
     return (
         <Wrapper>

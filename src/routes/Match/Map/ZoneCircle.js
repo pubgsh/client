@@ -5,12 +5,12 @@ import { toScale } from '../../../lib/canvas-math.js'
 const ZoneCircle = ({ pubgMapSize, mapSize, mapScale, circle, color, background }) => {
     return (
         <Circle
-            x={toScale(pubgMapSize, mapSize, circle.get('x'))}
-            y={toScale(pubgMapSize, mapSize, circle.get('y'))}
+            x={toScale(pubgMapSize, mapSize, circle.x)}
+            y={toScale(pubgMapSize, mapSize, circle.y)}
             fill={background}
             stroke={color}
-            width={toScale(pubgMapSize, mapSize, circle.get('radius') * 2)}
-            height={toScale(pubgMapSize, mapSize, circle.get('radius') * 2)}
+            width={toScale(pubgMapSize, mapSize, circle.radius * 2)}
+            height={toScale(pubgMapSize, mapSize, circle.radius * 2)}
             strokeWidth={1 / mapScale}
         />
     )

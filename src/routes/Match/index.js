@@ -12,6 +12,7 @@ import AutoplayControls from './AutoplayControls.js'
 import MatchInfo from './MatchInfo.js'
 import HelpModal from './HelpModal.js'
 import Telemetry from '../../models/Telemetry.js'
+import TelemetryWorker from '../../models/Telemetry.worker.js'
 
 // -----------------------------------------------------------------------------
 // Styled Components -----------------------------------------------------------
@@ -21,7 +22,7 @@ const MatchContainer = styled.div`
     display: grid;
     grid-template-columns: 1fr 170px;
     border: 0px solid #eee;
-    overflow: hidden;
+    overflow: visible;
     margin: 0 auto;
 `
 
@@ -141,9 +142,6 @@ class Match extends React.Component {
 
     loadTelemetry = async () => {
         console.log('Loading telemetry...')
-        this.setState({ telemetry: null, telemetryLoading: true })
-
-        const res = await fetch(this.props.data.match.telemetryUrl)
 
         let { focusedPlayer } = this.state
         if (!this.props.data.match.players.some(p => this.marks.isPlayerFocused(p.name))) {
@@ -153,14 +151,22 @@ class Match extends React.Component {
             focusedPlayer = this.props.data.match.players.find(p => p.id === playerId).name
         }
 
-        const telemetryData = await res.json()
-        const telemetry = Telemetry(this.props.data.match, telemetryData, focusedPlayer)
+        this.setState({ telemetry: null, telemetryLoading: true })
 
-        this.setState(prevState => ({
-            telemetry,
-            telemetryLoading: false,
-            focusedPlayer,
-        }))
+        const telemetryWorker = new TelemetryWorker()
+
+        telemetryWorker.addEventListener('message', ({ data: state }) => {
+            const telemetry = Telemetry(state)
+
+            this.setState(prevState => ({
+                telemetry,
+                telemetryLoading: false,
+                focusedPlayer,
+                rosters: telemetry.finalRoster(focusedPlayer),
+            }))
+        })
+
+        telemetryWorker.postMessage({ match: this.props.data.match, focusedPlayer })
     }
 
     // -------------------------------------------------------------------------
@@ -169,7 +175,7 @@ class Match extends React.Component {
 
     render() {
         const { data: { loading, error, match } } = this.props
-        const { telemetry, mapSize } = this.state
+        const { telemetry, mapSize, rosters } = this.state
 
         if (loading) return 'Loading...'
         if (error) return <p>An error occurred :(</p>
@@ -206,6 +212,7 @@ class Match extends React.Component {
                                         telemetry={currentTelemetry}
                                         mapSize={mapSize}
                                         marks={this.marks}
+                                        msSinceEpoch={msSinceEpoch}
                                     />
                                     <HelpModal mapSize={mapSize} />
                                 </MapContainer>
@@ -214,6 +221,7 @@ class Match extends React.Component {
                                     <Roster
                                         match={match}
                                         telemetry={currentTelemetry}
+                                        rosters={rosters}
                                         marks={this.marks}
                                     />
                                 </RosterContainer>

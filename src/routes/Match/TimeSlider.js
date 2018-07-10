@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import Slider, { createSliderWithTooltip } from 'rc-slider'
+import Slider from 'rc-slider'
 import 'rc-slider/assets/index.css'
 
 const getDurationFormat = ms => {
@@ -10,11 +10,26 @@ const getDurationFormat = ms => {
     return `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}.${decis}`
 }
 
-const SliderWithTooltip = createSliderWithTooltip(Slider)
+const SliderContainer = styled.div`
+    position: relative;
+`
 
-const StyledSlider = styled(SliderWithTooltip)`
+const StyledSlider = styled(Slider)`
     padding-top: 5px;
     margin-top: 12px;
+`
+
+const Tooltip = styled.div.attrs({
+    style: ({ value, durationSeconds }) => ({
+        left: `${value / (durationSeconds * 1000) * 100}%`,
+    }),
+})`
+    position: absolute;
+    top: -8px;
+    font-size: 12px;
+    margin-left: -35px;
+    width: 70px;
+    text-align: center;
 `
 
 class TimeSlider extends React.PureComponent {
@@ -22,21 +37,17 @@ class TimeSlider extends React.PureComponent {
         const { value, stopAutoplay, onChange, durationSeconds } = this.props
 
         return (
-            <StyledSlider
-                min={1000}
-                max={(durationSeconds + 11) * 1000}
-                step={100}
-                onChange={onChange}
-                onBeforeChange={stopAutoplay}
-                value={value}
-                tipFormatter={getDurationFormat}
-                tipProps={{
-                    visible: true,
-                    placement: 'top',
-                    align: { offset: [0, 8] },
-                    overlayStyle: { zIndex: 1 },
-                }}
-            />
+            <SliderContainer>
+                <StyledSlider
+                    min={1000}
+                    max={durationSeconds * 1000}
+                    step={100}
+                    onChange={onChange}
+                    onBeforeChange={stopAutoplay}
+                    value={value}
+                />
+                <Tooltip value={value} durationSeconds={durationSeconds}>{getDurationFormat(value)}</Tooltip>
+            </SliderContainer>
         )
     }
 }

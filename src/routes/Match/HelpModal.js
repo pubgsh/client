@@ -96,6 +96,7 @@ class HelpModal extends React.PureComponent {
                                 <li>Click on dot or roster entry to toggle pinning of their name</li>
                                 <li>Shift+Click on player dot to toggle pinning of their name + teammates</li>
                                 <li>Tracked player names are underlined on the roster</li>
+                                <li>Hover on care packages to view contents</li>
                             </ul>
                         </section>
 

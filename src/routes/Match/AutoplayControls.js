@@ -1,11 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
-import Slider, { createSliderWithTooltip } from 'rc-slider'
+import Slider from 'rc-slider'
 import 'rc-slider/assets/index.css'
 
-const SliderWithTooltip = createSliderWithTooltip(Slider)
-
-const StyledSlider = styled(SliderWithTooltip)`
+const StyledSlider = styled(Slider)`
     padding-top: 5px;
     margin-top: 12px;
     grid-column: 2;
@@ -25,6 +23,24 @@ const ControlsWrapper = styled.div`
     display: grid;
 `
 
+const SliderContainer = styled.div`
+    position: relative;
+    grid-column: 2;
+`
+
+const Tooltip = styled.div.attrs({
+    style: ({ value, max }) => ({
+        left: `${value / max * 100}%`,
+    }),
+})`
+    position: absolute;
+    top: -8px;
+    font-size: 12px;
+    margin-left: -35px;
+    width: 70px;
+    text-align: center;
+`
+
 class AutoplayControls extends React.PureComponent {
     render() {
         const { autoplay, toggleAutoplay, changeSpeed, autoplaySpeed } = this.props
@@ -33,19 +49,22 @@ class AutoplayControls extends React.PureComponent {
                 <PlayButton className="button" type="submit" onClick={toggleAutoplay}>
                     <i className={`fi-${autoplay ? 'pause' : 'play'}`} />
                 </PlayButton>
-                <StyledSlider
-                    min={1}
-                    max={40}
-                    value={autoplaySpeed}
-                    onChange={changeSpeed}
-                    tipFormatter={v => `${v}x`}
-                    tipProps={{
-                        visible: true,
-                        placement: 'top',
-                        align: { offset: [0, 8] },
-                        overlayStyle: { zIndex: 1 },
-                    }}
-                />
+                <SliderContainer>
+                    <StyledSlider
+                        min={1}
+                        max={40}
+                        value={autoplaySpeed}
+                        onChange={changeSpeed}
+                        tipFormatter={v => `${v}x`}
+                        tipProps={{
+                            visible: true,
+                            placement: 'top',
+                            align: { offset: [0, 8] },
+                            overlayStyle: { zIndex: 1 },
+                        }}
+                    />
+                    <Tooltip value={autoplaySpeed} max={40}>{autoplaySpeed}x</Tooltip>
+                </SliderContainer>
             </ControlsWrapper>
         )
     }
