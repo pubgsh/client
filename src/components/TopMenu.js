@@ -82,7 +82,12 @@ class TopMenu extends React.Component {
 
     search = e => {
         if (e) e.preventDefault()
-        this.props.history.push(`/${this.state.searchText}/${this.state.shardId}`)
+        const newLocation = `/${this.state.searchText}/${this.state.shardId}`
+        if (newLocation === this.props.history.location.pathname) {
+            window.location.reload()
+        } else {
+            this.props.history.push(newLocation)
+        }
     }
 
     render() {
