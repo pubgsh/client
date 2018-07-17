@@ -7,7 +7,7 @@ export const palette = {
     enemyRoster: '#000000',
     dead: '#D2252580',
     deadTeammate: '#FF5ABAA0',
-    knocked: '#B6610FB0',
+    knocked: '#FDFE0BB0',
     base: '#14141480',
 }
 
