@@ -1,8 +1,9 @@
 import React from 'react'
-import { xor, union, difference } from 'lodash'
+import { xor, union, difference, merge, cloneDeep, set } from 'lodash'
 import { graphql, compose } from 'react-apollo'
 import gql from 'graphql-tag'
 import styled from 'styled-components'
+import * as Options from './Options.js'
 import Map from './Map/index.js'
 import Roster from './Roster/index.js'
 import TimeTracker from './Time/TimeTracker.js'
@@ -114,6 +115,23 @@ class Match extends React.Component {
     componentDidMount() {
         window.addEventListener('resize', this.updateMapSize.bind(this))
         this.updateMapSize()
+        this.loadOptions()
+    }
+
+    loadOptions = () => {
+        const localOptions = JSON.parse(localStorage.getItem(Options.STORAGE_KEY) || '{}')
+        const options = merge(Options.DEFAULT_OPTIONS, localOptions)
+
+        const setOption = (key, val) => {
+            this.setState(prevState => {
+                const newOptions = cloneDeep(prevState.options)
+                set(newOptions, key, val)
+                localStorage.setItem(Options.STORAGE_KEY, JSON.stringify(newOptions))
+                return { options: newOptions }
+            })
+        }
+
+        this.setState({ options, setOption })
     }
 
     updateMapSize = () => {
@@ -175,7 +193,7 @@ class Match extends React.Component {
 
     render() {
         const { data: { loading, error, match } } = this.props
-        const { telemetry, mapSize, rosters } = this.state
+        const { telemetry, mapSize, rosters, options, setOption } = this.state
 
         if (loading) return 'Loading...'
         if (error) return <p>An error occurred :(</p>
@@ -183,53 +201,58 @@ class Match extends React.Component {
         if (!telemetry) return 'Loading telemetry...'
 
         return (
-            <TimeTracker
-                durationSeconds={match.durationSeconds}
-                render={({ msSinceEpoch, timeControls }) =>
-                    <MatchInstant
-                        telemetry={telemetry}
-                        msSinceEpoch={msSinceEpoch}
-                        render={({ currentTelemetry }) =>
-                            <MatchContainer id="MatchContainer">
-                                <MapContainer id="MapContainer" isDotHovered={!!this.marks.hoveredPlayer()}>
-                                    <MatchHeader mapSize={mapSize}>
-                                        <MatchInfo match={match} marks={this.marks} />
-                                        <TimeSlider
-                                            value={msSinceEpoch}
-                                            stopAutoplay={timeControls.stopAutoplay}
-                                            onChange={timeControls.setMsSinceEpoch}
-                                            durationSeconds={match.durationSeconds}
+            <Options.Context.Provider value={{ options, setOption }}>
+                <TimeTracker
+                    durationSeconds={match.durationSeconds}
+                    render={({ msSinceEpoch, timeControls }) =>
+                        <MatchInstant
+                            telemetry={telemetry}
+                            msSinceEpoch={msSinceEpoch}
+                            render={({ currentTelemetry }) =>
+                                <MatchContainer id="MatchContainer">
+                                    <MapContainer
+                                        id="MapContainer"
+                                        isDotHovered={!!this.marks.hoveredPlayer()}
+                                    >
+                                        <MatchHeader mapSize={mapSize}>
+                                            <MatchInfo match={match} marks={this.marks} />
+                                            <TimeSlider
+                                                value={msSinceEpoch}
+                                                stopAutoplay={timeControls.stopAutoplay}
+                                                onChange={timeControls.setMsSinceEpoch}
+                                                durationSeconds={match.durationSeconds}
+                                            />
+                                            <AutoplayControls
+                                                autoplay={timeControls.autoplay}
+                                                autoplaySpeed={timeControls.autoplaySpeed}
+                                                toggleAutoplay={timeControls.toggleAutoplay}
+                                                changeSpeed={timeControls.setAutoplaySpeed}
+                                            />
+                                        </MatchHeader>
+                                        <Map
+                                            match={match}
+                                            telemetry={currentTelemetry}
+                                            mapSize={mapSize}
+                                            marks={this.marks}
+                                            msSinceEpoch={msSinceEpoch}
                                         />
-                                        <AutoplayControls
-                                            autoplay={timeControls.autoplay}
-                                            autoplaySpeed={timeControls.autoplaySpeed}
-                                            toggleAutoplay={timeControls.toggleAutoplay}
-                                            changeSpeed={timeControls.setAutoplaySpeed}
+                                        <HelpModal mapSize={mapSize} />
+                                    </MapContainer>
+                                    <RosterContainer mapSize={mapSize}>
+                                        <RosterHeader>Name (Kills)</RosterHeader>
+                                        <Roster
+                                            match={match}
+                                            telemetry={currentTelemetry}
+                                            rosters={rosters}
+                                            marks={this.marks}
                                         />
-                                    </MatchHeader>
-                                    <Map
-                                        match={match}
-                                        telemetry={currentTelemetry}
-                                        mapSize={mapSize}
-                                        marks={this.marks}
-                                        msSinceEpoch={msSinceEpoch}
-                                    />
-                                    <HelpModal mapSize={mapSize} />
-                                </MapContainer>
-                                <RosterContainer mapSize={mapSize}>
-                                    <RosterHeader>Name (Kills)</RosterHeader>
-                                    <Roster
-                                        match={match}
-                                        telemetry={currentTelemetry}
-                                        rosters={rosters}
-                                        marks={this.marks}
-                                    />
-                                </RosterContainer>
-                            </MatchContainer>
-                        }
-                    />
-                }
-            />
+                                    </RosterContainer>
+                                </MatchContainer>
+                            }
+                        />
+                    }
+                />
+            </Options.Context.Provider>
         )
     }
 }

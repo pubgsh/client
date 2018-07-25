@@ -1,7 +1,22 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import { getRosterColor } from '../../../lib/player-color.js'
+import * as Options from '../Options.js'
+
+const getRosterColor = ({ colors }, marks, player) => {
+    const dead = player.status === 'dead'
+    const knocked = player.status !== 'dead' && player.health === 0
+
+    if (knocked) {
+        return colors.roster.knocked
+    } else if (marks.focusedPlayer() === player.name) {
+        return dead ? colors.roster.deadTeammate : colors.roster.focused
+    } else if (player.teammates.includes(marks.focusedPlayer())) {
+        return dead ? colors.roster.deadTeammate : colors.roster.teammate
+    }
+
+    return dead ? colors.roster.dead : colors.roster.enemy
+}
 
 const TeamGroup = styled.ul`
     list-style-type: none;
@@ -38,11 +53,9 @@ const PlayerLink = ({ match, marks, player }) => {
     )
 }
 
-class Roster extends React.Component {
-    render() {
-        const { match, telemetry, marks, rosters } = this.props
-
-        return rosters.map(r => {
+const Roster = ({ match, telemetry, marks, rosters }) => (
+    <Options.Context.Consumer>
+        {({ options }) => rosters.map(r => {
             return (
                 <TeamGroup key={`roster-${r[0]}`}>
                     {r.map(playerName => {
@@ -54,7 +67,7 @@ class Roster extends React.Component {
                                 onMouseEnter={() => marks.setHoveredPlayer(p.name)}
                                 onMouseLeave={() => marks.setHoveredPlayer(null)}
                                 style={{
-                                    color: getRosterColor(marks, p),
+                                    color: getRosterColor(options, marks, p),
                                     textDecoration: marks.isPlayerTracked(p.name) ? 'underline' : '',
                                 }}
                             >
@@ -65,8 +78,8 @@ class Roster extends React.Component {
                     })}
                 </TeamGroup>
             )
-        })
-    }
-}
+        })}
+    </Options.Context.Consumer>
+)
 
 export default Roster

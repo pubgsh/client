@@ -8,6 +8,7 @@ import BackgroundLayer from './BackgroundLayer.js'
 import CarePackage from './CarePackage.js'
 import Tracer from './Tracer.js'
 import AliveCount from './AliveCount.js'
+import * as Options from '../Options.js'
 
 const SCALE_STEP = 1.2
 const MIN_SCALE = 1
@@ -97,74 +98,79 @@ class Map extends React.Component {
         })
 
         return (
-            <StageWrapper>
-                <StyledStage
-                    width={mapSize}
-                    height={mapSize}
-                    scale={scale}
-                    x={offsetX}
-                    y={offsetY}
-                    dragBoundFunc={this.dragBoundFunc}
-                    onDragEnd={this.handleDragEnd}
-                    onWheel={this.handleMousewheel}
-                    draggable="true"
-                    hitGraphEnabled={false}
-                >
-                    <BackgroundLayer mapName={mapName} mapSize={mapSize} />
-                    <Layer>
-                        {telemetry.safezone && <Safezone
-                            mapSize={mapSize}
-                            pubgMapSize={pubgMapSize}
-                            mapScale={mapScale}
-                            circle={telemetry.safezone}
-                        />}
-                        {telemetry.bluezone && <Bluezone
-                            mapSize={mapSize}
-                            pubgMapSize={pubgMapSize}
-                            mapScale={mapScale}
-                            circle={telemetry.bluezone}
-                        />}
-                        {telemetry.redzone && <Redzone
-                            mapSize={mapSize}
-                            pubgMapSize={pubgMapSize}
-                            mapScale={mapScale}
-                            circle={telemetry.redzone}
-                        />}
-                        {telemetry.carePackages.map(carePackage =>
-                            <CarePackage
-                                key={carePackage.key}
-                                mapSize={mapSize}
-                                pubgMapSize={pubgMapSize}
-                                mapScale={mapScale}
-                                carePackage={carePackage}
-                            />
-                        )}
-                        {map(sortedPlayers, player =>
-                            <PlayerDot
-                                player={player}
-                                mapSize={mapSize}
-                                pubgMapSize={pubgMapSize}
-                                mapScale={mapScale}
-                                key={`dot-${player.name}`}
-                                marks={marks}
-                                showName={marks.isPlayerTracked(player.name)}
-                            />
-                        )}
-                        {telemetry.tracers.map(tracer =>
-                            <Tracer
-                                key={tracer.key}
-                                mapSize={mapSize}
-                                pubgMapSize={pubgMapSize}
-                                mapScale={mapScale}
-                                players={telemetry.players}
-                                tracer={tracer}
-                                msSinceEpoch={msSinceEpoch}
-                            />
-                        )}
-                    </Layer>
-                </StyledStage>
-                <AliveCount players={telemetry.players} />
-            </StageWrapper>
+            <Options.Context.Consumer>
+                {({ options }) => (
+                    <StageWrapper>
+                        <StyledStage
+                            width={mapSize}
+                            height={mapSize}
+                            scale={scale}
+                            x={offsetX}
+                            y={offsetY}
+                            dragBoundFunc={this.dragBoundFunc}
+                            onDragEnd={this.handleDragEnd}
+                            onWheel={this.handleMousewheel}
+                            draggable="true"
+                            hitGraphEnabled={false}
+                        >
+                            <BackgroundLayer mapName={mapName} mapSize={mapSize} />
+                            <Layer>
+                                {telemetry.safezone && <Safezone
+                                    mapSize={mapSize}
+                                    pubgMapSize={pubgMapSize}
+                                    mapScale={mapScale}
+                                    circle={telemetry.safezone}
+                                />}
+                                {telemetry.bluezone && <Bluezone
+                                    mapSize={mapSize}
+                                    pubgMapSize={pubgMapSize}
+                                    mapScale={mapScale}
+                                    circle={telemetry.bluezone}
+                                />}
+                                {telemetry.redzone && <Redzone
+                                    mapSize={mapSize}
+                                    pubgMapSize={pubgMapSize}
+                                    mapScale={mapScale}
+                                    circle={telemetry.redzone}
+                                />}
+                                {telemetry.carePackages.map(carePackage =>
+                                    <CarePackage
+                                        key={carePackage.key}
+                                        mapSize={mapSize}
+                                        pubgMapSize={pubgMapSize}
+                                        mapScale={mapScale}
+                                        carePackage={carePackage}
+                                    />
+                                )}
+                                {map(sortedPlayers, player =>
+                                    <PlayerDot
+                                        options={options}
+                                        player={player}
+                                        mapSize={mapSize}
+                                        pubgMapSize={pubgMapSize}
+                                        mapScale={mapScale}
+                                        key={`dot-${player.name}`}
+                                        marks={marks}
+                                        showName={marks.isPlayerTracked(player.name)}
+                                    />
+                                )}
+                                {telemetry.tracers.map(tracer =>
+                                    <Tracer
+                                        key={tracer.key}
+                                        mapSize={mapSize}
+                                        pubgMapSize={pubgMapSize}
+                                        mapScale={mapScale}
+                                        players={telemetry.players}
+                                        tracer={tracer}
+                                        msSinceEpoch={msSinceEpoch}
+                                    />
+                                )}
+                            </Layer>
+                        </StyledStage>
+                        <AliveCount players={telemetry.players} />
+                    </StageWrapper>
+                )}
+            </Options.Context.Consumer>
         )
     }
 }

@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { palette } from '../../lib/player-color.js'
+import * as Options from './Options.js'
 
 const ModalContainer = styled.div`
     top: 63px;
@@ -79,62 +79,67 @@ class HelpModal extends React.PureComponent {
         window.removeEventListener('keydown', this.onKeydown)
     }
 
-
+    /* eslint-disable max-len */
     render() {
         if (!this.state.visible) {
             return <OpenButton onClick={this.toggleVisibility}>?</OpenButton>
         }
 
         return (
-            <ModalContainer mapSize={this.props.mapSize} visible={this.state.visible}>
-                {this.state.visible &&
-                    <HelpText mapSize={this.props.mapSize}>
-                        <section>
-                            <h5>General Usage</h5>
-                            <ul>
-                                <li>Zoom in and out by scrolling, click and drag to pan</li>
-                                <li>Click on dot or roster entry to toggle pinning of their name</li>
-                                <li>Shift+Click on player dot to toggle pinning of their name + teammates</li>
-                                <li>Tracked player names are underlined on the roster</li>
-                                <li>Hover on care packages to view contents</li>
-                            </ul>
-                        </section>
+            <Options.Context.Consumer>
+                {({ options: { colors: { dot } } }) => (
+                    <ModalContainer mapSize={this.props.mapSize} visible={this.state.visible}>
+                        {this.state.visible &&
+                            <HelpText mapSize={this.props.mapSize}>
+                                <section>
+                                    <h5>General Usage</h5>
+                                    <ul>
+                                        <li>Zoom in and out by scrolling, click and drag to pan</li>
+                                        <li>Click on dot or roster entry to toggle pinning of their name</li>
+                                        <li>Shift+Click on player dot to toggle pinning of their name + teammates</li>
+                                        <li>Tracked player names are underlined on the roster</li>
+                                        <li>Hover on care packages to view contents</li>
+                                    </ul>
+                                </section>
 
-                        <section>
-                            <h5>Colors</h5>
-                            <ul>
-                                <li style={{ color: palette.focused }}>Focused player</li>
-                                <li style={{ color: palette.teammate }}>Focused player’s teammates</li>
-                                <li style={{ color: palette.deadTeammate }}>Dead focused player/teammate</li>
-                                <li style={{ color: palette.enemy }}>Living enemies</li>
-                                <li style={{ color: palette.dead }}>Dead enemies</li>
-                                <li style={{ color: palette.knocked }}>Knocked down</li>
-                            </ul>
-                        </section>
+                                <section>
+                                    <h5>Colors</h5>
+                                    <ul>
+                                        <li style={{ color: dot.focused }}>Focused player</li>
+                                        <li style={{ color: dot.teammate }}>Focused player’s teammates</li>
+                                        <li style={{ color: dot.deadTeammate }}>Dead focused player/teammate</li>
+                                        <li style={{ color: dot.dead }}>Dead enemies</li>
+                                        <li style={{ color: dot.knocked }}>Knocked down</li>
+                                        <li style={{ color: dot.enemy }}>Living enemies</li>
+                                    </ul>
+                                </section>
 
-                        <section>
-                            <h5>Keyboard Shortcuts</h5>
-                            <ul>
-                                <li>&lt;Space&gt;: Play / Pause</li>
-                                <li>&lt;Left/Right arrows&gt;: Backward/Forward in time (step = speed)</li>
-                                <li>&lt;Up/Down arrows&gt;: Increase/Decrease play speed</li>
-                                <li>&lt;?&gt;: Show/hide this help screen</li>
-                            </ul>
-                        </section>
+                                <section>
+                                    <h5>Keyboard Shortcuts</h5>
+                                    <ul>
+                                        <li>&lt;Space&gt;: Play / Pause</li>
+                                        <li>&lt;Left/Right arrows&gt;: Backward/Forward in time (step = speed)</li>
+                                        <li>&lt;Up/Down arrows&gt;: Increase/Decrease play speed</li>
+                                        <li>&lt;?&gt;: Show/hide this help screen</li>
+                                    </ul>
+                                </section>
 
-                        <section>
-                            <h5>Info</h5>
-                            <ul>
-                                <li>Matches are usually available ~10 minutes after completion</li>
-                                <li>Player HP is represented by the % of the circle that’s filled in</li>
-                            </ul>
-                        </section>
-                    </HelpText>
-                }
-                <CloseButton onClick={this.toggleVisibility}>X</CloseButton>
-            </ModalContainer>
+                                <section>
+                                    <h5>Info</h5>
+                                    <ul>
+                                        <li>Matches are usually available ~10 minutes after completion</li>
+                                        <li>Player HP is represented by the % of the circle that’s filled in</li>
+                                    </ul>
+                                </section>
+                            </HelpText>
+                        }
+                        <CloseButton onClick={this.toggleVisibility}>X</CloseButton>
+                    </ModalContainer>
+                )}
+            </Options.Context.Consumer>
         )
     }
+    /* eslint-enable max-len */
 }
 
 export default HelpModal
