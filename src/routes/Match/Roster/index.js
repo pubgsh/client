@@ -12,6 +12,7 @@ const TeamGroup = styled.ul`
     letter-spacing: 0.02rem;
     margin: 3px 0;
     padding: 4px;
+    background: #F7F7F7;
 `
 
 const PlayerItem = styled.li`
