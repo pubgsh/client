@@ -91,8 +91,8 @@ class Map extends React.Component {
             if (marks.isPlayerFocused(player.name)) return '~z'
             if (marks.isPlayerTracked(player.name)) return '~y'
             if (telemetry.players[marks.focusedPlayer()].teammates.includes(player.name)) return '~x'
-            if (player.health === 0) return '@z'
             if (player.status === 'dead') return '@y'
+            if (player.health === 0) return '@z'
             return player.name
         })
 
