@@ -24,6 +24,9 @@ const TopMenuContainer = styled.div`
     position: relative;
     margin: 0 auto;
     width: 99%;
+    @media (max-width: 700px) {
+        width: 97%;
+    }
 `
 
 const HeaderLink = styled(Link)`
@@ -40,12 +43,30 @@ const AboutLink = styled(HeaderLink)`
     position: absolute;
     right: 0;
 `
+const BackLink = styled(HeaderLink)`
+    max-height: 6.5rem;
+    overflow: hidden;
+`
 
 const SearchGroup = styled.div`
     margin: 0 auto;
 
     form {
         margin: 0;
+    }
+
+    a.back-link {
+        display: none;
+    }
+
+    @media (max-width: 700px) {
+        a.back-link {
+            display: block;
+        }
+
+        form {
+            display: none;
+        }
     }
 `
 
@@ -109,6 +130,9 @@ class TopMenu extends React.Component {
                             />
                             <SearchButton className="button" type="submit" value="Search" />
                         </form>}
+                        <BackLink className="back-link" to={`/${shardId}/${searchText}`}>
+                            {searchText} ({shardId})
+                        </BackLink>
                     </SearchGroup>
                     <AboutLink to="/about">About</AboutLink>
                 </TopMenuContainer>

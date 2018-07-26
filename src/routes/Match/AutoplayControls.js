@@ -26,6 +26,7 @@ const ControlsWrapper = styled.div`
 const SliderContainer = styled.div`
     position: relative;
     grid-column: 2;
+    margin-right: 10px;
 `
 
 const Tooltip = styled.div.attrs({

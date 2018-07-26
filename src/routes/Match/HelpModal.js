@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import * as Options from './Options.js'
+import MapButton from '../../components/MapButton.js'
 
 const ModalContainer = styled.div`
     top: 63px;
@@ -22,31 +23,22 @@ const ModalContainer = styled.div`
     ul {
         list-style-type: none;
     }
-`
 
-const ToggleButton = styled.button`
-    background: #777777E0;
-    width: 2rem;
-    height: 2rem;
-    position: absolute;
-    margin: 0;
-    padding: 0;
-    border-radius: 0;
-    color: white;
-    line-height: 2rem;
-    padding-left: 2px;
-
-    &:hover {
-        color: white;
+    @media (-moz-touch-enabled: 1), (pointer:coarse) {
+        top: 15px;
     }
 `
 
-const OpenButton = ToggleButton.extend`
+const OpenButton = MapButton.extend`
     top: 63px;
     right: 15px;
+
+    @media (-moz-touch-enabled: 1), (pointer:coarse) {
+        top: 15px;
+    }
 `
 
-const CloseButton = ToggleButton.extend`
+const CloseButton = MapButton.extend`
     top: 0px;
     right: 0px;
 `

@@ -6,7 +6,7 @@ const Wrapper = styled.div`
     position: absolute;
     top: 15px;
     left: 15px;
-    grid-template-columns: 27px;
+    grid-template-columns: 32px;
     text-align: center;
     display: grid;
     font-family: 'Teko';

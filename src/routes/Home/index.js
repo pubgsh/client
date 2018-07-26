@@ -55,11 +55,17 @@ const SearchButton = styled.input`
         line-height: 39px;
         margin-left: 10px;
     }
+
+    @media (max-width: 700px) {
+        && {
+            margin-left: 0;
+        }
+    }
 `
 
 const StyledDropdown = styled(Dropdown)`
-        top: 30px;
-        right: -1px;
+    top: 30px;
+    right: -1px;
 `
 
 const Header = styled.h3`

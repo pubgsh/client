@@ -9,6 +9,7 @@ import CarePackage from './CarePackage.js'
 import Tracer from './Tracer.js'
 import AliveCount from './AliveCount.js'
 import * as Options from '../Options.js'
+import MapButton from '../../../components/MapButton.js'
 
 const SCALE_STEP = 1.2
 const MIN_SCALE = 1
@@ -17,13 +18,36 @@ const CLAMP_MAP = true // TODO: This should be a configurable option
 
 const StageWrapper = styled.div`
     position: relative;
+
+    &:after {
+        content: "";
+        display: block;
+        padding-bottom: 100%;
+    }
 `
 
 const StyledStage = styled(Stage)`
     div.konvajs-content {
         overflow: hidden;
         border-radius: 4px;
+        position: absolute !important;
     }
+`
+
+const ZoomControls = styled.div`
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+`
+
+const ZoomInButton = MapButton.extend`
+    bottom: 40px;
+    right: 15px;
+`
+
+const ZoomOutButton = MapButton.extend`
+    bottom: 15px;
+    right: 15px;
 `
 
 class Map extends React.Component {
@@ -54,15 +78,20 @@ class Map extends React.Component {
     handleMousewheel = e => {
         e.evt.preventDefault()
         const scaleDelta = e.evt.deltaY > 0 ? 1 / SCALE_STEP : SCALE_STEP
+        this.handleZoom(scaleDelta, e.evt.layerX, e.evt.layerY)
+    }
 
+    handleZoom = (scaleDelta, layerX, layerY) => {
+        if (!layerX) layerX = this.props.mapSize / 2 // eslint-disable-line
+        if (!layerY) layerY = this.props.mapSize / 2 // eslint-disable-line
         this.setState(prevState => {
             const newScale = clamp(prevState.mapScale * scaleDelta, MIN_SCALE, MAX_SCALE)
 
-            const mousePointX = e.evt.layerX / prevState.mapScale - prevState.offsetX / prevState.mapScale
-            const mousePointY = e.evt.layerY / prevState.mapScale - prevState.offsetY / prevState.mapScale
+            const mousePointX = layerX / prevState.mapScale - prevState.offsetX / prevState.mapScale
+            const mousePointY = layerY / prevState.mapScale - prevState.offsetY / prevState.mapScale
 
-            let offsetX = -(mousePointX - e.evt.layerX / newScale) * newScale
-            let offsetY = -(mousePointY - e.evt.layerY / newScale) * newScale
+            let offsetX = -(mousePointX - layerX / newScale) * newScale
+            let offsetY = -(mousePointY - layerY / newScale) * newScale
 
             if (CLAMP_MAP) {
                 offsetX = clamp(offsetX, -(newScale - 1) * this.props.mapSize, 0)
@@ -100,7 +129,7 @@ class Map extends React.Component {
         return (
             <Options.Context.Consumer>
                 {({ options }) => (
-                    <StageWrapper>
+                    <StageWrapper id="StageWrapper">
                         <StyledStage
                             width={mapSize}
                             height={mapSize}
@@ -168,6 +197,10 @@ class Map extends React.Component {
                             </Layer>
                         </StyledStage>
                         <AliveCount players={telemetry.players} />
+                        <ZoomControls>
+                            <ZoomInButton onClick={() => this.handleZoom(1.3)}>+</ZoomInButton>
+                            <ZoomOutButton onClick={() => this.handleZoom(1 / 1.3)}>-</ZoomOutButton>
+                        </ZoomControls>
                     </StageWrapper>
                 )}
             </Options.Context.Consumer>

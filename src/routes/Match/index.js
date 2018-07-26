@@ -25,12 +25,18 @@ const MatchContainer = styled.div`
     border: 0px solid #eee;
     overflow: visible;
     margin: 0 auto;
+    max-width: calc(100vh + 10px);
+
+    @media (max-width: 700px) {
+        grid-template-columns: 1fr 0px;
+    }
 `
 
 const MapContainer = styled.div`
     grid-column: 1;
     position: relative;
-    cursor: ${props => props.isDotHovered ? 'pointer' : 'normal'}
+    cursor: ${props => props.isDotHovered ? 'pointer' : 'normal'};
+    display: grid;
 `
 
 const RosterContainer = styled.div`
@@ -41,13 +47,23 @@ const RosterContainer = styled.div`
     height: ${props => props.mapSize + 48}px;
     margin: 0 5px;
     padding-right: 5px;
+
+    @media (max-width: 700px) {
+        grid-column: 1;
+        grid-row: 2;
+    }
 `
 
 const MatchHeader = styled.div`
     display: grid;
     grid-template-columns: max-content 1fr max-content;
     margin-bottom: 10px;
-    width: ${props => props.mapSize - 6}px;
+
+    @media (-moz-touch-enabled: 1), (pointer:coarse) {
+        grid-row: 2;
+        margin-top: 10px;
+        margin-bottom: 0;
+    }
 `
 
 const RosterHeader = styled.div`
@@ -135,22 +151,16 @@ class Match extends React.Component {
     }
 
     updateMapSize = () => {
-        const mainContainer = document.getElementById('MainContainer')
-        const containerHeight = window.innerHeight - mainContainer.offsetTop
+        const stageWrapper = document.getElementById('StageWrapper')
 
-        const availableHeight = containerHeight - 95
-        const availableWidth = mainContainer.clientWidth - 170
-        const mapSize = Math.min(availableWidth, availableHeight)
+        if (stageWrapper) {
+            this.setState(ps => {
+                if (ps.mapSize !== stageWrapper.clientWidth) {
+                    return { mapSize: stageWrapper.clientWidth }
+                }
 
-        mainContainer.style.height = `${containerHeight}px`
-
-        const matchContainer = document.getElementById('MatchContainer')
-        if (matchContainer) {
-            matchContainer.style.width = `${mapSize + 170}px`
-        }
-
-        if (this.state.mapSize !== mapSize) {
-            this.setState({ mapSize })
+                return null
+            })
         }
     }
 

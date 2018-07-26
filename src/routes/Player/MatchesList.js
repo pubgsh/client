@@ -8,6 +8,11 @@ import { ordinalSuffix } from 'ordinal-js'
 const MatchesColumn = styled.div`
     text-align: center;
     grid-column: ${props => props.col};
+
+    @media (max-width: 700px) {
+        grid-column: 1;
+        margin-bottom: 2rem;
+    }
 `
 
 const StyledTable = styled.table`

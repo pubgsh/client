@@ -11,6 +11,10 @@ export const MatchesContainer = styled.div`
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     margin-top: 4rem;
+
+    @media (max-width: 700px) {
+        grid-template-columns: 1fr;
+    }
 `
 
 const PlayerHeader = styled.div`
