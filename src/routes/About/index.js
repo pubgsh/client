@@ -52,6 +52,13 @@ export default () =>
             <section>
                 <SectionHeader>Change history</SectionHeader>
 
+                <h5>2018-07-25</h5>
+                <ul>
+                    <li>Basic mobile support</li>
+                    <li>Tweak attachment names</li>
+                    <li>Minor fixes</li>
+                </ul>
+
                 <h5>2018-07-12</h5>
                 <ul>
                     <li>Major rewrite for performance</li>

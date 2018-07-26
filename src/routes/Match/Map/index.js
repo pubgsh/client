@@ -118,12 +118,14 @@ class Map extends React.Component {
         // below everything else, so we have to do this sort on every render. We use ~ and @ as they wrap
         // the ASCII range and we want a stable sort, so we use the player's name as the default value.
         const sortedPlayers = sortBy(telemetry.players, player => {
-            if (marks.isPlayerFocused(player.name)) return '~z'
-            if (marks.isPlayerTracked(player.name)) return '~y'
-            if (telemetry.players[marks.focusedPlayer()].teammates.includes(player.name)) return '~x'
-            if (player.status === 'dead') return '@y'
-            if (player.health === 0) return '@z'
-            return player.name
+            const { name } = player
+
+            if (marks.isPlayerFocused(name)) return '~z'
+            if (marks.isPlayerTracked(name)) return `~y${name}`
+            if (telemetry.players[marks.focusedPlayer()].teammates.includes(name)) return `~x${name}`
+            if (player.status === 'dead') return `@y${name}`
+            if (player.health === 0) return `@z${name}`
+            return name
         })
 
         return (
