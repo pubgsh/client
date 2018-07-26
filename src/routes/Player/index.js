@@ -29,6 +29,11 @@ const PlayerName = styled.h3`
     text-align: center;
 `
 
+const Message = styled.p`
+    width: 100%;
+    text-align: center;
+`
+
 class Player extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         const playerName = get(this.props, 'data.player.name')
@@ -47,8 +52,8 @@ class Player extends React.Component {
     render() {
         const { match, data: { loading, error, player } } = this.props
 
-        if (loading) return <p>Loading matches...</p>
-        if (error) return <p>An error occurred :(</p>
+        if (loading) return <Message>Fetching matches from PUBG...</Message>
+        if (error) return <Message>An error occurred :(</Message>
         if (!player || (isEmpty(player.matches) && !player.rateLimitReset)) {
             return (
                 <MatchesContainer>

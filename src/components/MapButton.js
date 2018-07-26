@@ -13,9 +13,11 @@ const MapButton = styled.button`
     font-size: 1.4rem;
     font-weight: 300;
     padding-left: 2px;
+    border: 1px solid #888;
 
-    &:hover {
+    &:hover, &:focus {
         color: white;
+        border: 1px solid #888;
     }
 `
 

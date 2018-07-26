@@ -27,13 +27,9 @@ const RecentPlayersUl = styled.ul`
     }
 `
 
-const RecentPlayers = () => {
-    const recentPlayers = JSON.parse(localStorage.getItem('recentPlayers') || '[]')
-
-    if (isEmpty(recentPlayers)) return null
-
-    return [
-        <RecentPlayersHeader key="recent-players-header">Recent Searches</RecentPlayersHeader>,
+const RecentPlayers = ({ recentPlayers }) =>
+    <div>
+        <RecentPlayersHeader key="recent-players-header">Recent Searches</RecentPlayersHeader>
         <RecentPlayersUl key="recent-players-ul">
             {recentPlayers.map(p =>
                 <li key={`link-${p.playerName}-${p.shardId}`}>
@@ -42,12 +38,15 @@ const RecentPlayers = () => {
                     </Link>
                 </li>
             )}
-        </RecentPlayersUl>,
-    ]
-}
+        </RecentPlayersUl>
+    </div>
 
 const NameInput = styled.input`
     width: 34rem;
+
+    @media (max-width: 700px) {
+        width: 25rem;
+    }
 `
 
 const SearchButton = styled.input`
@@ -58,7 +57,7 @@ const SearchButton = styled.input`
 
     @media (max-width: 700px) {
         && {
-            margin-left: 0;
+            display: none;
         }
     }
 `
@@ -71,6 +70,11 @@ const StyledDropdown = styled(Dropdown)`
 const Header = styled.h3`
     text-align: center;
     margin-bottom: 5rem;
+    text-transform: uppercase;
+    font-size: 3rem;
+    font-weight: 300;
+    text-decoration: none;
+    color: #222;
 `
 
 const StyledForm = styled.form`
@@ -80,6 +84,7 @@ const StyledForm = styled.form`
 const RandomMatchLink = styled(Link)`
     font-size: 1.1rem;
 `
+
 
 class Home extends React.Component {
     state = { searchText: '', shardId: localStorage.getItem('shardId') || SHARDS[0] }
@@ -106,6 +111,8 @@ class Home extends React.Component {
         const { shardId, searchText } = this.state
         const { data: { sampleMatch: sm } } = this.props
 
+        const recentPlayers = JSON.parse(localStorage.getItem('recentPlayers') || '[]')
+
         return (
             <CenteredContainer>
                 <Header>pubg.sh</Header>
@@ -123,13 +130,13 @@ class Home extends React.Component {
                     <SearchButton className="button-primary" type="submit" value="Search" />
                 </StyledForm>
 
-                {sm &&
+                {isEmpty(recentPlayers) && sm &&
                     <RandomMatchLink to={`/${sm.playerName}/${sm.shardId}/${sm.id}`}>
                         (Or just view a random match)
                     </RandomMatchLink>
                 }
 
-                <RecentPlayers />
+                {!isEmpty(recentPlayers) && <RecentPlayers recentPlayers={recentPlayers} />}
             </CenteredContainer>
         )
     }

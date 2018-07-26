@@ -72,6 +72,11 @@ const RosterHeader = styled.div`
     font-size: 1.1rem;
 `
 
+const Message = styled.p`
+    width: 100%;
+    text-align: center;
+`
+
 class Match extends React.Component {
     state = {
         matchId: null,
@@ -205,10 +210,10 @@ class Match extends React.Component {
         const { data: { loading, error, match } } = this.props
         const { telemetry, mapSize, rosters, options, setOption } = this.state
 
-        if (loading) return 'Loading...'
-        if (error) return <p>An error occurred :(</p>
-        if (!match) return 'Match not found'
-        if (!telemetry) return 'Loading telemetry...'
+        if (loading) return <Message>Loading...</Message>
+        if (error) return <Message>An error occurred :(</Message>
+        if (!match) return <Message>Match not found</Message>
+        if (!telemetry) return <Message>Loading telemetry...</Message>
 
         return (
             <Options.Context.Provider value={{ options, setOption }}>

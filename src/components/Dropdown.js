@@ -43,10 +43,6 @@ const DropdownContainer = styled.div`
             }
         }
     }
-
-    @media (max-width: 700px) {
-        margin-right: 0;
-    }
 `
 
 const Downarrow = styled.div`

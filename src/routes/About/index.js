@@ -1,9 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 
-const Header = styled.h1`
-    padding-top: 50px;
-    padding-bottom: 30px;
+const Header = styled.h3`
+    margin-top: 4rem;
     text-align: center;
 `
 
