@@ -119,20 +119,29 @@ class TopMenu extends React.Component {
                 <TopMenuContainer>
                     <HomeLink to="/">pubg.sh</HomeLink>
                     <SearchGroup>
-                        {!this.props.hidePlayerSearch && <form onSubmit={this.search}>
-                            <Dropdown value={shardId} options={SHARDS} onChange={this.handleDropdownChange} />
-                            <NameInput
-                                type="text"
-                                name="searchText"
-                                onChange={this.handleInputChange}
-                                placeholder="Player Name (Case Sensitive)"
-                                value={searchText}
-                            />
-                            <SearchButton className="button" type="submit" value="Search" />
-                        </form>}
-                        <BackLink className="back-link" to={`/${shardId}/${searchText}`}>
-                            {searchText} ({shardId})
-                        </BackLink>
+                        {!this.props.hidePlayerSearch &&
+                            <form onSubmit={this.search}>
+                                <Dropdown
+                                    value={shardId}
+                                    options={SHARDS}
+                                    onChange={this.handleDropdownChange}
+                                />
+                                <NameInput
+                                    type="text"
+                                    name="searchText"
+                                    onChange={this.handleInputChange}
+                                    placeholder="Player Name (Case Sensitive)"
+                                    value={searchText}
+                                />
+                                <SearchButton className="button" type="submit" value="Search" />
+                            </form>
+                        }
+
+                        {!this.props.hidePlayerSearch &&
+                            <BackLink className="back-link" to={`/${searchText}/${shardId}`}>
+                                {searchText} ({shardId})
+                            </BackLink>
+                        }
                     </SearchGroup>
                     <AboutLink to="/about">About</AboutLink>
                 </TopMenuContainer>
