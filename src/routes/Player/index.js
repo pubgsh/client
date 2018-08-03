@@ -75,7 +75,8 @@ class Player extends React.Component {
             )
         }
 
-        const forTeamSize = teamSize => player.matches.filter(m => m.teamSize === teamSize)
+        const forTeamSize = ((teamSize, isCustomMatch) => player.matches.filter(m => m.teamSize === teamSize && m.isCustomMatch === isCustomMatch))
+        const forCustom = isCustomMatch => player.matches.filter(m => m.isCustomMatch === isCustomMatch)
 
         const fetchedMinAgo = moment.utc().diff(moment.utc(player.lastFetchedAt), 'minutes')
         const friendlyAgo = moment.duration(fetchedMinAgo, 'minutes').humanize()
@@ -91,9 +92,10 @@ class Player extends React.Component {
                         <p>(Matches last updated {friendlyAgo} ago)</p>
                     }
                 </PlayerHeader>
-                <MatchesList col="1" header="Solo" baseUrl={match.url} matches={forTeamSize(1)} />
-                <MatchesList col="2" header="Duos" baseUrl={match.url} matches={forTeamSize(2)} />
-                <MatchesList col="3" header="Squad" baseUrl={match.url} matches={forTeamSize(4)} />
+                <MatchesList col="1" header="Solo" baseUrl={match.url} matches={forTeamSize(1, 'f')} />
+                <MatchesList col="2" header="Duos" baseUrl={match.url} matches={forTeamSize(2, 'f')} />
+                <MatchesList col="3" header="Squad" baseUrl={match.url} matches={forTeamSize(4, 'f')} />
+                <MatchesList col="4" header="Customs" baseUrl={match.url} matches={forCustom('t')} />
             </MatchesContainer>
         )
     }
@@ -119,6 +121,7 @@ export default graphql(gql`
                     winPlace
                     kills
                 }
+                isCustomMatch
             }
         }
     }`, {
