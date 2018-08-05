@@ -7,9 +7,8 @@ import * as Options from './Options.js'
 import Map from './Map/index.js'
 import Roster from './Roster/index.js'
 import TimeTracker from './Time/TimeTracker.js'
-import MatchInstant from './Time/MatchInstant.js'
-import TimeSlider from './TimeSlider.js'
-import AutoplayControls from './AutoplayControls.js'
+import TimeSlider from './Time/TimeSlider.js'
+import AutoplayControls from './Time/AutoplayControls.js'
 import MatchInfo from './MatchInfo.js'
 import HelpModal from './HelpModal.js'
 import Telemetry from '../../models/Telemetry.js'
@@ -219,52 +218,44 @@ class Match extends React.Component {
             <Options.Context.Provider value={{ options, setOption }}>
                 <TimeTracker
                     durationSeconds={match.durationSeconds}
-                    render={({ msSinceEpoch, timeControls }) =>
-                        <MatchInstant
-                            telemetry={telemetry}
-                            msSinceEpoch={msSinceEpoch}
-                            render={({ currentTelemetry }) =>
-                                <MatchContainer id="MatchContainer">
-                                    <MapContainer
-                                        id="MapContainer"
-                                        isDotHovered={!!this.marks.hoveredPlayer()}
-                                    >
-                                        <MatchHeader mapSize={mapSize}>
-                                            <MatchInfo match={match} marks={this.marks} />
-                                            <TimeSlider
-                                                value={msSinceEpoch}
-                                                stopAutoplay={timeControls.stopAutoplay}
-                                                onChange={timeControls.setMsSinceEpoch}
-                                                durationSeconds={match.durationSeconds}
-                                            />
-                                            <AutoplayControls
-                                                autoplay={timeControls.autoplay}
-                                                autoplaySpeed={timeControls.autoplaySpeed}
-                                                toggleAutoplay={timeControls.toggleAutoplay}
-                                                changeSpeed={timeControls.setAutoplaySpeed}
-                                            />
-                                        </MatchHeader>
-                                        <Map
-                                            match={match}
-                                            telemetry={currentTelemetry}
-                                            mapSize={mapSize}
-                                            marks={this.marks}
-                                            msSinceEpoch={msSinceEpoch}
-                                        />
-                                        <HelpModal mapSize={mapSize} />
-                                    </MapContainer>
-                                    <RosterContainer mapSize={mapSize}>
-                                        <RosterHeader>Name (Kills)</RosterHeader>
-                                        <Roster
-                                            match={match}
-                                            telemetry={currentTelemetry}
-                                            rosters={rosters}
-                                            marks={this.marks}
-                                        />
-                                    </RosterContainer>
-                                </MatchContainer>
-                            }
-                        />
+                    telemetry={telemetry}
+                    render={({ msSinceEpoch, timeControls, currentTelemetry }) =>
+                        <MatchContainer id="MatchContainer">
+                            <MapContainer id="MapContainer" isDotHovered={!!this.marks.hoveredPlayer()}>
+                                <MatchHeader mapSize={mapSize}>
+                                    <MatchInfo match={match} marks={this.marks} />
+                                    <TimeSlider
+                                        value={msSinceEpoch}
+                                        stopAutoplay={timeControls.stopAutoplay}
+                                        onChange={timeControls.setMsSinceEpoch}
+                                        durationSeconds={match.durationSeconds}
+                                    />
+                                    <AutoplayControls
+                                        autoplay={timeControls.autoplay}
+                                        autoplaySpeed={timeControls.autoplaySpeed}
+                                        toggleAutoplay={timeControls.toggleAutoplay}
+                                        changeSpeed={timeControls.setAutoplaySpeed}
+                                    />
+                                </MatchHeader>
+                                <Map
+                                    match={match}
+                                    telemetry={currentTelemetry}
+                                    mapSize={mapSize}
+                                    marks={this.marks}
+                                    msSinceEpoch={msSinceEpoch}
+                                />
+                                <HelpModal mapSize={mapSize} />
+                            </MapContainer>
+                            <RosterContainer mapSize={mapSize}>
+                                <RosterHeader>Name (Kills)</RosterHeader>
+                                <Roster
+                                    match={match}
+                                    telemetry={currentTelemetry}
+                                    rosters={rosters}
+                                    marks={this.marks}
+                                />
+                            </RosterContainer>
+                        </MatchContainer>
                     }
                 />
             </Options.Context.Provider>

@@ -107,8 +107,10 @@ class TimeTracker extends React.Component {
     }
 
     render() {
+        const { telemetry } = this.props
         const renderProps = {
             msSinceEpoch: this.state.msSinceEpoch,
+            currentTelemetry: telemetry.stateAt(this.state.msSinceEpoch),
             timeControls: {
                 autoplay: this.state.autoplay,
                 autoplaySpeed: this.state.autoplaySpeed,
