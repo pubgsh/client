@@ -18,6 +18,7 @@ export default function parseTelemetry(matchData, telemetry, focusedPlayerName) 
     const epoch = moment.utc(matchData.playedAt).valueOf()
 
     const state = Array((matchData.durationSeconds + 1) * 10)
+    const globalState = { kills: [], death: null }
     let curState = blankIntervalState()
 
     // Step One: Iterate through all telemetry data and store known points
@@ -59,6 +60,20 @@ export default function parseTelemetry(matchData, telemetry, focusedPlayerName) 
             if (d.killer.name) {
                 const killer = curState.players[d.killer.name] || (curState.players[d.killer.name] = {})
                 killer.kills = (killer.kills || 0) + 1
+            }
+
+            if (d.victim.name === focusedPlayerName) {
+                globalState.death = {
+                    msSinceEpoch,
+                    killedBy: d.killer.name,
+                }
+            }
+
+            if (d.killer.name === focusedPlayerName) {
+                globalState.kills.push({
+                    msSinceEpoch,
+                    victimName: d.victim.name,
+                })
             }
         }
 
@@ -280,5 +295,5 @@ export default function parseTelemetry(matchData, telemetry, focusedPlayerName) 
 
     console.timeEnd('Telemetry-pointer')
 
-    return state
+    return { state, globalState }
 }

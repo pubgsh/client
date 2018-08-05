@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import Slider from 'rc-slider'
 import 'rc-slider/assets/index.css'
+import ripIcon from '../../../assets/ripIcon.png'
 
 const getDurationFormat = ms => {
     const minutes = Math.floor(ms / 1000 / 60)
@@ -19,11 +20,13 @@ const StyledSlider = styled(Slider)`
     margin-top: 12px;
 `
 
-const Tooltip = styled.div.attrs({
+const TimePositionedElement = styled.div.attrs({
     style: ({ value, durationSeconds }) => ({
         left: `${value / (durationSeconds * 1000) * 100}%`,
     }),
-})`
+})
+
+const Tooltip = TimePositionedElement`
     position: absolute;
     top: -8px;
     font-size: 12px;
@@ -32,9 +35,91 @@ const Tooltip = styled.div.attrs({
     text-align: center;
 `
 
+const HoverableTimePositionedElement = TimePositionedElement`
+    &:hover:before {
+        display: block;
+        position: absolute;
+        font-size: 12px;
+        top: -35px;
+        background-color: white;
+        white-space: nowrap;
+        border: 1px solid #bbb;
+        border-radius: 3px;
+        transform: translateX(-50%);
+        background: #F7F7F7;
+        padding: 2px 6px;
+    }
+`
+
+const KillMarker = HoverableTimePositionedElement.extend`
+    position: absolute;
+    top: 26px;
+    margin-left: -6px;
+    width: 12px;
+    text-align: center;
+    height: ${props => props.count > 1 ? 8 : 13}px;
+    background: linear-gradient(to right,
+        transparent 0%,
+        transparent calc(50% - 0.81px),
+        ${props => props.color} calc(50% - 0.8px),
+        ${props => props.color} calc(50% + 0.8px),
+        transparent calc(50% + 0.81px),
+        transparent 100%
+    );
+
+    &:after {
+        content: "${props => props.count > 1 ? `(${props.count})` : ''}";
+        color: ${props => props.color};
+        display: block;
+        top: 6px;
+        position: absolute;
+        text-align: center;
+        font-size: 11px;
+    }
+
+    &:hover:before {
+        content: "${props => props.victimNames}";
+    }
+`
+
+const DeathMarker = HoverableTimePositionedElement.extend`
+    position: absolute;
+    top: 26px;
+    margin-left: -10px;
+    width: 19px;
+    height: 19px;
+    background: url('${ripIcon}');
+    background-size: 19px;
+    background-repeat: no-repeat;
+
+    &:after {
+        content: "";
+        display: block;
+    }
+
+    &:hover:before {
+        content: "Killed By: ${props => props.killerName}";
+    }
+`
+
 class TimeSlider extends React.PureComponent {
     render() {
-        const { value, stopAutoplay, onChange, durationSeconds } = this.props
+        const { value, stopAutoplay, onChange, durationSeconds, globalState, options } = this.props
+
+        const groupedKills = globalState.kills.reduce((acc, kill, idx) => {
+            if (idx === 0) return [[kill]]
+
+            const [previousKill] = acc[acc.length - 1]
+            const shouldGroupWithPrevious = kill.msSinceEpoch - previousKill.msSinceEpoch < 1000
+
+            if (shouldGroupWithPrevious) {
+                acc[acc.length - 1].push(kill)
+            } else {
+                acc.push([kill])
+            }
+
+            return acc
+        }, null)
 
         return (
             <SliderContainer>
@@ -47,6 +132,22 @@ class TimeSlider extends React.PureComponent {
                     value={value}
                 />
                 <Tooltip value={value} durationSeconds={durationSeconds}>{getDurationFormat(value)}</Tooltip>
+                {groupedKills && groupedKills.map(kills =>
+                    <KillMarker
+                        value={kills[0].msSinceEpoch}
+                        count={kills.length}
+                        durationSeconds={durationSeconds}
+                        color={options.colors.roster.dead}
+                        victimNames={kills.map(k => k.victimName).join(', ')}
+                    />
+                )}
+                {globalState.death &&
+                    <DeathMarker
+                        value={globalState.death.msSinceEpoch}
+                        durationSeconds={durationSeconds}
+                        killerName={globalState.death.killedBy}
+                    />
+                }
             </SliderContainer>
         )
     }

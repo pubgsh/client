@@ -187,7 +187,7 @@ class Match extends React.Component {
 
         const telemetryWorker = new TelemetryWorker()
 
-        telemetryWorker.addEventListener('message', ({ data: state }) => {
+        telemetryWorker.addEventListener('message', ({ data: { state, globalState } }) => {
             const telemetry = Telemetry(state)
 
             this.setState(prevState => ({
@@ -195,6 +195,7 @@ class Match extends React.Component {
                 telemetryLoading: false,
                 focusedPlayer,
                 rosters: telemetry.finalRoster(focusedPlayer),
+                globalState,
             }))
         })
 
@@ -207,7 +208,7 @@ class Match extends React.Component {
 
     render() {
         const { data: { loading, error, match } } = this.props
-        const { telemetry, mapSize, rosters, options, setOption } = this.state
+        const { telemetry, mapSize, rosters, options, setOption, globalState } = this.state
 
         if (loading) return <Message>Loading...</Message>
         if (error) return <Message>An error occurred :(</Message>
@@ -229,6 +230,8 @@ class Match extends React.Component {
                                         stopAutoplay={timeControls.stopAutoplay}
                                         onChange={timeControls.setMsSinceEpoch}
                                         durationSeconds={match.durationSeconds}
+                                        globalState={globalState}
+                                        options={options}
                                     />
                                     <AutoplayControls
                                         autoplay={timeControls.autoplay}
