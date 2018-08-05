@@ -51,6 +51,11 @@ export default () =>
             <section>
                 <SectionHeader>Change history</SectionHeader>
 
+                <h5>2018-08-04</h5>
+                <ul>
+                    <li>Support custom games of any team size</li>
+                </ul>
+
                 <h5>2018-07-25</h5>
                 <ul>
                     <li>Basic mobile support</li>
@@ -135,4 +140,3 @@ export default () =>
             </section>
         </Wrapper>
     </div>
-
