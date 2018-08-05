@@ -33,6 +33,13 @@ export default function Telemetry(state) {
         const interval = Math.floor(msSinceEpoch / 100)
         const s = state[interval]
 
+        // TODO: Debug sporadic error
+        if (!s || !s.players) {
+            console.log('interval', interval, 'msSinceEpoch', msSinceEpoch)
+            console.log('s', s)
+            console.log('s.players', s.players)
+        }
+
         // Overwrite player pointer records with interpolated values. This will generate the correct value
         // for this interval and replace the pointer record with it so that a re-request of this interval
         // will not require any computation.
