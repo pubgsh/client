@@ -33,9 +33,10 @@ const TeamGroup = styled.ul`
 const PlayerItem = styled.li`
     margin: 0;
     overflow: hidden;
-    text-overflow: ellipsis;
     cursor: pointer;
-    display: block;
+    display: grid;
+    grid-template-columns: 1fr 15px 25px;
+    grid-column-gap: 5px;
 
     i {
         margin-left: 5px;
@@ -44,14 +45,15 @@ const PlayerItem = styled.li`
     }
 `
 
-const PlayerLink = ({ match, marks, player }) => {
-    if (!marks.isPlayerHovered(player.name)) return null
-    return (
-        <Link to={`/${player.name}/${match.shardId}`}>
-            <i className="fi-link" />
-        </Link>
-    )
-}
+const PlayerName = styled.div`
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+`
+
+const PlayerDatapoint = styled.div`
+    text-align: right;
+`
 
 const Roster = ({ match, telemetry, marks, rosters }) => (
     <Options.Context.Consumer>
@@ -71,8 +73,9 @@ const Roster = ({ match, telemetry, marks, rosters }) => (
                                     textDecoration: marks.isPlayerTracked(p.name) ? 'underline' : '',
                                 }}
                             >
-                                {p.name} ({p.kills})
-                                <PlayerLink match={match} marks={marks} player={p} />
+                                <PlayerName>{p.name}</PlayerName>
+                                <PlayerDatapoint>{p.kills}</PlayerDatapoint>
+                                <PlayerDatapoint>{Math.round(p.damageDealt)}</PlayerDatapoint>
                             </PlayerItem>
                         )
                     })}

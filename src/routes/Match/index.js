@@ -20,7 +20,7 @@ import TelemetryWorker from '../../models/Telemetry.worker.js'
 
 const MatchContainer = styled.div`
     display: grid;
-    grid-template-columns: 1fr 170px;
+    grid-template-columns: 1fr 180px;
     border: 0px solid #eee;
     overflow: visible;
     margin: 0 auto;
@@ -250,7 +250,7 @@ class Match extends React.Component {
                                 <HelpModal mapSize={mapSize} />
                             </MapContainer>
                             <RosterContainer mapSize={mapSize}>
-                                <RosterHeader>Name (Kills)</RosterHeader>
+                                <RosterHeader>Name / Kills / Damage</RosterHeader>
                                 <Roster
                                     match={match}
                                     telemetry={currentTelemetry}

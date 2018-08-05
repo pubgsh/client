@@ -9,7 +9,7 @@ function linearInterpolation(lowerVal, upperVal, span, idx) {
 export default function Telemetry(state) {
     const interpolate = (interval, playerName, player) => {
         if (typeof player.left === 'undefined') {
-            return { name: playerName, location: {}, teammates: [], kills: 0 }
+            return { name: playerName, location: {}, teammates: [], kills: 0, damageDealt: 0 }
         }
 
         if (typeof player.right === 'undefined') {

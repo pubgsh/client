@@ -96,6 +96,11 @@ export default function parseTelemetry(matchData, telemetry, focusedPlayerName) 
                     endInterval: currentInterval,
                 })
             }
+
+            if (d.attacker && d.attacker.name) {
+                const attacker = curState.players[d.attacker.name] || (curState.players[d.attacker.name] = {})
+                attacker.damageDealt = (attacker.damageDealt || 0) + d.damage
+            }
         }
 
         if (d._T === 'LogGameStatePeriodic') {
@@ -207,6 +212,7 @@ export default function parseTelemetry(matchData, telemetry, focusedPlayerName) 
                     teammates: teammates[playerName] || [],
                     name: playerName,
                     kills: (previousPlayerState.kills || 0) + (curPlayerState.kills || 0),
+                    damageDealt: (previousPlayerState.damageDealt || 0) + (curPlayerState.damageDealt || 0),
                 }
 
                 // ... and also update pointer for the next range of interpolation
