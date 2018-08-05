@@ -132,8 +132,9 @@ class TimeSlider extends React.PureComponent {
                     value={value}
                 />
                 <Tooltip value={value} durationSeconds={durationSeconds}>{getDurationFormat(value)}</Tooltip>
-                {groupedKills && groupedKills.map(kills =>
+                {groupedKills && groupedKills.map((kills, idx) =>
                     <KillMarker
+                        key={`killmarker-${idx}`} // eslint-disable-line The order here is guaranteed
                         value={kills[0].msSinceEpoch}
                         count={kills.length}
                         durationSeconds={durationSeconds}
