@@ -78,7 +78,7 @@ class TimeTracker extends React.Component {
                 return { autoplay: false }
             }
 
-            return { msSinceEpoch: msSinceEpoch + (autoplaySpeed * elapsedTime) }
+            return { msSinceEpoch: this.clampMsSinceEpoch(msSinceEpoch + (autoplaySpeed * elapsedTime)) }
         })
 
         this.rafId = requestAnimationFrame(this.loop)
