@@ -27,7 +27,7 @@ export default () =>
                     pubg.sh is an open source app written by <a href="https://azzolini.io">Andre Azzolini</a>
                     &nbsp;in GraphQL, React, and canvas. I am actively adding features, and the
                     <a href="https://github.com/orgs/pubgsh/projects/1">&nbsp;roadmap is publicly available</a>.
-                    &nbsp;I’m happy to consider suggestions, pull requests, and bug reports on GitHub.
+                    I’m happy to consider suggestions, pull requests, and bug reports on GitHub.
                     If you’re interested in the code, it’s available in two parts:
                 </p>
 
@@ -48,7 +48,7 @@ export default () =>
             </section>
 
             <section>
-                <SectionHeader>Change history</SectionHeader>
+                <SectionHeader>Changelog</SectionHeader>
 
                 <h5>2018-08-08</h5>
                 <ul>
