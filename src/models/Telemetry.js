@@ -7,25 +7,19 @@ function linearInterpolation(lowerVal, upperVal, span, idx) {
 }
 
 export default function Telemetry(state) {
-    const interpolate = (interval, playerName, player) => {
-        if (typeof player.left === 'undefined') {
-            return { name: playerName, location: {}, teammates: [], kills: 0, damageDealt: 0 }
+    const getLocation = (interval, playerName, playerLocation) => {
+        // There's no data point to the right, so we just end up with the point to the left
+        if (typeof playerLocation.right === 'undefined') {
+            return state[playerLocation.left].playerLocations[playerName]
         }
 
-        if (typeof player.right === 'undefined') {
-            return state[player.left].players[playerName]
-        }
-
-        const left = state[player.left].players[playerName]
-        const right = state[player.right].players[playerName]
-        const span = player.right - player.left
+        const left = state[playerLocation.left].playerLocations[playerName]
+        const right = state[playerLocation.right].playerLocations[playerName]
+        const span = playerLocation.right - playerLocation.left
 
         return {
-            ...left,
-            location: {
-                x: linearInterpolation(left.location.x, right.location.x, span, interval - player.left),
-                y: linearInterpolation(left.location.y, right.location.y, span, interval - player.left),
-            },
+            x: linearInterpolation(left.x, right.x, span, interval - playerLocation.left),
+            y: linearInterpolation(left.y, right.y, span, interval - playerLocation.left),
         }
     }
 
@@ -37,8 +31,16 @@ export default function Telemetry(state) {
         // for this interval and replace the pointer record with it so that a re-request of this interval
         // will not require any computation.
         forEach(s.players, (player, playerName) => {
-            if (Object.hasOwnProperty.call(player, 'left')) {
-                s.players[playerName] = interpolate(interval, playerName, player)
+            if (!Object.hasOwnProperty.call(player, 'location')) {
+                if (Object.hasOwnProperty.call(s.playerLocations[playerName], 'left')) {
+                    const curLocation = s.playerLocations[playerName]
+                    s.playerLocations[playerName] = getLocation(interval, playerName, curLocation)
+                }
+
+                s.players[playerName] = {
+                    ...s.players[playerName],
+                    location: s.playerLocations[playerName],
+                }
             }
         })
 

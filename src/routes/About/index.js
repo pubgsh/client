@@ -51,6 +51,11 @@ export default () =>
             <section>
                 <SectionHeader>Change history</SectionHeader>
 
+                <h5>2018-08-08</h5>
+                <ul>
+                    <li>Fix jumpy location interpolation bug</li>
+                </ul>
+
                 <h5>2018-08-05</h5>
                 <ul>
                     <li>Add timeline markers for kills and death</li>
