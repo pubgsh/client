@@ -24,10 +24,11 @@ export default () =>
         <Wrapper>
             <section>
                 <p>
-                    pubg.sh started as an experiment to work with GraphQL, React, and canvas, but it’s grown
-                    into a decently featured 2D replay app that I plan on maintaining and improving as time
-                    allows. I’m happy to consider suggestions, pull requests, and bug reports on GitHub.
-                    The project is open-source and available at two repositories:
+                    pubg.sh is an open source app written by <a href="https://azzolini.io">Andre Azzolini</a>
+                    &nbsp;in GraphQL, React, and canvas. I am actively adding features, and the
+                    <a href="https://github.com/orgs/pubgsh/projects/1">&nbsp;roadmap is publicly available</a>.
+                    &nbsp;I’m happy to consider suggestions, pull requests, and bug reports on GitHub.
+                    If you’re interested in the code, it’s available in two parts:
                 </p>
 
                 <ul style={{ listStyleType: 'none' }}>
@@ -37,14 +38,12 @@ export default () =>
             </section>
 
             <section>
-                <SectionHeader>Roadmap</SectionHeader>
+                <SectionHeader>Donations</SectionHeader>
 
                 <p>
-                    The current roadmap is
-                    <a href="https://github.com/orgs/pubgsh/projects/1">&nbsp;available on GitHub</a>.&nbsp;
-                    If you’d like to see what’s coming up next or submit a feature request or bug, please
-                    do so there. Otherwise, you can also contact me via&nbsp;
-                    <a href="https://www.twitter.com/apazzolini">Twitter</a>.
+                    If you enjoy using the site and want to contribute financially, thank you! You can support
+                    me on <a href="https://www.patreon.com/apazzolini">Patreon</a>. pubg.sh will always be
+                    free to use - donations help pay for server costs and keep me motivated to work on it.
                 </p>
             </section>
 
