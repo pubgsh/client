@@ -218,7 +218,7 @@ class Match extends React.Component {
         return (
             <Options.Context.Provider value={{ options, setOption }}>
                 <TimeTracker
-                    durationSeconds={match.durationSeconds}
+                    durationSeconds={match.durationSeconds + 5}
                     telemetry={telemetry}
                     render={({ msSinceEpoch, timeControls, currentTelemetry }) =>
                         <MatchContainer id="MatchContainer">
@@ -229,7 +229,7 @@ class Match extends React.Component {
                                         value={msSinceEpoch}
                                         stopAutoplay={timeControls.stopAutoplay}
                                         onChange={timeControls.setMsSinceEpoch}
-                                        durationSeconds={match.durationSeconds}
+                                        durationSeconds={match.durationSeconds + 5}
                                         globalState={globalState}
                                         options={options}
                                     />

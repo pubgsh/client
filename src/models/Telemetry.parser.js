@@ -16,7 +16,7 @@ const blankIntervalState = () => ({
 export default function parseTelemetry(matchData, telemetry, focusedPlayerName) {
     const epoch = moment.utc(matchData.playedAt).valueOf()
 
-    const state = Array((matchData.durationSeconds + 1) * 10)
+    const state = Array((matchData.durationSeconds + 5) * 10)
     const globalState = { kills: [], death: null }
     const latestPlayerStates = {}
     let startingLocationInitialized = false
