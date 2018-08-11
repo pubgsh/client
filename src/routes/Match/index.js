@@ -225,7 +225,7 @@ class Match extends React.Component {
                         !currentTelemetry && <Message key="message">Loading telemetry...</Message>,
                         <MatchContainer key="match" id="MatchContainer" telemetryLoaded={!!currentTelemetry}>
                             <MapContainer id="MapContainer" isDotHovered={!!this.marks.hoveredPlayer()}>
-                                <MatchHeader mapSize={mapSize}>
+                                <MatchHeader>
                                     <MatchInfo match={match} marks={this.marks} />
                                     <TimeSlider
                                         value={msSinceEpoch}
