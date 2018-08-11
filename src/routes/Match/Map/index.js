@@ -117,7 +117,7 @@ class Map extends React.Component {
         // focused players on top, then tracked, etc, so we need to sort the players. We want dead players
         // below everything else, so we have to do this sort on every render. We use ~ and @ as they wrap
         // the ASCII range and we want a stable sort, so we use the player's name as the default value.
-        const sortedPlayers = sortBy(telemetry.players, player => {
+        const sortedPlayers = telemetry && sortBy(telemetry.players, player => {
             const { name } = player
 
             if (marks.isPlayerFocused(name)) return '~z'
@@ -145,7 +145,7 @@ class Map extends React.Component {
                             hitGraphEnabled={false}
                         >
                             <BackgroundLayer mapName={mapName} mapSize={mapSize} />
-                            <Layer>
+                            {telemetry && <Layer>
                                 {telemetry.safezone && <Safezone
                                     mapSize={mapSize}
                                     pubgMapSize={pubgMapSize}
@@ -196,9 +196,9 @@ class Map extends React.Component {
                                         msSinceEpoch={msSinceEpoch}
                                     />
                                 )}
-                            </Layer>
+                            </Layer>}
                         </StyledStage>
-                        <AliveCount players={telemetry.players} />
+                        {telemetry && <AliveCount players={telemetry.players} />}
                         <ZoomControls>
                             <ZoomInButton onClick={() => this.handleZoom(1.3)}>+</ZoomInButton>
                             <ZoomOutButton onClick={() => this.handleZoom(1 / 1.3)}>-</ZoomOutButton>

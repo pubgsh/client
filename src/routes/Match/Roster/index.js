@@ -54,34 +54,37 @@ const PlayerDatapoint = styled.div`
     text-align: right;
 `
 
-const Roster = ({ match, telemetry, marks, rosters }) => (
-    <Options.Context.Consumer>
-        {({ options }) => rosters.map(r => {
-            return (
-                <TeamGroup key={`roster-${r[0]}`}>
-                    {r.map(playerName => {
-                        const p = telemetry.players[playerName]
-                        return (
-                            <PlayerItem
-                                key={p.name}
-                                onClick={() => marks.toggleTrackedPlayer(p.name)}
-                                onMouseEnter={() => marks.setHoveredPlayer(p.name)}
-                                onMouseLeave={() => marks.setHoveredPlayer(null)}
-                                style={{
-                                    color: getRosterColor(options, marks, p),
-                                    textDecoration: marks.isPlayerTracked(p.name) ? 'underline' : '',
-                                }}
-                            >
-                                <PlayerName>{p.name}</PlayerName>
-                                <PlayerDatapoint>{p.kills}</PlayerDatapoint>
-                                <PlayerDatapoint>{Math.round(p.damageDealt)}</PlayerDatapoint>
-                            </PlayerItem>
-                        )
-                    })}
-                </TeamGroup>
-            )
-        })}
-    </Options.Context.Consumer>
-)
+const Roster = ({ match, telemetry, marks, rosters }) => {
+    if (!telemetry) return null
+    return (
+        <Options.Context.Consumer>
+            {({ options }) => rosters.map(r => {
+                return (
+                    <TeamGroup key={`roster-${r[0]}`}>
+                        {r.map(playerName => {
+                            const p = telemetry.players[playerName]
+                            return (
+                                <PlayerItem
+                                    key={p.name}
+                                    onClick={() => marks.toggleTrackedPlayer(p.name)}
+                                    onMouseEnter={() => marks.setHoveredPlayer(p.name)}
+                                    onMouseLeave={() => marks.setHoveredPlayer(null)}
+                                    style={{
+                                        color: getRosterColor(options, marks, p),
+                                        textDecoration: marks.isPlayerTracked(p.name) ? 'underline' : '',
+                                    }}
+                                >
+                                    <PlayerName>{p.name}</PlayerName>
+                                    <PlayerDatapoint>{p.kills}</PlayerDatapoint>
+                                    <PlayerDatapoint>{Math.round(p.damageDealt)}</PlayerDatapoint>
+                                </PlayerItem>
+                            )
+                        })}
+                    </TeamGroup>
+                )
+            })}
+        </Options.Context.Consumer>
+    )
+}
 
 export default Roster

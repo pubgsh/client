@@ -5,7 +5,7 @@ class TimeTracker extends React.Component {
     state = {
         autoplaySpeed: 10,
         msSinceEpoch: 1000,
-        autoplay: true,
+        autoplay: false,
     }
 
     clampAutoplaySpeed = val => clamp(val, 1, 40)
@@ -57,13 +57,19 @@ class TimeTracker extends React.Component {
     componentDidMount() {
         this.mounted = true
         if (this.state.autoplay) setTimeout(this.startAutoplay, 300)
-        window.addEventListener('keydown', this.onKeydown)
     }
 
     componentWillUnmount() {
         cancelAnimationFrame(this.rafId)
         this.mounted = false
         window.removeEventListener('keydown', this.onKeydown)
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (!prevProps.telemetry && this.props.telemetry) {
+            setTimeout(this.toggleAutoplay, 100)
+            window.addEventListener('keydown', this.onKeydown)
+        }
     }
 
     loop = time => {
@@ -110,7 +116,7 @@ class TimeTracker extends React.Component {
         const { telemetry } = this.props
         const renderProps = {
             msSinceEpoch: this.state.msSinceEpoch,
-            currentTelemetry: telemetry.stateAt(this.state.msSinceEpoch),
+            currentTelemetry: telemetry && telemetry.stateAt(this.state.msSinceEpoch),
             timeControls: {
                 autoplay: this.state.autoplay,
                 autoplaySpeed: this.state.autoplaySpeed,

@@ -25,6 +25,7 @@ const MatchContainer = styled.div`
     overflow: visible;
     margin: 0 auto;
     max-width: calc(100vh + 10px);
+    opacity: ${props => props.telemetryLoaded ? 1 : 0};
 
     @media (max-width: 700px) {
         grid-template-columns: 1fr 0px;
@@ -74,6 +75,7 @@ const RosterHeader = styled.div`
 const Message = styled.p`
     width: 100%;
     text-align: center;
+    position: absolute;
 `
 
 class Match extends React.Component {
@@ -213,15 +215,15 @@ class Match extends React.Component {
         if (loading) return <Message>Loading...</Message>
         if (error) return <Message>An error occurred :(</Message>
         if (!match) return <Message>Match not found</Message>
-        if (!telemetry) return <Message>Loading telemetry...</Message>
 
         return (
             <Options.Context.Provider value={{ options, setOption }}>
                 <TimeTracker
                     durationSeconds={match.durationSeconds + 5}
                     telemetry={telemetry}
-                    render={({ msSinceEpoch, timeControls, currentTelemetry }) =>
-                        <MatchContainer id="MatchContainer">
+                    render={({ msSinceEpoch, timeControls, currentTelemetry }) => [
+                        !currentTelemetry && <Message key="message">Loading telemetry...</Message>,
+                        <MatchContainer key="match" id="MatchContainer" telemetryLoaded={!!currentTelemetry}>
                             <MapContainer id="MapContainer" isDotHovered={!!this.marks.hoveredPlayer()}>
                                 <MatchHeader mapSize={mapSize}>
                                     <MatchInfo match={match} marks={this.marks} />
@@ -258,8 +260,8 @@ class Match extends React.Component {
                                     marks={this.marks}
                                 />
                             </RosterContainer>
-                        </MatchContainer>
-                    }
+                        </MatchContainer>,
+                    ]}
                 />
             </Options.Context.Provider>
         )

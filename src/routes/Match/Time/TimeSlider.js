@@ -106,7 +106,7 @@ class TimeSlider extends React.PureComponent {
     render() {
         const { value, stopAutoplay, onChange, durationSeconds, globalState, options } = this.props
 
-        const groupedKills = globalState.kills.reduce((acc, kill, idx) => {
+        const groupedKills = globalState && globalState.kills.reduce((acc, kill, idx) => {
             if (idx === 0) return [[kill]]
 
             const [previousKill] = acc[acc.length - 1]
@@ -142,7 +142,7 @@ class TimeSlider extends React.PureComponent {
                         victimNames={kills.map(k => k.victimName).join(', ')}
                     />
                 )}
-                {globalState.death &&
+                {globalState && globalState.death &&
                     <DeathMarker
                         value={globalState.death.msSinceEpoch}
                         durationSeconds={durationSeconds}
