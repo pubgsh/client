@@ -24,11 +24,13 @@ export default () =>
         <Wrapper>
             <section>
                 <p>
-                    pubg.sh is an open source app written by <a href="https://azzolini.io">Andre Azzolini</a>
-                    &nbsp;in GraphQL, React, and canvas. I am actively adding features, and the
-                    <a href="https://github.com/orgs/pubgsh/projects/1">&nbsp;roadmap is publicly available</a>.
-                    I’m happy to consider suggestions, pull requests, and bug reports on GitHub.
-                    If you’re interested in the code, it’s available in two parts:
+                    I’m <a href="https://azzolini.io">Andre Azzolini</a>, and I built pubg.sh as an open
+                    source app using GraphQL, React, and canvas. Iterating on this app has been a lot of
+                    fun, and I am actively adding more features.
+
+                    A current <a href="https://github.com/orgs/pubgsh/projects/1">roadmap is available</a>,
+                    and I’m happy to consider suggestions, pull requests, and bug reports on GitHub. The
+                    two repositories can be found here:
                 </p>
 
                 <ul style={{ listStyleType: 'none' }}>
@@ -43,7 +45,8 @@ export default () =>
                 <p>
                     If you enjoy using the site and want to contribute financially, thank you! You can support
                     me on <a href="https://www.patreon.com/apazzolini">Patreon</a>. pubg.sh will always be
-                    free to use - donations help pay for server costs and keep me motivated to work on it.
+                    free to use - donations help pay for server costs and keep me motivated to work on it. As
+                    a token of my appreciation, you’ll get a faster refresh time for your username.
                 </p>
             </section>
 
