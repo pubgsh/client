@@ -67,8 +67,23 @@ class TimeTracker extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
         if (!prevProps.telemetry && this.props.telemetry) {
-            setTimeout(this.toggleAutoplay, 100)
             window.addEventListener('keydown', this.onKeydown)
+
+            // Handle devtools options
+            if (this.props.options.tools.enabled) {
+                const { timestamp, autoplay } = this.props.options.tools.match
+
+                if (autoplay) {
+                    setTimeout(this.toggleAutoplay, 100)
+                }
+
+                const [, min, sec, ds] = /(\d+):(\d+)\.(\d)/.exec(timestamp)
+                this.setMsSinceEpoch((min * 60 * 1000) + (sec * 1000) + (ds * 100))
+
+                return
+            }
+
+            setTimeout(this.toggleAutoplay, 100)
         }
     }
 

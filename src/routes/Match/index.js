@@ -219,6 +219,7 @@ class Match extends React.Component {
         return (
             <Options.Context.Provider value={{ options, setOption }}>
                 <TimeTracker
+                    options={options}
                     durationSeconds={match.durationSeconds + 5}
                     telemetry={telemetry}
                     render={({ msSinceEpoch, timeControls, currentTelemetry }) => [
@@ -248,6 +249,7 @@ class Match extends React.Component {
                                     mapSize={mapSize}
                                     marks={this.marks}
                                     msSinceEpoch={msSinceEpoch}
+                                    options={options}
                                 />
                                 <HelpModal mapSize={mapSize} />
                             </MapContainer>
