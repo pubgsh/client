@@ -50,7 +50,7 @@ const ZoomOutButton = MapButton.extend`
 `
 
 class Map extends React.Component {
-    state = { mapScale: 1, offsetX: 0, offsetY: 0 }
+    state = { mapScale: 1, offsetX: 0, offsetY: 0, isTracking: false }
 
     static getDerivedStateFromProps(props) {
         if (props.options.tools.enabled) {
@@ -63,10 +63,24 @@ class Map extends React.Component {
         }
     }
 
+    componentDidUpdate(prevProps) {
+        if (prevProps.msSinceEpoch !== this.props.msSinceEpoch) {
+            this.setState({ // eslint-disable-line
+                offsetX: 50,
+                offsetY: 50,
+            })
+
+            console.log('centering')
+        }
+
+        // console.log(prevProps)
+    }
+
     handleDragEnd = e => {
         this.setState({
             offsetX: e.target.x(),
             offsetY: e.target.y(),
+            isTracking: false,
         })
     }
 
