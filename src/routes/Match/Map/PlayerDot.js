@@ -62,7 +62,6 @@ const PlayerLabel = ({ visible, player, strokeColor }) => {
                 padding={5}
                 text={player.name}
                 fontSize={10}
-                fontFamily="Palanquin"
                 align="center"
             />
         </Label>

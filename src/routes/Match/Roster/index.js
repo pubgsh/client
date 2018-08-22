@@ -19,14 +19,13 @@ const getRosterColor = ({ colors }, marks, player) => {
 
 const TeamGroup = styled.ul`
     list-style-type: none;
-    border: 1px solid #bbb;
+    border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 1.1rem;
-    font-family: 'Palanquin', sans-serif;
-    letter-spacing: 0.02rem;
-    margin: 3px 0;
+    font-weight: 400;
+    margin: 5px 0;
     padding: 4px;
-    background: #F7F7F7;
+    background: #FAFAFA;
 `
 
 const PlayerItem = styled.li`

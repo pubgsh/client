@@ -6,7 +6,6 @@ const DropdownContainer = styled.div`
     text-transform: uppercase;
     font-size: 11px;
     font-weight: 600;
-    letter-spacing: .1rem;
     text-decoration: none;
     display: inline-block;
     cursor: pointer;
@@ -24,6 +23,7 @@ const DropdownContainer = styled.div`
         border: 1px solid #D1D1D1;
         border-radius: 4px;
         width: 100px;
+        z-index: 10;
 
         li {
             margin-bottom: 0;

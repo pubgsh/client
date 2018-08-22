@@ -1,51 +1,63 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
-import { isEmpty } from 'lodash'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import { SHARDS } from '../../models/Shards.js'
 import Dropdown from '../../components/Dropdown.js'
 
+import headerImg from '../../assets/home-header-img.png'
+
 const CenteredContainer = styled.div`
     text-align: center;
-    margin: 4rem auto 0;
 `
 
-const RecentPlayersHeader = styled.h5`
-    margin-top: 50px;
-    font-size: 1.5rem;
+const HeaderImage = styled.img`
+    cursor: pointer;
+    margin: 5px 0 15px;
+    max-height: 300px;
 `
 
-const RecentPlayersUl = styled.ul`
-    list-style-type: none;
-    padding-left: 0;
+const RandomMatchLink = styled(Link)`
+    box-shadow: 10px 10px 53px -16px rgba(0,0,0,0.75);
+    display: inline-block;
+    width: 500px;
+    margin: 35px 0 50px;
+    border: 1px solid #efefef;
+    border-radius: 4px;
+    filter: grayscale(40%);
+    transition: filter linear 0.15s;
 
-    li {
-        margin-bottom: 0;
-        font-size: 1.2rem;
+    &:hover {
+        filter: grayscale(0%);
+    }
+
+    span {
+        display: block;
+        font-size: 1.1rem;
+        margin: 10px 0 0;
+        color: #4cbb89;
+        cursor: pointer;
+    }
+
+    @media (max-width: 700px) {
+        width: 85vw;
+        img {
+            max-width: 90%;
+        }
     }
 `
 
-const RecentPlayers = ({ recentPlayers }) =>
-    <div>
-        <RecentPlayersHeader key="recent-players-header">Recent Searches</RecentPlayersHeader>
-        <RecentPlayersUl key="recent-players-ul">
-            {recentPlayers.map(p =>
-                <li key={`link-${p.playerName}-${p.shardId}`}>
-                    <Link to={`/${p.url}`}>
-                        {p.playerName} ({p.shardId})
-                    </Link>
-                </li>
-            )}
-        </RecentPlayersUl>
-    </div>
-
 const NameInput = styled.input`
     width: 34rem;
+    border-bottom: 1px solid #4f36cb99;
+        border-radius: 0;
+    border-top: none;
+    border-left: 0;
+    border-right: 0;
 
     @media (max-width: 700px) {
-        width: 25rem;
+        width: 15rem;
     }
 `
 
@@ -54,12 +66,6 @@ const SearchButton = styled.input`
         line-height: 39px;
         margin-left: 10px;
     }
-
-    @media (max-width: 700px) {
-        && {
-            display: none;
-        }
-    }
 `
 
 const StyledDropdown = styled(Dropdown)`
@@ -67,22 +73,16 @@ const StyledDropdown = styled(Dropdown)`
     right: -1px;
 `
 
-const Header = styled.h3`
-    text-align: center;
-    margin-bottom: 5rem;
-    text-transform: uppercase;
-    font-size: 3rem;
-    font-weight: 300;
-    text-decoration: none;
-    color: #222;
-`
-
 const StyledForm = styled.form`
-    margin-bottom: 0;
-`
+    margin: 7rem 0 3rem;
 
-const RandomMatchLink = styled(Link)`
-    font-size: 1.1rem;
+    @media (max-width: 700px) {
+        margin: 3rem 0 3rem;
+
+        input[type="submit"] {
+            padding: 0 7px;
+        }
+    }
 `
 
 
@@ -111,12 +111,8 @@ class Home extends React.Component {
         const { shardId, searchText } = this.state
         const { data: { sampleMatch: sm } } = this.props
 
-        const recentPlayers = JSON.parse(localStorage.getItem('recentPlayers') || '[]')
-
         return (
             <CenteredContainer>
-                <Header>pubg.sh</Header>
-
                 <StyledForm onSubmit={this.search}>
                     <StyledDropdown value={shardId} options={SHARDS} onChange={this.handleDropdownChange} />
                     <NameInput
@@ -124,19 +120,16 @@ class Home extends React.Component {
                         type="text"
                         name="searchText"
                         onChange={this.handleInputChange}
-                        placeholder="Player Name (Case Sensitive)"
+                        placeholder="Player Name"
                         value={searchText}
                     />
                     <SearchButton className="button-primary" type="submit" value="Search" />
                 </StyledForm>
+                <RandomMatchLink to={sm ? `/${sm.playerName}/${sm.shardId}/${sm.id}` : ''}>
+                    <span>(Or just view a random match)</span>
+                    <HeaderImage src={headerImg} />
+                </RandomMatchLink>
 
-                {isEmpty(recentPlayers) && sm &&
-                    <RandomMatchLink to={`/${sm.playerName}/${sm.shardId}/${sm.id}`}>
-                        (Or just view a random match)
-                    </RandomMatchLink>
-                }
-
-                {!isEmpty(recentPlayers) && <RecentPlayers recentPlayers={recentPlayers} />}
             </CenteredContainer>
         )
     }

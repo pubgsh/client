@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter, Route, Switch, Link } from 'react-router-dom'
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
 import ReactGA from 'react-ga'
 import Home from './routes/Home'
@@ -7,38 +7,27 @@ import About from './routes/About'
 import Player from './routes/Player'
 import Match from './routes/Match'
 import TopMenu from './components/TopMenu.js'
+import * as Settings from './components/Settings.js'
 
 if (process.env.REACT_APP_GA) {
     ReactGA.initialize(process.env.REACT_APP_GA)
 }
 
+const PaddingWrapper = styled.div`
+    display: block;
+    max-width: 1240px;
+    margin: 0 auto;
+`
+
 const Wrapper = styled.div`
+    display: grid;
+    grid-template-rows: 7.5rem 1fr;
+    grid-row-gap: 10px;
+    margin: 0 20px;
 `
 
 const MainContainer = styled.div`
-    z-index: 1;
-    margin-top: 7rem;
-    background: white;
-    padding: 20px 0 0 0;
-`
-
-const Background = styled.div`
-    position: absolute;
-    display: block;
-    top: ${props => typeof props.top === 'undefined' ? 6.5 : props.top}rem;
-    left: 0;
-    z-index: 0;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(309deg, #cb3688 0%, #76bcde 100%);
-`
-
-const AboutLink = styled(Link)`
-    position: absolute;
-    bottom: 15px;
-    font-size: 1.2rem;
-    text-align: center;
-    width: 100%;
+    grid-row: 2;
 `
 
 const RouteWithTopMenu = ({ hidePlayerSearch, component: Component, ...rest }) =>
@@ -49,19 +38,6 @@ const RouteWithTopMenu = ({ hidePlayerSearch, component: Component, ...rest }) =
             <MainContainer className="container" key="mainContainer" id="MainContainer">
                 <Component key="Component" {...props} />
             </MainContainer>,
-            <Background key="background" />,
-        ]}
-    />
-
-const RouteWithTopBar = ({ component: Component, ...rest }) =>
-    <Route
-        {...rest}
-        render={props => [
-            <MainContainer className="container" key="mainContainer" id="MainContainer">
-                <Component key="Component" {...props} />
-            </MainContainer>,
-            <Background top="0" key="background" />,
-            <AboutLink key="about" to="/about">About</AboutLink>,
         ]}
     />
 
@@ -96,16 +72,60 @@ class Analytics extends React.Component {
     }
 }
 
-export default () => (
-    <BrowserRouter>
-        <Wrapper>
-            <Route path="/" component={Analytics} />
-            <Switch>
-                <RouteWithTopBar path="/" exact component={Home} />
-                <RouteWithTopMenu path="/about" exact component={About} />
-                <RouteWithTopMenu path="/:playerName/:shardId/:matchId" component={Match} />
-                <RouteWithTopMenu path="/:playerName/:shardId" component={Player} />
-            </Switch>
-        </Wrapper>
-    </BrowserRouter>
-)
+// TODO: Collapse Options and Settings and move it out of here
+class App extends React.Component { // eslint-disable-line
+    /* eslint-disable react/no-unused-state */
+    state = {
+        favoritePlayers: [],
+        toggleFavoritePlayer: (name, shardId) => {
+            const { favoritePlayers: favs } = this.state
+
+            const newFavs = favs.some(f => f.name === name && f.shardId === shardId)
+                ? favs.filter(f => !(f.name === name && f.shardId === shardId))
+                : [...favs, { name, shardId }]
+
+            this.setState({ favoritePlayers: newFavs }, this.updateFavoritePlayers)
+        },
+        isFavoritePlayer: (name, shardId) => {
+            const { favoritePlayers: favs } = this.state
+            return favs.some(f => f.name === name && f.shardId === shardId)
+        },
+    }
+    /* eslint-enable */
+
+    updateFavoritePlayers = () => {
+        localStorage.setItem('favoritePlayers', JSON.stringify(this.state.favoritePlayers))
+    }
+
+    refreshFavoritePlayers = () => {
+        const favoritePlayers = JSON.parse(localStorage.getItem('favoritePlayers') || '[]')
+        this.setState({ favoritePlayers })
+    }
+
+    componentDidMount() {
+        this.refreshFavoritePlayers()
+        window.addEventListener('storage', this.refreshFavoritePlayers)
+    }
+
+    render() {
+        return (
+            <Settings.Context.Provider value={this.state}>
+                <BrowserRouter>
+                    <PaddingWrapper>
+                        <Wrapper>
+                            <Route path="/" component={Analytics} />
+                            <Switch>
+                                <RouteWithTopMenu path="/" exact component={Home} />
+                                <RouteWithTopMenu path="/about" exact component={About} />
+                                <RouteWithTopMenu path="/:playerName/:shardId/:matchId" component={Match} />
+                                <RouteWithTopMenu path="/:playerName/:shardId" component={Player} />
+                            </Switch>
+                        </Wrapper>
+                    </PaddingWrapper>
+                </BrowserRouter>
+            </Settings.Context.Provider>
+        )
+    }
+}
+
+export default App
