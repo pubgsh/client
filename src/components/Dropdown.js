@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 const DropdownContainer = styled.div`
-    line-height: 6.5rem;
+    line-height: 3.6rem;
     text-transform: uppercase;
     font-size: 11px;
     font-weight: 600;
@@ -11,6 +11,15 @@ const DropdownContainer = styled.div`
     cursor: pointer;
     margin-right: 10px;
     position: relative;
+    border: 1px solid #D1D1D1;
+    border-radius: 4px;
+    box-sizing: border-box;
+    padding: 0 1rem;
+    top: -2px;
+
+    @-moz-document url-prefix() {
+        top: -1px;
+    }
 
     ul {
         position: absolute;
@@ -19,7 +28,7 @@ const DropdownContainer = styled.div`
         right: -1px;
         text-align: right;
         list-style-type: none;
-        top: 50px;
+        top: 45px;
         border: 1px solid #D1D1D1;
         border-radius: 4px;
         width: 100px;
