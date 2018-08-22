@@ -1,243 +1,80 @@
-import moment from 'moment'
-import { get, clamp } from 'lodash'
-import { Map, List } from 'immutable'
-import Participants from './Participants.js'
+import { forEach, groupBy, minBy, sortBy } from 'lodash'
 
-function interpolate(lowerVal, upperVal, span, idx) {
+function linearInterpolation(lowerVal, upperVal, span, idx) {
     const yDelta = upperVal - lowerVal
     const yStep = yDelta / span
     return lowerVal + (yStep * idx)
 }
 
-const INTERVALS_PER_SECOND = 6
-const TRACER_LIFETIME = 5
-
-export default function Telemetry(matchData, telemetry, focusedPlayerName) {
-    const epoch = moment.utc(matchData.playedAt).valueOf()
-
-    console.time('Telemetry-eventParsing')
-
-    let state = Map({
-        players: Participants(matchData, focusedPlayerName),
-        safezone: Map({ x: 0, y: 0, radius: 0 }),
-        bluezone: Map({ x: 0, y: 0, radius: 0 }),
-        redzone: Map({ x: 0, y: 0, radius: 0 }),
-        packages: List(),
-        tracers: List(),
-        marks: List(),
-    })
-
-    const cache = new Array((matchData.durationSeconds + 10) * INTERVALS_PER_SECOND)
-    let currentInterval = 0
-
-    const updateTracers = tracers =>
-        tracers.filter(t => t.atInterval + (INTERVALS_PER_SECOND * TRACER_LIFETIME) > currentInterval)
-
-    telemetry.forEach((d, i) => {
-        const msSinceEpoch = new Date(d._D).getTime() - epoch
-
-        if (msSinceEpoch > currentInterval * 1000 / INTERVALS_PER_SECOND) {
-            const playersArray = state.get('players').reverse().valueSeq().toArray()
-                .filter(p => p.get('name'))
-
-            while (msSinceEpoch > currentInterval * 1000 / INTERVALS_PER_SECOND) {
-                const finalizedState = state
-                    .set('players', playersArray)
-                    .update('tracers', updateTracers)
-
-                cache[currentInterval] = finalizedState
-                currentInterval++
-            }
+export default function Telemetry(state) {
+    const getLocation = (interval, playerName, playerLocation) => {
+        // There's no data point to the right, so we just end up with the point to the left
+        if (typeof playerLocation.right === 'undefined') {
+            return state[playerLocation.left].playerLocations[playerName]
         }
 
-        if (get(d, 'character.name')) {
-            const { name, location, health } = d.character
+        const left = state[playerLocation.left].playerLocations[playerName]
+        const right = state[playerLocation.right].playerLocations[playerName]
+        const span = playerLocation.right - playerLocation.left
 
-            state = state.withMutations(s => {
-                s.setIn(['players', name, 'location'], { ...location, atInterval: currentInterval })
-                s.setIn(['players', name, 'health'], health)
-            })
+        return {
+            x: linearInterpolation(left.x, right.x, span, interval - playerLocation.left),
+            y: linearInterpolation(left.y, right.y, span, interval - playerLocation.left),
         }
-
-        if (d._T === 'LogPlayerKill') {
-            state = state.withMutations(s => {
-                s.setIn(['players', d.victim.name, 'status'], 'dead')
-
-                if (d.killer.name) {
-                    s.updateIn(['players', d.killer.name, 'kills'], kills => kills + 1)
-                }
-
-                if (d.victim.name === focusedPlayerName) {
-                    s.update('marks', marks => marks.push({
-                        timestamp: new Date(d._D).getTime() - epoch,
-                        type: 'death',
-                        killerName: d.killer.name,
-                    }))
-                }
-
-                if (d.killer.name === focusedPlayerName) {
-                    s.update('marks', marks => marks.push({
-                        timestamp: new Date(d._D).getTime() - epoch,
-                        type: 'kill',
-                        victimName: d.victim.name,
-                    }))
-                }
-            })
-        }
-
-        if (d._T === 'LogPlayerTakeDamage') {
-            state = state.withMutations(s => {
-                if (d.damageTypeCategory === 'Damage_Gun') {
-                    s.update('tracers', tracers => tracers.push({
-                        key: i,
-                        attackerName: d.attacker.name,
-                        victimName: d.victim.name,
-                        atInterval: currentInterval,
-                    }))
-                }
-
-                s.setIn(['players', d.victim.name, 'health'], d.victim.health - d.damage)
-
-                if (d.attacker.name === focusedPlayerName && (d.victim.health - d.damage <= 0)) {
-                    s.update('marks', marks => marks.push({
-                        timestamp: new Date(d._D).getTime() - epoch,
-                        type: 'knock',
-                        victimName: d.victim.name,
-                    }))
-                }
-            })
-        }
-
-        if (d._T === 'LogGameStatePeriodic') {
-            const gs = d.gameState
-
-            state = state.withMutations(s => {
-                s.set('bluezone', Map({
-                    ...gs.safetyZonePosition,
-                    radius: gs.safetyZoneRadius,
-                    atInterval: currentInterval,
-                }))
-                s.set('safezone', Map({ ...gs.poisonGasWarningPosition, radius: gs.poisonGasWarningRadius }))
-                s.set('redzone', Map({ ...gs.redZonePosition, radius: gs.redZoneRadius }))
-            })
-        }
-
-        if (d._T === 'LogCarePackageLand') {
-            const ip = d.itemPackage
-
-            state = state.update('packages', packages => packages.push({
-                key: i,
-                ...ip.location,
-            }))
-        }
-    })
-
-    // Sometimes we don't load telemetry until the match duration, ensure that we don't get a cache
-    // miss later on.
-    for (currentInterval; currentInterval < cache.length; currentInterval++) {
-        cache[currentInterval] = cache[currentInterval - 1]
     }
 
-    console.timeEnd('Telemetry-eventParsing')
+    const stateAt = msSinceEpoch => {
+        const interval = Math.floor(msSinceEpoch / 100)
+        const s = state[interval]
 
-    function stateAt(msSinceEpoch) {
-        const intervalsSinceEpoch = Math.floor(msSinceEpoch / 1000 * INTERVALS_PER_SECOND)
-        return cache[clamp(intervalsSinceEpoch, INTERVALS_PER_SECOND, cache.length - 1)]
-    }
+        // Overwrite player pointer records with interpolated values. This will generate the correct value
+        // for this interval and replace the pointer record with it so that a re-request of this interval
+        // will not require any computation.
+        forEach(s.players, (player, playerName) => {
+            if (!Object.hasOwnProperty.call(player, 'location')) {
+                if (Object.hasOwnProperty.call(s.playerLocations[playerName], 'left')) {
+                    const curLocation = s.playerLocations[playerName]
+                    s.playerLocations[playerName] = getLocation(interval, playerName, curLocation)
+                }
 
-    function finalState() {
-        return cache[cache.length - 1]
-    }
-
-    console.time('Telemetry-interpolation')
-
-    const realBluezoneLocs = {
-        realDPIntervals: [],
-        realDPs: {},
-    }
-
-    const playerNames = cache[cache.length - 1].get('players').map(p => p.get('name'))
-    const realPlayerLocs = playerNames.reduce((acc, playerName) => {
-        acc[playerName] = {
-            realDPIntervals: [],
-            realDPs: {},
-        }
-        return acc
-    }, {})
-
-    for (let i = 1; i < cache.length; i++) {
-        const zone = cache[i].get('bluezone')
-        if (zone.get('atInterval') === i) {
-            realBluezoneLocs.realDPIntervals.push(i)
-            realBluezoneLocs.realDPs[i] = zone
-        }
-
-        cache[i].get('players').forEach(player => {
-            if (player.get('location').atInterval === i) {
-                realPlayerLocs[player.get('name')].realDPIntervals.push(i)
-                realPlayerLocs[player.get('name')].realDPs[i] = player.get('location')
+                s.players[playerName] = {
+                    ...s.players[playerName],
+                    location: s.playerLocations[playerName],
+                }
             }
         })
-    }
 
-    for (let i = 2; i < cache.length; i++) {
-        let interpolatedBluezone = cache[i].get('bluezone')
+        // Overwrite bluezone records with interpolated values
+        if (Object.hasOwnProperty.call(s.bluezone, 'left')) {
+            if (!s.bluezone.right) {
+                s.bluezone = state[s.bluezone.left].bluezone
+            } else {
+                const left = state[s.bluezone.left].bluezone
+                const right = state[s.bluezone.right].bluezone
+                const span = s.bluezone.right - s.bluezone.left
 
-        if (interpolatedBluezone.get('atInterval') !== i) {
-            const lowerIdx = realBluezoneLocs.realDPIntervals.find((s, si, arr) => s < i && arr[si + 1] > i)
-            const upperIdx = realBluezoneLocs.realDPIntervals.find((s, si, arr) => s > i && arr[si - 1] < i)
-
-            if (lowerIdx && upperIdx) {
-                const lowerLoc = realBluezoneLocs.realDPs[lowerIdx].toJS()
-                const upperLoc = realBluezoneLocs.realDPs[upperIdx].toJS()
-                const span = upperIdx - lowerIdx
-                const interpolatedX = interpolate(lowerLoc.x, upperLoc.x, span, i - lowerIdx)
-                const interpolatedY = interpolate(lowerLoc.y, upperLoc.y, span, i - lowerIdx)
-                const interpolatedR = interpolate(lowerLoc.radius, upperLoc.radius, span, i - lowerIdx)
-
-                interpolatedBluezone = interpolatedBluezone.withMutations(z => {
-                    z.set('x', interpolatedX)
-                    z.set('y', interpolatedY)
-                    z.set('radius', interpolatedR)
-                })
+                s.bluezone = {
+                    x: linearInterpolation(left.x, right.x, span, interval - s.bluezone.left),
+                    y: linearInterpolation(left.y, right.y, span, interval - s.bluezone.left),
+                    radius: linearInterpolation(left.radius, right.radius, span, interval - s.bluezone.left),
+                }
             }
         }
 
-        const interpolatedPlayers = cache[i].get('players').map(player => {
-            const name = player.get('name')
-
-            if (player.get('location').atInterval !== i) {
-                const realLocs = realPlayerLocs[name]
-
-                const lowerIdx = realLocs.realDPIntervals.find((s, si, arr) => s < i && arr[si + 1] > i)
-                const upperIdx = realLocs.realDPIntervals.find((s, si, arr) => s > i && arr[si - 1] < i)
-
-                if (!lowerIdx || !upperIdx) {
-                    return player
-                }
-
-                const lowerLoc = realLocs.realDPs[lowerIdx]
-                const upperLoc = realLocs.realDPs[upperIdx]
-                const interpolatedX = interpolate(lowerLoc.x, upperLoc.x, upperIdx - lowerIdx, i - lowerIdx)
-                const interpolatedY = interpolate(lowerLoc.y, upperLoc.y, upperIdx - lowerIdx, i - lowerIdx)
-
-                return player.set('location', { x: interpolatedX, y: interpolatedY })
-            }
-
-            return player
-        })
-
-        cache[i] = cache[i].withMutations(s => {
-            s.set('bluezone', interpolatedBluezone)
-            s.set('players', interpolatedPlayers)
-        })
+        return s
     }
 
-    console.timeEnd('Telemetry-interpolation')
-    console.log(`Telemetry-${cache.length} cached intervals`)
+    const finalRoster = focusedPlayer => {
+        const rosters = sortBy(groupBy(state.matchEnd.characters, 'teamId'), r => minBy(r, 'ranking').ranking)
+        const focusedRosterIdx = rosters.findIndex(r => r.some(c => c.name === focusedPlayer))
+        const [focusedRoster] = rosters.splice(focusedRosterIdx, 1)
+        const sortedRosters = [focusedRoster, ...rosters]
+        return sortedRosters.map(r => r.map(c => c.name).sort())
+    }
 
     return {
+        state,
         stateAt,
-        finalState,
+        finalRoster,
     }
 }

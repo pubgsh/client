@@ -1,11 +1,12 @@
 import React from 'react'
+import { filter } from 'lodash'
 import styled from 'styled-components'
 
 const Wrapper = styled.div`
     position: absolute;
     top: 15px;
     left: 15px;
-    grid-template-columns: 27px;
+    grid-template-columns: 32px;
     text-align: center;
     display: grid;
     font-family: 'Teko';
@@ -38,7 +39,7 @@ const AliveCount = ({ players }) => {
         return null
     }
 
-    const aliveCount = players.filter(p => p.get('status') === 'alive').length
+    const aliveCount = Object.keys(players).length - filter(players, p => p.status === 'dead').length
 
     return (
         <Wrapper>

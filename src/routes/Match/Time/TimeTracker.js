@@ -5,7 +5,7 @@ class TimeTracker extends React.Component {
     state = {
         autoplaySpeed: 10,
         msSinceEpoch: 1000,
-        autoplay: true,
+        autoplay: false,
     }
 
     clampAutoplaySpeed = val => clamp(val, 1, 40)
@@ -14,11 +14,15 @@ class TimeTracker extends React.Component {
     setAutoplaySpeed = val => { this.setState({ autoplaySpeed: this.clampAutoplaySpeed(val) }) }
 
     onKeydown = e => {
+        if (e.target.tagName.toLowerCase() === 'input') return
+
         if (e.keyCode === 32) { // Space
+            e.preventDefault()
             this.toggleAutoplay()
         }
 
         if (e.keyCode === 37) { // Left Arrow
+            e.preventDefault()
             if (this.state.autoplay) this.stopAutoplay()
 
             this.setState(({ msSinceEpoch, autoplaySpeed }) => ({
@@ -27,6 +31,7 @@ class TimeTracker extends React.Component {
         }
 
         if (e.keyCode === 39) { // Right Arrow
+            e.preventDefault()
             if (this.state.autoplay) this.stopAutoplay()
 
             this.setState(({ msSinceEpoch, autoplaySpeed }) => ({
@@ -35,12 +40,14 @@ class TimeTracker extends React.Component {
         }
 
         if (e.keyCode === 40) { // Down Arrow
+            e.preventDefault()
             this.setState(({ autoplaySpeed }) => ({
                 autoplaySpeed: this.clampAutoplaySpeed(autoplaySpeed - 1),
             }))
         }
 
         if (e.keyCode === 38) { // Up Arrow
+            e.preventDefault()
             this.setState(({ autoplaySpeed }) => ({
                 autoplaySpeed: this.clampAutoplaySpeed(autoplaySpeed + 1),
             }))
@@ -50,7 +57,6 @@ class TimeTracker extends React.Component {
     componentDidMount() {
         this.mounted = true
         if (this.state.autoplay) setTimeout(this.startAutoplay, 300)
-        window.addEventListener('keydown', this.onKeydown)
     }
 
     componentWillUnmount() {
@@ -59,23 +65,42 @@ class TimeTracker extends React.Component {
         window.removeEventListener('keydown', this.onKeydown)
     }
 
+    componentDidUpdate(prevProps, prevState) {
+        if (!prevProps.telemetry && this.props.telemetry) {
+            window.addEventListener('keydown', this.onKeydown)
+
+            // Handle devtools options
+            if (this.props.options.tools.enabled) {
+                const { timestamp, autoplay } = this.props.options.tools.match
+
+                if (autoplay) {
+                    setTimeout(this.toggleAutoplay, 100)
+                }
+
+                const [, min, sec, ds] = /(\d+):(\d+)\.(\d)/.exec(timestamp)
+                this.setMsSinceEpoch((min * 60 * 1000) + (sec * 1000) + (ds * 100))
+
+                return
+            }
+
+            setTimeout(this.toggleAutoplay, 100)
+        }
+    }
+
     loop = time => {
         if (!this.state.autoplay || !this.mounted) return
 
         const elapsedTime = time - this.rafLastTime
-        if (elapsedTime > 16) {
-            this.rafLastTime = time
+        this.rafLastTime = time
 
-            this.setState(prevState => {
-                const prev = prevState.msSinceEpoch
+        this.setState(({ msSinceEpoch, autoplaySpeed }) => {
+            if (Math.floor(msSinceEpoch / 1000) >= this.props.durationSeconds) {
+                cancelAnimationFrame(this.rafId)
+                return { autoplay: false }
+            }
 
-                if (Math.floor(prev / 1000) > this.props.durationSeconds) {
-                    return { msSinceEpoch: 1000 }
-                }
-
-                return { msSinceEpoch: prevState.msSinceEpoch + (prevState.autoplaySpeed * elapsedTime) }
-            })
-        }
+            return { msSinceEpoch: this.clampMsSinceEpoch(msSinceEpoch + (autoplaySpeed * elapsedTime)) }
+        })
 
         this.rafId = requestAnimationFrame(this.loop)
     }
@@ -95,13 +120,18 @@ class TimeTracker extends React.Component {
         if (this.state.autoplay) {
             this.stopAutoplay()
         } else {
+            if (this.state.msSinceEpoch === this.props.durationSeconds * 1000) {
+                this.setState({ msSinceEpoch: 1000 })
+            }
             this.startAutoplay()
         }
     }
 
     render() {
+        const { telemetry } = this.props
         const renderProps = {
             msSinceEpoch: this.state.msSinceEpoch,
+            currentTelemetry: telemetry && telemetry.stateAt(this.state.msSinceEpoch),
             timeControls: {
                 autoplay: this.state.autoplay,
                 autoplaySpeed: this.state.autoplaySpeed,

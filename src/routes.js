@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter, Route, Switch } from 'react-router-dom'
+import { BrowserRouter, Route, Switch, Link } from 'react-router-dom'
 import styled from 'styled-components'
 import ReactGA from 'react-ga'
 import Home from './routes/Home'
@@ -20,18 +20,25 @@ const MainContainer = styled.div`
     margin-top: 7rem;
     background: white;
     padding: 20px 0 0 0;
-    min-height: 600px;
 `
 
 const Background = styled.div`
     position: absolute;
     display: block;
-    top: 6.5rem;
+    top: ${props => typeof props.top === 'undefined' ? 6.5 : props.top}rem;
     left: 0;
     z-index: 0;
     width: 100%;
     height: 2px;
-    background: linear-gradient(309deg, #cb3688 0%, #82c2d2 100%);
+    background: linear-gradient(309deg, #cb3688 0%, #76bcde 100%);
+`
+
+const AboutLink = styled(Link)`
+    position: absolute;
+    bottom: 15px;
+    font-size: 1.2rem;
+    text-align: center;
+    width: 100%;
 `
 
 const RouteWithTopMenu = ({ hidePlayerSearch, component: Component, ...rest }) =>
@@ -42,6 +49,19 @@ const RouteWithTopMenu = ({ hidePlayerSearch, component: Component, ...rest }) =
             <MainContainer className="container" key="mainContainer" id="MainContainer">
                 <Component key="Component" {...props} />
             </MainContainer>,
+            <Background key="background" />,
+        ]}
+    />
+
+const RouteWithTopBar = ({ component: Component, ...rest }) =>
+    <Route
+        {...rest}
+        render={props => [
+            <MainContainer className="container" key="mainContainer" id="MainContainer">
+                <Component key="Component" {...props} />
+            </MainContainer>,
+            <Background top="0" key="background" />,
+            <AboutLink key="about" to="/about">About</AboutLink>,
         ]}
     />
 
@@ -81,12 +101,11 @@ export default () => (
         <Wrapper>
             <Route path="/" component={Analytics} />
             <Switch>
-                <RouteWithTopMenu path="/" exact component={Home} hidePlayerSearch />
+                <RouteWithTopBar path="/" exact component={Home} />
                 <RouteWithTopMenu path="/about" exact component={About} />
                 <RouteWithTopMenu path="/:playerName/:shardId/:matchId" component={Match} />
                 <RouteWithTopMenu path="/:playerName/:shardId" component={Player} />
             </Switch>
-            <Background />
         </Wrapper>
     </BrowserRouter>
 )

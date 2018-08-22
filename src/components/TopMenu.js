@@ -24,13 +24,16 @@ const TopMenuContainer = styled.div`
     position: relative;
     margin: 0 auto;
     width: 99%;
+    @media (max-width: 700px) {
+        width: 97%;
+    }
 `
 
 const HeaderLink = styled(Link)`
     text-transform: uppercase;
     font-size: 11px;
     font-weight: 600;
-    letter-spacing: .2rem;
+    letter-spacing: .1rem;
     text-decoration: none;
     color: #222;
 `
@@ -40,12 +43,30 @@ const AboutLink = styled(HeaderLink)`
     position: absolute;
     right: 0;
 `
+const BackLink = styled(HeaderLink)`
+    max-height: 6.5rem;
+    overflow: hidden;
+`
 
 const SearchGroup = styled.div`
     margin: 0 auto;
 
     form {
         margin: 0;
+    }
+
+    a.back-link {
+        display: none;
+    }
+
+    @media (max-width: 700px) {
+        a.back-link {
+            display: block;
+        }
+
+        form {
+            display: none;
+        }
     }
 `
 
@@ -82,7 +103,12 @@ class TopMenu extends React.Component {
 
     search = e => {
         if (e) e.preventDefault()
-        this.props.history.push(`/${this.state.searchText}/${this.state.shardId}`)
+        const newLocation = `/${this.state.searchText}/${this.state.shardId}`
+        if (newLocation === this.props.history.location.pathname) {
+            window.location.reload()
+        } else {
+            this.props.history.push(newLocation)
+        }
     }
 
     render() {
@@ -93,8 +119,12 @@ class TopMenu extends React.Component {
                 <TopMenuContainer>
                     <HomeLink to="/">pubg.sh</HomeLink>
                     <SearchGroup>
-                        {!this.props.hidePlayerSearch && <form onSubmit={this.search}>
-                            <Dropdown value={shardId} options={SHARDS} onChange={this.handleDropdownChange} />
+                        <form onSubmit={this.search}>
+                            <Dropdown
+                                value={shardId}
+                                options={SHARDS}
+                                onChange={this.handleDropdownChange}
+                            />
                             <NameInput
                                 type="text"
                                 name="searchText"
@@ -103,7 +133,11 @@ class TopMenu extends React.Component {
                                 value={searchText}
                             />
                             <SearchButton className="button" type="submit" value="Search" />
-                        </form>}
+                        </form>
+
+                        {searchText && <BackLink className="back-link" to={`/${searchText}/${shardId}`}>
+                            {searchText} ({shardId})
+                        </BackLink>}
                     </SearchGroup>
                     <AboutLink to="/about">About</AboutLink>
                 </TopMenuContainer>

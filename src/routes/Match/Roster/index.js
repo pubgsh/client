@@ -1,32 +1,41 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
-import { map, sortBy, reduce, groupBy } from 'lodash'
 import styled from 'styled-components'
-import { getRosterColor } from '../../../lib/player-color.js'
+import * as Options from '../Options.js'
+
+const getRosterColor = ({ colors }, marks, player) => {
+    const dead = player.status === 'dead'
+    const knocked = player.status !== 'dead' && player.health === 0
+
+    if (knocked) {
+        return colors.roster.knocked
+    } else if (marks.focusedPlayer() === player.name) {
+        return dead ? colors.roster.deadTeammate : colors.roster.focused
+    } else if (player.teammates.includes(marks.focusedPlayer())) {
+        return dead ? colors.roster.deadTeammate : colors.roster.teammate
+    }
+
+    return dead ? colors.roster.dead : colors.roster.enemy
+}
 
 const TeamGroup = styled.ul`
     list-style-type: none;
-    border: 1px solid ${props => props.color || '#bbb'};
-    background: ${props => `${props.color}10` || ''};
+    border: 1px solid #bbb;
     border-radius: 4px;
     font-size: 1.1rem;
     font-family: 'Palanquin', sans-serif;
     letter-spacing: 0.02rem;
     margin: 3px 0;
     padding: 4px;
-
-    li {
-        margin: 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        cursor: pointer;
-        display: block;
-    }
+    background: #F7F7F7;
 `
 
 const PlayerItem = styled.li`
-    color: ${props => props.color};
-    text-decoration: ${props => props.isTracked ? 'underline' : ''};
+    margin: 0;
+    overflow: hidden;
+    cursor: pointer;
+    display: grid;
+    grid-template-columns: 1fr 15px 25px;
+    grid-column-gap: 5px;
 
     i {
         margin-left: 5px;
@@ -35,49 +44,47 @@ const PlayerItem = styled.li`
     }
 `
 
-const PlayerLink = ({ match, marks, player }) => {
-    if (!marks.isPlayerHovered(player.get('name'))) return null
+const PlayerName = styled.div`
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+`
+
+const PlayerDatapoint = styled.div`
+    text-align: right;
+`
+
+const Roster = ({ match, telemetry, marks, rosters }) => {
+    if (!telemetry) return null
     return (
-        <Link to={`/${player.get('name')}/${match.shardId}`}>
-            <i className="fi-link" />
-        </Link>
+        <Options.Context.Consumer>
+            {({ options }) => rosters.map(r => {
+                return (
+                    <TeamGroup key={`roster-${r[0]}`}>
+                        {r.map(playerName => {
+                            const p = telemetry.players[playerName]
+                            return (
+                                <PlayerItem
+                                    key={p.name}
+                                    onClick={() => marks.toggleTrackedPlayer(p.name)}
+                                    onMouseEnter={() => marks.setHoveredPlayer(p.name)}
+                                    onMouseLeave={() => marks.setHoveredPlayer(null)}
+                                    style={{
+                                        color: getRosterColor(options, marks, p),
+                                        textDecoration: marks.isPlayerTracked(p.name) ? 'underline' : '',
+                                    }}
+                                >
+                                    <PlayerName>{p.name}</PlayerName>
+                                    <PlayerDatapoint>{p.kills}</PlayerDatapoint>
+                                    <PlayerDatapoint>{Math.round(p.damageDealt)}</PlayerDatapoint>
+                                </PlayerItem>
+                            )
+                        })}
+                    </TeamGroup>
+                )
+            })}
+        </Options.Context.Consumer>
     )
 }
 
-export default ({ match, telemetry, marks }) => {
-    const roster = reduce(groupBy(telemetry.get('players'), p => p.get('rosterId')), (acc, players, id) => {
-        acc[id] = sortBy(players, p => p.get('name'))
-        return acc
-    }, {})
-
-    const sortedTeams = sortBy(Object.keys(roster), rosterId => {
-        const players = roster[rosterId]
-        if (players.find(p => marks.isPlayerFocused(p.get('name')))) return -10
-        return -players.filter(p => p.get('status') !== 'dead').length
-    })
-
-    const teams = map(sortedTeams, rosterId => {
-        const players = roster[rosterId]
-        return (
-            <TeamGroup
-                key={rosterId}
-            >
-                {players.map(p =>
-                    <PlayerItem
-                        key={p.get('name')}
-                        color={getRosterColor(marks, p)}
-                        isTracked={marks.isPlayerTracked(p.get('name'))}
-                        onClick={() => marks.toggleTrackedPlayer(p.get('name'))}
-                        onMouseEnter={() => marks.setHoveredPlayer(p.get('name'))}
-                        onMouseLeave={() => marks.setHoveredPlayer(null)}
-                    >
-                        {p.get('name')} ({p.get('kills')})
-                        <PlayerLink match={match} marks={marks} player={p} />
-                    </PlayerItem>
-                )}
-            </TeamGroup>
-        )
-    })
-
-    return teams
-}
+export default Roster

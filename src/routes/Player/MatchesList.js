@@ -8,6 +8,11 @@ import { ordinalSuffix } from 'ordinal-js'
 const MatchesColumn = styled.div`
     text-align: center;
     grid-column: ${props => props.col};
+
+    @media (max-width: 700px) {
+        grid-column: 1;
+        margin-bottom: 2rem;
+    }
 `
 
 const StyledTable = styled.table`
@@ -28,20 +33,11 @@ const NoMatches = styled.span`
     padding-top: 12px;
 `
 
-const CustomMap = styled.span`
-    font-size: 0.7em;
-    margin-left: 5px;
-`
-
 const friendlyMapName = name => {
     if (name === 'Erangel_Main') return 'Erangel'
     if (name === 'Desert_Main') return 'Miramar'
+    if (name === 'Savage_Main') return 'Sanhok'
     return name
-}
-
-const customIndicator = match => {
-    if (match.gameMode === 'normal') return <CustomMap>(custom)</CustomMap>
-    return null
 }
 
 const MatchesTable = ({ baseUrl, matches }) => {
@@ -68,7 +64,6 @@ const MatchesTable = ({ baseUrl, matches }) => {
                                 </td>
                                 <td>
                                     {friendlyMapName(m.mapName)}
-                                    {customIndicator(m)}
                                 </td>
                                 <td>
                                     <strong>{m.stats.winPlace}</strong>{ordinalSuffix(m.stats.winPlace)}

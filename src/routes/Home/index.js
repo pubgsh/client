@@ -2,13 +2,14 @@ import React from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import { isEmpty } from 'lodash'
+import { graphql } from 'react-apollo'
+import gql from 'graphql-tag'
 import { SHARDS } from '../../models/Shards.js'
 import Dropdown from '../../components/Dropdown.js'
 
 const CenteredContainer = styled.div`
     text-align: center;
     margin: 4rem auto 0;
-    padding-top: 20px;
 `
 
 const RecentPlayersHeader = styled.h5`
@@ -26,13 +27,9 @@ const RecentPlayersUl = styled.ul`
     }
 `
 
-const RecentPlayers = () => {
-    const recentPlayers = JSON.parse(localStorage.getItem('recentPlayers') || '[]')
-
-    if (isEmpty(recentPlayers)) return null
-
-    return [
-        <RecentPlayersHeader key="recent-players-header">Recent Searches</RecentPlayersHeader>,
+const RecentPlayers = ({ recentPlayers }) =>
+    <div>
+        <RecentPlayersHeader key="recent-players-header">Recent Searches</RecentPlayersHeader>
         <RecentPlayersUl key="recent-players-ul">
             {recentPlayers.map(p =>
                 <li key={`link-${p.playerName}-${p.shardId}`}>
@@ -41,12 +38,15 @@ const RecentPlayers = () => {
                     </Link>
                 </li>
             )}
-        </RecentPlayersUl>,
-    ]
-}
+        </RecentPlayersUl>
+    </div>
 
 const NameInput = styled.input`
     width: 34rem;
+
+    @media (max-width: 700px) {
+        width: 25rem;
+    }
 `
 
 const SearchButton = styled.input`
@@ -54,16 +54,27 @@ const SearchButton = styled.input`
         line-height: 39px;
         margin-left: 10px;
     }
+
+    @media (max-width: 700px) {
+        && {
+            display: none;
+        }
+    }
 `
 
 const StyledDropdown = styled(Dropdown)`
-        top: 30px;
-        right: -1px;
+    top: 30px;
+    right: -1px;
 `
 
 const Header = styled.h3`
     text-align: center;
     margin-bottom: 5rem;
+    text-transform: uppercase;
+    font-size: 3rem;
+    font-weight: 300;
+    text-decoration: none;
+    color: #222;
 `
 
 const StyledForm = styled.form`
@@ -73,6 +84,7 @@ const StyledForm = styled.form`
 const RandomMatchLink = styled(Link)`
     font-size: 1.1rem;
 `
+
 
 class Home extends React.Component {
     state = { searchText: '', shardId: localStorage.getItem('shardId') || SHARDS[0] }
@@ -97,6 +109,9 @@ class Home extends React.Component {
 
     render() {
         const { shardId, searchText } = this.state
+        const { data: { sampleMatch: sm } } = this.props
+
+        const recentPlayers = JSON.parse(localStorage.getItem('recentPlayers') || '[]')
 
         return (
             <CenteredContainer>
@@ -115,14 +130,29 @@ class Home extends React.Component {
                     <SearchButton className="button-primary" type="submit" value="Search" />
                 </StyledForm>
 
-                <RandomMatchLink to="/DrDisRespect/pc-na/fef5a840-3139-4464-b587-94a7d9fa177a">
-                    (Or just view a random match)
-                </RandomMatchLink>
+                {isEmpty(recentPlayers) && sm &&
+                    <RandomMatchLink to={`/${sm.playerName}/${sm.shardId}/${sm.id}`}>
+                        (Or just view a random match)
+                    </RandomMatchLink>
+                }
 
-                <RecentPlayers />
+                {!isEmpty(recentPlayers) && <RecentPlayers recentPlayers={recentPlayers} />}
             </CenteredContainer>
         )
     }
 }
 
-export default Home
+export default graphql(gql`
+    query($shardId: String!) {
+        sampleMatch(shardId: $shardId) {
+            id
+            playerName
+            shardId
+        }
+    }`, {
+    options: () => ({
+        variables: {
+            shardId: localStorage.getItem('shardId') || SHARDS[0],
+        },
+    }),
+})(Home)
