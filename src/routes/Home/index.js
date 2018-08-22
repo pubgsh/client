@@ -19,7 +19,7 @@ const HeaderImage = styled.img`
 `
 
 const RandomMatchLink = styled(Link)`
-    box-shadow: 10px 10px 53px -16px rgba(0,0,0,0.75);
+    box-shadow: 0px 12px 53px -16px rgba(0,0,0,0.75);
     display: inline-block;
     width: 500px;
     margin: 35px 0 50px;
