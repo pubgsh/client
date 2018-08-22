@@ -52,16 +52,6 @@ class TimeTracker extends React.Component {
                 autoplaySpeed: this.clampAutoplaySpeed(autoplaySpeed + 1),
             }))
         }
-
-        if (e.keyCode === 70) { // "F" key
-            e.preventDefault()
-
-            this.setState(({ isTracking }) => ({
-                isTracking: !isTracking,
-            }))
-
-            console.log('TOGGLED centering')
-        }
     }
 
     componentDidMount() {
