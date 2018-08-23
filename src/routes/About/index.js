@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import DocumentTitle from 'react-document-title'
 
 const Header = styled.h3`
     margin-top: 4rem;
@@ -17,6 +18,7 @@ const Wrapper = styled.div`
 
 export default () =>
     <div>
+        <DocumentTitle title="About | pubg.sh" />
         <Header>
             About
         </Header>

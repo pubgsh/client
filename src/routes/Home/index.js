@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
+import DocumentTitle from 'react-document-title'
 import { SHARDS } from '../../models/Shards.js'
 import Dropdown from '../../components/Dropdown.js'
 
@@ -113,6 +114,7 @@ class Home extends React.Component {
 
         return (
             <CenteredContainer>
+                <DocumentTitle title="pubg.sh: 2D Match Replays" />
                 <StyledForm onSubmit={this.search}>
                     <StyledDropdown value={shardId} options={SHARDS} onChange={this.handleDropdownChange} />
                     <NameInput

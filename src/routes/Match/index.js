@@ -3,6 +3,7 @@ import { xor, union, difference, merge, cloneDeep, set } from 'lodash'
 import { graphql, compose } from 'react-apollo'
 import gql from 'graphql-tag'
 import styled from 'styled-components'
+import DocumentTitle from 'react-document-title'
 import * as Options from './Options.js'
 import Map from './Map/index.js'
 import Roster from './Roster/index.js'
@@ -226,6 +227,7 @@ class Match extends React.Component {
                     render={({ msSinceEpoch, timeControls, currentTelemetry }) => [
                         !currentTelemetry && <Message key="message">Loading telemetry...</Message>,
                         <MatchContainer key="match" id="MatchContainer" telemetryLoaded={!!currentTelemetry}>
+                            <DocumentTitle title="Replay | pubg.sh" />
                             <MapContainer id="MapContainer" isDotHovered={!!this.marks.hoveredPlayer()}>
                                 <MatchHeader>
                                     <MatchInfo match={match} marks={this.marks} />

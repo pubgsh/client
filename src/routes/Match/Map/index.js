@@ -61,6 +61,7 @@ class Map extends React.Component {
                 mapScale,
             }
         }
+        return {}
     }
 
     handleDragEnd = e => {

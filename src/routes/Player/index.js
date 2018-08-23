@@ -4,6 +4,7 @@ import { isEmpty, groupBy } from 'lodash'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import styled from 'styled-components'
+import DocumentTitle from 'react-document-title'
 import MatchesList from './MatchesList.js'
 import RateLimited from './RateLimited.js'
 import * as Settings from '../../components/Settings.js'
@@ -99,6 +100,7 @@ class Player extends React.Component {
                 {({ favoritePlayers, toggleFavoritePlayer, isFavoritePlayer }) => (
                     <MatchesContainer hasCustom={hasCustom}>
                         <PlayerHeader>
+                            <DocumentTitle title={`${player.name} | pubg.sh`} />
                             <PlayerName onClick={() => window.location.reload()}>
                                 {player.name}
                             </PlayerName>
