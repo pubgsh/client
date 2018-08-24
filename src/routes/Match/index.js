@@ -3,6 +3,7 @@ import { xor, union, difference, merge, cloneDeep, set } from 'lodash'
 import { graphql, compose } from 'react-apollo'
 import gql from 'graphql-tag'
 import styled from 'styled-components'
+import DocumentTitle from 'react-document-title'
 import * as Options from './Options.js'
 import Map from './Map/index.js'
 import Roster from './Roster/index.js'
@@ -21,6 +22,7 @@ import TelemetryWorker from '../../models/Telemetry.worker.js'
 const MatchContainer = styled.div`
     display: grid;
     grid-template-columns: 1fr 180px;
+    grid-column-gap: 10px;
     border: 0px solid #eee;
     overflow: visible;
     margin: 0 auto;
@@ -29,6 +31,8 @@ const MatchContainer = styled.div`
 
     @media (max-width: 700px) {
         grid-template-columns: 1fr 0px;
+        grid-column-gap: 0;
+        grid-row-gap: 15px;
     }
 `
 
@@ -45,8 +49,7 @@ const RosterContainer = styled.div`
     overflow-y: scroll;
     overflow-x: hidden;
     height: ${props => props.mapSize + 48}px;
-    margin: 0 5px;
-    padding-right: 5px;
+    padding-right: 10px;
 
     @media (max-width: 700px) {
         grid-column: 1;
@@ -59,7 +62,8 @@ const MatchHeader = styled.div`
     grid-template-columns: max-content 1fr max-content;
     margin-bottom: 10px;
 
-    @media (-moz-touch-enabled: 1), (pointer:coarse) {
+    @media (max-width: 700px) {
+        grid-template-columns: 0px 1fr max-content;
         grid-row: 2;
         margin-top: 10px;
         margin-bottom: 0;
@@ -68,14 +72,12 @@ const MatchHeader = styled.div`
 
 const RosterHeader = styled.div`
     text-align: center;
-    font-family: 'Palanquin', sans-serif;
     font-size: 1.1rem;
+    font-weight: 400;
 `
 
 const Message = styled.p`
-    width: 100%;
     text-align: center;
-    position: absolute;
 `
 
 class Match extends React.Component {
@@ -225,6 +227,7 @@ class Match extends React.Component {
                     render={({ msSinceEpoch, timeControls, currentTelemetry }) => [
                         !currentTelemetry && <Message key="message">Loading telemetry...</Message>,
                         <MatchContainer key="match" id="MatchContainer" telemetryLoaded={!!currentTelemetry}>
+                            <DocumentTitle title="Replay | pubg.sh" />
                             <MapContainer id="MapContainer" isDotHovered={!!this.marks.hoveredPlayer()}>
                                 <MatchHeader>
                                     <MatchInfo match={match} marks={this.marks} />

@@ -13,6 +13,10 @@ const getDurationFormat = ms => {
 
 const SliderContainer = styled.div`
     position: relative;
+
+    @media (max-width: 700px) {
+        grid-column: 2;
+    }
 `
 
 const StyledSlider = styled(Slider)`
@@ -53,17 +57,17 @@ const HoverableTimePositionedElement = TimePositionedElement`
 
 const KillMarker = HoverableTimePositionedElement.extend`
     position: absolute;
-    top: 26px;
+    top: 23px;
     margin-left: -6px;
     width: 12px;
     text-align: center;
-    height: ${props => props.count > 1 ? 8 : 13}px;
+    height: ${props => props.count > 1 ? 10 : 10}px;
     background: linear-gradient(to right,
         transparent 0%,
-        transparent calc(50% - 0.81px),
+        transparent calc(50% - 0.41px),
         ${props => props.color} calc(50% - 0.8px),
         ${props => props.color} calc(50% + 0.8px),
-        transparent calc(50% + 0.81px),
+        transparent calc(50% + 0.41px),
         transparent 100%
     );
 
@@ -71,7 +75,7 @@ const KillMarker = HoverableTimePositionedElement.extend`
         content: "${props => props.count > 1 ? `(${props.count})` : ''}";
         color: ${props => props.color};
         display: block;
-        top: 6px;
+        top: 9px;
         position: absolute;
         text-align: center;
         font-size: 11px;

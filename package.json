@@ -23,6 +23,7 @@
         "rc-slider": "8.6.1",
         "react": "^16.3.2",
         "react-apollo": "2.1.4",
+        "react-document-title": "2.0.3",
         "react-dom": "16.3.2",
         "react-ga": "2.5.2",
         "react-konva": "1.7.3",

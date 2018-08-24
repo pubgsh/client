@@ -27,7 +27,7 @@ export const DEFAULT_OPTIONS = {
 
 const DEV_OPTIONS = {
     tools: {
-        enabled: true,
+        enabled: false,
         match: {
             timestamp: '5:24.6',
             autoplay: false,

@@ -29,7 +29,6 @@ const Items = ({ visible, items }) => {
                 padding={5}
                 text={itemsText}
                 fontSize={10}
-                fontFamily="Palanquin"
                 align="left"
             />
         </Label>

@@ -21,6 +21,10 @@ const PlayButton = styled.button`
 
 const ControlsWrapper = styled.div`
     display: grid;
+
+    @media (max-width: 700px) {
+        grid-column: 3;
+    }
 `
 
 const SliderContainer = styled.div`

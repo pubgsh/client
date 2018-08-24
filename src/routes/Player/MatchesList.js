@@ -25,6 +25,7 @@ const StyledTable = styled.table`
 
     th {
         text-align: center;
+        padding: 15px 15px 0;
     }
 `
 

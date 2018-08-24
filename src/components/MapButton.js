@@ -12,7 +12,7 @@ const MapButton = styled.button`
     line-height: 1rem;
     font-size: 1.4rem;
     font-weight: 300;
-    padding-left: 2px;
+    padding-left: 1px;
     border: 1px solid #888;
 
     &:hover, &:focus {

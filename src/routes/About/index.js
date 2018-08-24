@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import DocumentTitle from 'react-document-title'
 
 const Header = styled.h3`
     margin-top: 4rem;
@@ -17,6 +18,7 @@ const Wrapper = styled.div`
 
 export default () =>
     <div>
+        <DocumentTitle title="About | pubg.sh" />
         <Header>
             About
         </Header>
@@ -24,7 +26,7 @@ export default () =>
         <Wrapper>
             <section>
                 <p>
-                    I’m <a href="https://azzolini.io">Andre Azzolini</a>, and I built pubg.sh as an open
+                    Hi - I’m <a href="https://azzolini.io">Andre Azzolini</a>, and I built pubg.sh as an open
                     source app using GraphQL, React, and canvas. Iterating on this app has been a lot of
                     fun, and I am actively adding more features.
 
