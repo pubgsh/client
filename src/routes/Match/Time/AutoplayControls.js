@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import Slider from 'rc-slider'
 import 'rc-slider/assets/index.css'
@@ -6,6 +6,7 @@ import 'rc-slider/assets/index.css'
 const StyledSlider = styled(Slider)`
     padding-top: 5px;
     margin-top: 12px;
+    grid-column: 2;
     min-width: 80px;
 `
 
@@ -13,21 +14,22 @@ const ControlButton = styled.button`
     padding: 0;
     font-size: 2rem;
     border: 0;
-    margin-bottom: 0;
-    margin-left: 10px;
+    margin: 0 10px;
     width: 25px;
-
-    &:last-child {
-        margin-right: 10px;
-    }
+    grid-column: 1;
 `
 
 const ControlsWrapper = styled.div`
-    display: flex;
+    display: grid;
+
+    @media (max-width: 700px) {
+        grid-column: 3;
+    }
 `
 
 const SliderContainer = styled.div`
     position: relative;
+    grid-column: 2;
     margin-right: 10px;
 `
 
@@ -67,12 +69,9 @@ class AutoplayControls extends React.PureComponent {
             <ControlsWrapper>
                 <div>
                     {!isFinished && 
-                        <Fragment>
-                            <ControlButton className="button" type="submit" onClick={toggleAutoplay}>
-                                <i className={`fi-${autoplay ? 'pause' : 'play'}`} />
-                            </ControlButton>
-                            <RewindButton rewindToStart={rewindToStart} />
-                        </Fragment>
+                        <ControlButton className="button" type="submit" onClick={toggleAutoplay}>
+                            <i className={`fi-${autoplay ? 'pause' : 'play'}`} />
+                        </ControlButton>
                     }
                     {isFinished &&
                         <RewindButton rewindToStart={rewindToStart} />
