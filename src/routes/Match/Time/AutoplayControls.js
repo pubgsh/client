@@ -10,7 +10,7 @@ const StyledSlider = styled(Slider)`
     min-width: 80px;
 `
 
-const PlayButton = styled.button`
+const ControlButton = styled.button`
     padding: 0;
     font-size: 2rem;
     border: 0;
@@ -46,14 +46,37 @@ const Tooltip = styled.div.attrs({
     text-align: center;
 `
 
+const RewindButton = ({ rewindToStart }) => {
+    return (
+        <ControlButton className="button" type="submit" onClick={rewindToStart}>
+            <i className="fi-previous" />
+        </ControlButton>
+    )
+}
+
 class AutoplayControls extends React.PureComponent {
     render() {
-        const { autoplay, toggleAutoplay, changeSpeed, autoplaySpeed } = this.props
+        const { 
+            autoplay, 
+            autoplaySpeed,
+            changeSpeed,
+            isFinished,
+            toggleAutoplay,
+            rewindToStart
+        } = this.props
+
         return (
             <ControlsWrapper>
-                <PlayButton className="button" type="submit" onClick={toggleAutoplay}>
-                    <i className={`fi-${autoplay ? 'pause' : 'play'}`} />
-                </PlayButton>
+                <div>
+                    {!isFinished && 
+                        <ControlButton className="button" type="submit" onClick={toggleAutoplay}>
+                            <i className={`fi-${autoplay ? 'pause' : 'play'}`} />
+                        </ControlButton>
+                    }
+                    {isFinished &&
+                        <RewindButton rewindToStart={rewindToStart} />
+                    }
+                </div>
                 <SliderContainer>
                     <StyledSlider
                         min={1}

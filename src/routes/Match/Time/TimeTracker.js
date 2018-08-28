@@ -127,6 +127,14 @@ class TimeTracker extends React.Component {
         }
     }
 
+    rewindToStart = () => {
+        if (this.state.autoplay) {
+            this.stopAutoplay()
+        }
+
+        this.setState({ msSinceEpoch: 1000 })
+    }
+
     render() {
         const { telemetry } = this.props
         const renderProps = {
@@ -140,6 +148,7 @@ class TimeTracker extends React.Component {
                 toggleAutoplay: this.toggleAutoplay,
                 setAutoplaySpeed: this.setAutoplaySpeed,
                 setMsSinceEpoch: this.setMsSinceEpoch,
+                rewindToStart: this.rewindToStart
             },
         }
 

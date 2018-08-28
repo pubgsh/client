@@ -244,6 +244,8 @@ class Match extends React.Component {
                                         autoplaySpeed={timeControls.autoplaySpeed}
                                         toggleAutoplay={timeControls.toggleAutoplay}
                                         changeSpeed={timeControls.setAutoplaySpeed}
+                                        isFinished={(match.durationSeconds + 5) === (msSinceEpoch / 1000)}
+                                        rewindToStart={timeControls.rewindToStart}
                                     />
                                 </MatchHeader>
                                 <Map
