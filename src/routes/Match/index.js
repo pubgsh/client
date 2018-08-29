@@ -43,9 +43,12 @@ const MapContainer = styled.div`
     display: grid;
 `
 
+const RosterWrapper = styled.div`
+    position: relative;
+`
+
 const RosterContainer = styled.div`
     grid-column: 2;
-    position: relative;
     overflow-y: scroll;
     overflow-x: hidden;
     height: ${props => props.mapSize + 48}px;
@@ -258,15 +261,17 @@ class Match extends React.Component {
                                 />
                                 <HelpModal mapSize={mapSize} />
                             </MapContainer>
-                            <RosterContainer mapSize={mapSize}>
-                                <RosterHeader>Name / Kills / Damage</RosterHeader>
-                                <Roster
-                                    match={match}
-                                    telemetry={currentTelemetry}
-                                    rosters={rosters}
-                                    marks={this.marks}
-                                />
-                            </RosterContainer>
+                            <RosterWrapper>
+                                <RosterContainer mapSize={mapSize}>
+                                    <RosterHeader>Name / Kills / Damage</RosterHeader>
+                                    <Roster
+                                        match={match}
+                                        telemetry={currentTelemetry}
+                                        rosters={rosters}
+                                        marks={this.marks}
+                                    />
+                                </RosterContainer>
+                            </RosterWrapper>
                         </MatchContainer>,
                     ]}
                 />
