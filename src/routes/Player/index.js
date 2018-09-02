@@ -82,7 +82,7 @@ class Player extends React.Component {
         }
 
         const matchTypes = groupBy(player.matches, m => {
-            if (m.gameMode === 'normal') return 'c'
+            if (m.gameMode.includes('normal')) return 'c'
             if (m.gameMode.includes('solo')) return 1
             if (m.gameMode.includes('duo')) return 2
             if (m.gameMode.includes('squad')) return 4
