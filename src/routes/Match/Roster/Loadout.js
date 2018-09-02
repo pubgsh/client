@@ -43,13 +43,27 @@ const CategoryHeader = styled.div`
 `
 
 const List = styled.div`
+    display: flex;
+    flex-direction: column;
     text-align: left;
     margin-bottom: 10px;
 `
 
 const ListItem = styled.div`
     display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+`
+
+const ParentItem = styled.div`
+    display: flex;
     align-items: center;
+`
+
+const SubList = styled.div`
+    text-align: left;
+    margin-bottom: 10px;
+    margin-left: 13px;
 `
 
 const ItemIcon = styled.img`
@@ -84,8 +98,21 @@ const ItemList = ({ category, items }) => {
 
                     return (
                         <ListItem key={itemId}>
-                            <ItemIcon src={images[itemId]} />
-                            <span>{dict[itemId]}</span>
+                            <ParentItem>
+                                <ItemIcon src={images[itemId]} />
+                                <span>{dict[itemId]}</span>
+                            </ParentItem>
+                            {i.attachedItems.length > 0 &&
+                            <SubList>
+                                {i.attachedItems.map(ai => {
+                                    return (
+                                        <ListItem key={ai}>
+                                            {dict[ai]}
+                                        </ListItem>
+                                    )
+                                })}
+                            </SubList>
+                            }
                         </ListItem>
                     )
                 })}

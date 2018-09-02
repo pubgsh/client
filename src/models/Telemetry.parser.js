@@ -119,6 +119,55 @@ export default function parseTelemetry(matchData, telemetry, focusedPlayerName) 
                 setNewPlayerState(characterName, { items: currentItems.filter(item => item.itemId !== d.item.itemId)})
             }
 
+            if (d._T === 'LogItemAttach') {
+                const characterName = d.character.name
+                const currentItems = curState.players[characterName].items
+
+                const updatedItems = currentItems.reduce((prev, item) => {
+                    if (item.itemId === d.parentItem.itemId) {
+                        return [
+                            ...prev,
+                            {
+                                ...item,
+                                attachedItems: [ ...item.attachedItems, d.childItem.itemId]
+                            }
+                        ]
+                    }
+                    
+                    return [
+                        ...prev,
+                        item
+                    ]
+                }, [])
+                
+                setNewPlayerState(characterName, { items: updatedItems })
+            }
+
+            if (d._T === 'LogItemDetach') {
+                const characterName = d.character.name
+                const currentItems = curState.players[characterName].items
+                
+                const updatedItems = currentItems.reduce((prev, item) => {
+                    if (item.itemId === d.parentItem.itemId) {
+                        return [
+                            ...prev,
+                            { 
+                                ...item,
+                                attachedItems: item.attachedItems.filter(ai => ai !== d.childItem.itemId)
+                            }
+                        ]
+                    }
+
+                    return [
+                        ...prev,
+                        item
+                    ]
+                }, [])
+
+                setNewPlayerState(characterName, { items: updatedItems })
+
+            }
+
             if (d._T === 'LogPlayerKill') {
                 setNewPlayerState(d.victim.name, { status: 'dead' })
 
