@@ -116,7 +116,7 @@ export default function parseTelemetry(matchData, telemetry, focusedPlayerName) 
                 const characterName = d.character.name
                 const currentItems = curState.players[characterName].items
 
-                setNewPlayerState(characterName, { items: currentItems.filter(item => item.itemId !== d.item.itemId)})
+                setNewPlayerState(characterName, { items: currentItems.filter(item => item.itemId !== d.item.itemId) })
             }
 
             if (d._T === 'LogItemAttach') {
@@ -129,43 +129,42 @@ export default function parseTelemetry(matchData, telemetry, focusedPlayerName) 
                             ...prev,
                             {
                                 ...item,
-                                attachedItems: [ ...item.attachedItems, d.childItem.itemId]
-                            }
+                                attachedItems: [...item.attachedItems, d.childItem.itemId],
+                            },
                         ]
                     }
-                    
+
                     return [
                         ...prev,
-                        item
+                        item,
                     ]
                 }, [])
-                
+
                 setNewPlayerState(characterName, { items: updatedItems })
             }
 
             if (d._T === 'LogItemDetach') {
                 const characterName = d.character.name
                 const currentItems = curState.players[characterName].items
-                
+
                 const updatedItems = currentItems.reduce((prev, item) => {
                     if (item.itemId === d.parentItem.itemId) {
                         return [
                             ...prev,
-                            { 
+                            {
                                 ...item,
-                                attachedItems: item.attachedItems.filter(ai => ai !== d.childItem.itemId)
-                            }
+                                attachedItems: item.attachedItems.filter(ai => ai !== d.childItem.itemId),
+                            },
                         ]
                     }
 
                     return [
                         ...prev,
-                        item
+                        item,
                     ]
                 }, [])
 
                 setNewPlayerState(characterName, { items: updatedItems })
-
             }
 
             if (d._T === 'LogPlayerKill') {
