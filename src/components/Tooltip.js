@@ -23,14 +23,18 @@ class Tooltip extends React.Component {
     }
 
     componentDidMount() {
-        // Regarding popperOptions: https://github.com/atomiks/tippyjs/issues/196#issuecomment-371635364
+        /**
+         * Regarding popperOptions:
+         *  https://github.com/atomiks/tippyjs/issues/196#issuecomment-371635364
+         *  https://popper.js.org/popper-documentation.html#modifiers..preventOverflow
+         */
         if (this.childrenCount !== 1) return false
         this.tippyInstance = tippy.one(this.reference, {
             ...this.props,
             popperOptions: {
                 modifiers: {
                     preventOverflow: {
-                        escapeWithReference: true,
+                        boundariesElement: 'window',
                     },
                 },
             },
