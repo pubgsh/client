@@ -69,7 +69,11 @@ export default function Telemetry(state) {
         const focusedRosterIdx = rosters.findIndex(r => r.some(c => c.name === focusedPlayer))
         const [focusedRoster] = rosters.splice(focusedRosterIdx, 1)
         const sortedRosters = [focusedRoster, ...rosters]
-        return sortedRosters.map(r => r.map(c => c.name).sort())
+
+        return sortedRosters.map(r => ({
+            ranking: minBy(r, 'ranking').ranking,
+            players: r.map(c => c.name).sort(),
+        }))
     }
 
     return {

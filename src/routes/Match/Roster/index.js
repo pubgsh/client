@@ -59,8 +59,8 @@ const Roster = ({ match, telemetry, marks, rosters }) => {
         <Options.Context.Consumer>
             {({ options }) => rosters.map(r => {
                 return (
-                    <TeamGroup key={`roster-${r[0]}`}>
-                        {r.map(playerName => {
+                    <TeamGroup key={`roster-${r.players[0]}`}>
+                        {r.players.map(playerName => {
                             const p = telemetry.players[playerName]
                             return (
                                 <PlayerItem
