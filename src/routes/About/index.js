@@ -55,6 +55,11 @@ export default () =>
             <section>
                 <SectionHeader>Changelog</SectionHeader>
 
+                <h5>2018-09-15</h5>
+                <ul>
+                    <li>Add loadouts (hover on player on roster) (Credit @patrickgordon)</li>
+                </ul>
+
                 <h5>2018-08-27</h5>
                 <ul>
                     <li>Add rewind button (Credit @patrickgordon)</li>
