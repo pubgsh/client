@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import styled from 'styled-components'
-import groupBy from 'lodash/groupBy'
+import { groupBy, isEmpty, sortBy } from 'lodash'
 import dict from '../../../assets/itemId.json'
 
 const importAll = req => {
@@ -22,19 +22,18 @@ const importAll = req => {
 const images = importAll(require.context('../../../assets/item', true, /.png$/))
 
 const LoadoutWrapper = styled.div`
-    min-width: 150px;
+    width: 200px;
     border-radius: 4px;
     font-size: 1.1rem;
     font-weight: 400;
     padding: 4px;
-    margin: 5px 0;
 `
 
 const CategoryHeader = styled.div`
     text-align: center;
-    font-size: 1.1rem;
-    font-weight: 400;
-    margin-bottom: 5px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 5px 0 20px;
 `
 
 const List = styled.div`
@@ -43,7 +42,11 @@ const List = styled.div`
 `
 
 const ListItem = styled.div`
-    margin-bottom: 10px;
+    margin-bottom: 20px;
+
+    &:last-child {
+        margin-bottom: 10px;
+    }
 `
 
 const SubListItem = styled.div`
@@ -57,11 +60,12 @@ const ParentItem = styled.div`
     grid-column-gap: 5px;
     grid-template-columns: 1fr 5fr;
     align-items: center;
+    font-weight: 600;
 `
 
 const SubList = styled.div`
     text-align: left;
-    margin-left: 13px;
+    margin-left: 38px;
 `
 
 const ItemIcon = styled.img`
@@ -69,81 +73,111 @@ const ItemIcon = styled.img`
     max-width: 25px;
     width: auto;
     height: auto;
-    display: block;
+    display: inline-block;
     justify-self: center;
+    filter: invert(0.75);
+`
+
+const StyledEquipmentIcons = styled.div`
+    width: 150px;
+    margin: 10px auto;
+    display: grid;
+    grid-column-gap: 10px;
+    grid-template-columns: repeat(4, 1fr);
+`
+
+const ItemIconPlaceholder = styled(ItemIcon)`
+    filter: none !important;
 `
 
 const NoItems = styled.span`
     font-size: 1.1rem;
     font-weight: 400;
+    margin-bottom: 10px;
+    display: inline-block;
 `
 
-const WEAPONS_CATEGORY = 'Weapon'
-const EQUIPMENT_CATEGORY = 'Equipment'
+const WEAPON_PRIORITIES = {
+    Main: 0,
+    Handgun: 1,
+    Melee: 2,
+}
 const EQUIPMENT_REGEX = /_(\d\d)_/g
-
-const getImageForEquipment = itemId => {
-    const replacedItemId = itemId.replace(EQUIPMENT_REGEX, '_00_')
-    return images[replacedItemId]
+const EQUIPMENT_SUBCATS = ['Headgear', 'Vest', 'Backpack', 'Throwable']
+const EQUIPMENT_PLACEHOLDERS = {
+    Headgear: 'Item_Head_E_00_Lv1_C',
+    Vest: 'Item_Armor_E_00_Lv1_C',
+    Backpack: 'Item_Back_E_00_Lv1_C',
+    Throwable: 'Item_Weapon_Grenade_C',
 }
 
-const ItemList = ({ category, items }) => {
+
+const WeaponsList = ({ weapons }) => {
+    if (isEmpty(weapons)) {
+        return <NoItems>(No Weapons)</NoItems>
+    }
+
+    const sortedWeapons = sortBy(weapons, w => `${WEAPON_PRIORITIES[w.subCategory]}${w.itemId}`)
+
     return (
-        <div>
-            <CategoryHeader>
-                {category}
-            </CategoryHeader>
-            <List>
-                {items && items.map((i, index) => {
-                    const { itemId } = i
-                    const imageSrc = category === EQUIPMENT_CATEGORY
-                        ? getImageForEquipment(itemId)
-                        : images[itemId]
+        <List>
+            {sortedWeapons.map((i, index) => {
+                const { itemId } = i
+                const imageSrc = images[itemId]
 
-                    const key = `${itemId}_${index}`
+                const key = `${itemId}_${index}`
 
-                    return (
-                        <ListItem key={key}>
-                            <ParentItem>
-                                <ItemIcon src={imageSrc} />
-                                <span>{dict[itemId]}</span>
-                            </ParentItem>
-                            {i.attachedItems.length > 0 &&
-                            <SubList>
-                                {i.attachedItems.map(ai => {
-                                    return (
-                                        <SubListItem key={ai}>
-                                            {dict[ai]}
-                                        </SubListItem>
-                                    )
-                                })}
-                            </SubList>
-                            }
-                        </ListItem>
-                    )
-                })}
-            </List>
-        </div>
+                return (
+                    <ListItem key={key}>
+                        <ParentItem>
+                            <ItemIcon src={imageSrc} />
+                            <span>{dict[itemId]}</span>
+                        </ParentItem>
+                        {i.attachedItems.length > 0 &&
+                        <SubList>
+                            {i.attachedItems.map(ai => {
+                                return (
+                                    <SubListItem key={ai}>
+                                        {dict[ai]}
+                                    </SubListItem>
+                                )
+                            })}
+                        </SubList>
+                        }
+                    </ListItem>
+                )
+            })}
+        </List>
     )
 }
 
+const EquipmentIcons = ({ equipment }) =>
+    <StyledEquipmentIcons>
+        {EQUIPMENT_SUBCATS.map(subcat => {
+            const e = equipment.find(i => i.subCategory === subcat)
+            if (e) {
+                const replacedItemId = e.itemId.replace(EQUIPMENT_REGEX, '_00_')
+                return (
+                    <ItemIcon key={subcat} src={images[replacedItemId]} />
+                )
+            }
+
+            return <ItemIconPlaceholder key={subcat} src={images[EQUIPMENT_PLACEHOLDERS[subcat]]} />
+        })}
+    </StyledEquipmentIcons>
+
 class Loadout extends PureComponent {
     render() {
-        const { items } = this.props
-
-        const categorizedItems = groupBy(items, i => i.category)
-
-        const weapons = categorizedItems[WEAPONS_CATEGORY]
-        const equipment = categorizedItems[EQUIPMENT_CATEGORY]
-
-        if (!items || items.length === 0) {
-            return <NoItems>No Items</NoItems>
-        }
+        const {
+            Weapon: weapons = [],
+            Equipment: equipment = [],
+        } = groupBy(this.props.items, i => i.category)
 
         return (
             <LoadoutWrapper>
-                <ItemList category={WEAPONS_CATEGORY} items={weapons} />
-                <ItemList category={EQUIPMENT_CATEGORY} items={equipment} />
+                <CategoryHeader>Loadout</CategoryHeader>
+                <WeaponsList weapons={weapons} />
+                <EquipmentIcons equipment={equipment} />
             </LoadoutWrapper>
         )
     }

@@ -79,6 +79,8 @@ const Roster = ({ match, telemetry, marks, rosters }) => {
                                     <Tooltip
                                         arrow
                                         placement="left"
+                                        duration={0}
+                                        theme="pubgsh"
                                         html={<Loadout items={p.items} />}
                                     >
                                         <PlayerName>{p.name}</PlayerName>

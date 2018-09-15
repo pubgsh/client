@@ -65,7 +65,7 @@ export default function parseTelemetry(matchData, telemetry, focusedPlayerName) 
                 health: 100,
                 kills: 0,
                 damageDealt: 0,
-                items: []
+                items: [],
             }
 
             latestPlayerStates[p.name] = curState.players[p.name]
@@ -116,7 +116,9 @@ export default function parseTelemetry(matchData, telemetry, focusedPlayerName) 
                 const characterName = d.character.name
                 const currentItems = curState.players[characterName].items
 
-                setNewPlayerState(characterName, { items: currentItems.filter(item => item.itemId !== d.item.itemId) })
+                setNewPlayerState(characterName, {
+                    items: currentItems.filter(item => item.itemId !== d.item.itemId),
+                })
             }
 
             if (d._T === 'LogItemAttach') {

@@ -148,7 +148,7 @@ class TimeTracker extends React.Component {
                 toggleAutoplay: this.toggleAutoplay,
                 setAutoplaySpeed: this.setAutoplaySpeed,
                 setMsSinceEpoch: this.setMsSinceEpoch,
-                rewindToStart: this.rewindToStart
+                rewindToStart: this.rewindToStart,
             },
         }
 

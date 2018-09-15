@@ -56,19 +56,19 @@ const RewindButton = ({ rewindToStart }) => {
 
 class AutoplayControls extends React.PureComponent {
     render() {
-        const { 
-            autoplay, 
+        const {
+            autoplay,
             autoplaySpeed,
             changeSpeed,
             isFinished,
             toggleAutoplay,
-            rewindToStart
+            rewindToStart,
         } = this.props
 
         return (
             <ControlsWrapper>
                 <div>
-                    {!isFinished && 
+                    {!isFinished &&
                         <ControlButton className="button" type="submit" onClick={toggleAutoplay}>
                             <i className={`fi-${autoplay ? 'pause' : 'play'}`} />
                         </ControlButton>

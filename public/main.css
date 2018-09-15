@@ -280,3 +280,14 @@ form {
 .rc-slider .rc-slider-handle:focus {
     box-shadow: 0 0 5px #83e3c1;
 }
+
+.tippy-tooltip.pubgsh-theme {
+  background: #F7F7F7;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  color: black;
+}
+
+.tippy-tooltip.pubgsh-theme .tippy-arrow {
+    border-left: 7px solid #ddd;
+}

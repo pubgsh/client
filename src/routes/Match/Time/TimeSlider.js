@@ -47,7 +47,7 @@ const HoverableTimePositionedElement = TimePositionedElement`
         top: -35px;
         background-color: white;
         white-space: nowrap;
-        border: 1px solid #bbb;
+        border: 1px solid #ddd;
         border-radius: 3px;
         transform: translateX(-50%);
         background: #F7F7F7;
