@@ -45,7 +45,6 @@ const MapContainer = styled.div`
 
 const RosterContainer = styled.div`
     grid-column: 2;
-    position: relative;
     overflow-y: scroll;
     overflow-x: hidden;
     height: ${props => props.mapSize + 48}px;

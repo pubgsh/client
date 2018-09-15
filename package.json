@@ -29,6 +29,7 @@
         "react-konva": "1.7.3",
         "react-router-dom": "4.2.2",
         "react-scripts": "1.1.4",
+        "tippy.js": "2.5.4",
         "socket.io-client": "2.1.1",
         "styled-components": "3.2.6"
     },

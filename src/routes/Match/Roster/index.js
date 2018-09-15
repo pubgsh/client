@@ -1,5 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
+import Tooltip from '../../../components/Tooltip'
+import Loadout from './Loadout.js'
 import * as Options from '../Options.js'
 
 const getRosterColor = ({ colors }, marks, player) => {
@@ -62,6 +64,7 @@ const Roster = ({ match, telemetry, marks, rosters }) => {
                     <TeamGroup key={`roster-${r[0]}`}>
                         {r.map(playerName => {
                             const p = telemetry.players[playerName]
+
                             return (
                                 <PlayerItem
                                     key={p.name}
@@ -73,7 +76,15 @@ const Roster = ({ match, telemetry, marks, rosters }) => {
                                         textDecoration: marks.isPlayerTracked(p.name) ? 'underline' : '',
                                     }}
                                 >
-                                    <PlayerName>{p.name}</PlayerName>
+                                    <Tooltip
+                                        arrow
+                                        placement="left"
+                                        duration={0}
+                                        theme="pubgsh"
+                                        html={<Loadout items={p.items} />}
+                                    >
+                                        <PlayerName>{p.name}</PlayerName>
+                                    </Tooltip>
                                     <PlayerDatapoint>{p.kills}</PlayerDatapoint>
                                     <PlayerDatapoint>{Math.round(p.damageDealt)}</PlayerDatapoint>
                                 </PlayerItem>
