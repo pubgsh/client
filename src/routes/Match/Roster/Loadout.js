@@ -22,7 +22,7 @@ const importAll = req => {
 const images = importAll(require.context('../../../assets/item', true, /.png$/))
 
 const LoadoutWrapper = styled.div`
-    width: 200px;
+    width: 220px;
     border-radius: 4px;
     font-size: 1.1rem;
     font-weight: 400;
@@ -65,7 +65,7 @@ const ParentItem = styled.div`
 
 const SubList = styled.div`
     text-align: left;
-    margin-left: 38px;
+    margin-left: 40px;
 `
 
 const ItemIcon = styled.img`
