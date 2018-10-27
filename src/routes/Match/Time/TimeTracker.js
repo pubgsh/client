@@ -150,6 +150,7 @@ class TimeTracker extends React.Component {
                 setMsSinceEpoch: this.setMsSinceEpoch,
                 rewindToStart: this.rewindToStart,
             },
+            isTracking: this.props,
         }
 
         return this.props.render(renderProps)

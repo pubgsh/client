@@ -9,6 +9,8 @@ import CarePackage from './CarePackage.js'
 import Tracer from './Tracer.js'
 import AliveCount from './AliveCount.js'
 import MapButton from '../../../components/MapButton.js'
+import { toScale } from '../../../lib/canvas-math.js'
+
 
 const SCALE_STEP = 1.2
 const MIN_SCALE = 1
@@ -50,7 +52,7 @@ const ZoomOutButton = MapButton.extend`
 `
 
 class Map extends React.Component {
-    state = { mapScale: 1, offsetX: 0, offsetY: 0 }
+    state = { mapScale: 1, offsetX: 0, offsetY: 0, isTracking: false }
 
     static getDerivedStateFromProps(props) {
         if (props.options.tools.enabled) {
@@ -64,10 +66,55 @@ class Map extends React.Component {
         return {}
     }
 
+    componentDidMount() {
+        window.addEventListener('keydown', this.onKeydown)
+    }
+
+
+    componentWillUnmount() {
+        window.removeEventListener('keydown', this.onKeydown)
+    }
+
+    onKeydown = e => {
+        if (e.target.tagName.toLowerCase() === 'input') return
+
+        if (e.keyCode === 70) { // "F" key
+            e.preventDefault()
+
+            this.setState(({ isTracking }) => ({
+                isTracking: !isTracking,
+            }))
+
+            console.log('TOGGLED centering')
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        const { match: { mapName }, msSinceEpoch, telemetry, marks, mapSize } = this.props
+        const { isTracking } = this.state
+
+        if (telemetry) {
+            const pubgMapSize = mapName === 'Savage_Main' ? 408000 : 816000
+            const { x, y } = telemetry.playerLocations[marks.focusedPlayer()]
+            const scaledX = toScale(pubgMapSize, mapSize, x)
+            const scaledY = toScale(pubgMapSize, mapSize, y)
+
+            if (prevProps.msSinceEpoch < msSinceEpoch && isTracking) {
+            this.setState({ // eslint-disable-line
+                    offsetX: scaledX,
+                    offsetY: scaledY,
+                })
+
+                console.log('centering')
+            }
+        }
+    }
+
     handleDragEnd = e => {
         this.setState({
             offsetX: e.target.x(),
             offsetY: e.target.y(),
+            isTracking: false,
         })
     }
 

@@ -223,7 +223,7 @@ class Match extends React.Component {
                     options={options}
                     durationSeconds={match.durationSeconds + 5}
                     telemetry={telemetry}
-                    render={({ msSinceEpoch, timeControls, currentTelemetry }) => [
+                    render={({ msSinceEpoch, timeControls, currentTelemetry, isTracking }) => [
                         !currentTelemetry && <Message key="message">Loading telemetry...</Message>,
                         <MatchContainer key="match" id="MatchContainer" telemetryLoaded={!!currentTelemetry}>
                             <DocumentTitle title="Replay | pubg.sh" />
