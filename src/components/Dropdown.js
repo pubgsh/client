@@ -24,14 +24,13 @@ const DropdownContainer = styled.div`
     ul {
         position: absolute;
         background: white;
-        width: 200px;
         right: -1px;
         text-align: right;
         list-style-type: none;
         top: 45px;
         border: 1px solid #D1D1D1;
         border-radius: 4px;
-        width: 100px;
+        width: 66px;
         z-index: 10;
 
         li {

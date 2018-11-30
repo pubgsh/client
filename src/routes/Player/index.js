@@ -53,6 +53,11 @@ const Message = styled.p`
     text-align: center;
 `
 
+const BigLi = styled.li`
+    font-size: 2rem;
+    font-weight: bold;
+`
+
 class Player extends React.Component {
     render() {
         const { match, data: { loading, error, player } } = this.props
@@ -71,6 +76,10 @@ class Player extends React.Component {
                             Player not found. Check that:
                         </p>
                         <ul>
+                            <BigLi>
+                                PUBG changed shard names on 2018/11/30 -
+                                If you have this page bookmarked, search again
+                            </BigLi>
                             <li><strong>Capitalization matches exactly</strong></li>
                             <li>You selected the correct region</li>
                             <li>The user has played a game in the last week</li>

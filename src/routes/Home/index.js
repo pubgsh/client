@@ -88,11 +88,11 @@ const StyledForm = styled.form`
 
 
 class Home extends React.Component {
-    state = { searchText: '', shardId: localStorage.getItem('shardId') || SHARDS[0] }
+    state = { searchText: '', shardId: localStorage.getItem('shardIdV2') || SHARDS[0] }
 
     handleDropdownChange = ({ value }) => {
         this.setState({ shardId: value })
-        localStorage.setItem('shardId', value)
+        localStorage.setItem('shardIdV2', value)
     }
 
     handleInputChange = e => { this.setState({ searchText: e.target.value }) }
@@ -147,7 +147,7 @@ export default graphql(gql`
     }`, {
     options: () => ({
         variables: {
-            shardId: localStorage.getItem('shardId') || SHARDS[0],
+            shardId: localStorage.getItem('shardIdV2') || SHARDS[0],
         },
     }),
 })(Home)

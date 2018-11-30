@@ -1,7 +1,7 @@
 import React from 'react'
 import { merge } from 'lodash'
 
-export const STORAGE_KEY = 'options'
+export const STORAGE_KEY = 'optionsV2'
 
 export const DEFAULT_OPTIONS = {
     colors: {

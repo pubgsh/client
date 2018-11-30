@@ -94,11 +94,11 @@ class App extends React.Component { // eslint-disable-line
     /* eslint-enable */
 
     updateFavoritePlayers = () => {
-        localStorage.setItem('favoritePlayers', JSON.stringify(this.state.favoritePlayers))
+        localStorage.setItem('favoritePlayersV2', JSON.stringify(this.state.favoritePlayers))
     }
 
     refreshFavoritePlayers = () => {
-        const favoritePlayers = JSON.parse(localStorage.getItem('favoritePlayers') || '[]')
+        const favoritePlayers = JSON.parse(localStorage.getItem('favoritePlayersV2') || '[]')
         this.setState({ favoritePlayers })
     }
 

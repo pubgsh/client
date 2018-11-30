@@ -100,13 +100,13 @@ class TopMenu extends React.Component {
     static getDerivedStateFromProps(props) {
         return {
             searchText: get(props, 'match.params.playerName', ''),
-            shardId: get(props, 'match.params.shardId', (localStorage.getItem('shardId') || SHARDS[0])),
+            shardId: get(props, 'match.params.shardId', (localStorage.getItem('shardIdV2') || SHARDS[0])),
         }
     }
 
     handleDropdownChange = ({ value }) => {
         this.setState({ shardId: value })
-        localStorage.setItem('shardId', value)
+        localStorage.setItem('shardIdV2', value)
     }
 
     handleInputChange = e => { this.setState({ searchText: e.target.value }) }
