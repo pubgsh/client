@@ -1,6 +1,6 @@
 import React from 'react'
 import { xor, union, difference, merge, cloneDeep, set } from 'lodash'
-import { graphql, compose } from 'react-apollo'
+import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import styled from 'styled-components'
 import DocumentTitle from 'react-document-title'
@@ -178,13 +178,7 @@ class Match extends React.Component {
     loadTelemetry = async () => {
         console.log('Loading telemetry...')
 
-        let { focusedPlayer } = this.state
-        if (!this.props.data.match.players.some(p => this.marks.isPlayerFocused(p.name))) {
-            // The user is viewing a match they played under a previous name. We should be able to find
-            // their previous id based on their account id.
-            const { playerId } = this.props.playerId
-            focusedPlayer = this.props.data.match.players.find(p => p.id === playerId).name
-        }
+        const { focusedPlayer } = this.state
 
         this.setState({ telemetry: null, telemetryLoading: true })
 
@@ -274,7 +268,7 @@ class Match extends React.Component {
     }
 }
 
-const matchQuery = graphql(gql`
+export default graphql(gql`
     query($matchId: String!) {
         match(id: $matchId) {
             id
@@ -295,26 +289,10 @@ const matchQuery = graphql(gql`
             }
         }
     }`, {
-    name: 'data',
     options: ({ match }) => ({
         fetchPolicy: 'network-only',
         variables: {
             matchId: match.params.matchId,
         },
     }),
-})
-
-const playerIdQuery = graphql(gql`
-    query($playerName: String!) {
-        playerId(name: $playerName)
-    }`, {
-    name: 'playerId',
-    options: ({ match }) => ({
-        fetchPolicy: 'network-only',
-        variables: {
-            playerName: match.params.playerName,
-        },
-    }),
-})
-
-export default compose(matchQuery, playerIdQuery)(Match)
+})(Match)
