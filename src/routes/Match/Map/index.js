@@ -14,6 +14,12 @@ const SCALE_STEP = 1.2
 const MIN_SCALE = 1
 const MAX_SCALE = 50
 const CLAMP_MAP = true // TODO: This should be a configurable option
+const MAP_SIZES = {
+    Erangel_Main: 816000,
+    Desert_Main: 816000,
+    Savage_Main: 408000,
+    DihorOtok_Main: 612000,
+}
 
 const StageWrapper = styled.div`
     position: relative;
@@ -122,7 +128,7 @@ class Map extends React.Component {
         const { mapScale, offsetX, offsetY } = this.state
         const scale = { x: mapScale, y: mapScale }
 
-        const pubgMapSize = mapName === 'Savage_Main' ? 408000 : 816000
+        const pubgMapSize = MAP_SIZES[mapName]
 
         // The order players are added to the canvas determines their relative z-index. We want to render
         // focused players on top, then tracked, etc, so we need to sort the players. We want dead players
