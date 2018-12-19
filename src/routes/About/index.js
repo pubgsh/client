@@ -55,6 +55,13 @@ export default () =>
             <section>
                 <SectionHeader>Changelog</SectionHeader>
 
+                <h5>2018-12-19</h5>
+                <ul>
+                    <li>Add Vikendi</li>
+                    <li>Add Skorpion, G36C</li>
+                    <li>Filter out Range_Main entries</li>
+                </ul>
+
                 <h5>2018-09-15</h5>
                 <ul>
                     <li>Add loadouts (hover on player on roster) (Credit @patrickgordon)</li>

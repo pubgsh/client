@@ -116,5 +116,10 @@
     "Item_Weapon_Vector_C": "Vector",
     "Item_Weapon_VSS_C": "VSS",
     "Item_Weapon_Win1894_C": "Win94",
-    "Item_Weapon_Winchester_C": "S1897"
+    "Item_Weapon_Winchester_C": "S1897",
+    "Item_Attach_Weapon_Lower_LaserPointer_C": "Laser Sight",
+    "Item_Weapon_G36C_C": "G36C",
+    "Item_Weapon_Grenade_Warmode_C": "Frag Grenade",
+    "Item_Weapon_vz61Skorpion_C": "Skorpion",
+    "WarModeStartParachutePack_C": "Parachute"
 }
