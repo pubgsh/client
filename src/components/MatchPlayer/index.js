@@ -177,8 +177,8 @@ class MatchPlayer extends React.Component {
     // -------------------------------------------------------------------------
 
     render() {
-        const { match, telemetry, rosters, globalState } = this.props
-        const { mapSize, options, setOption } = this.state
+        const { match, rawTelemetry, telemetry, rosters, globalState } = this.props
+        const { mapSize, options, setOption, prevPlayerName } = this.state
 
         return (
             <Options.Context.Provider value={{ options, setOption }}>
@@ -190,7 +190,12 @@ class MatchPlayer extends React.Component {
                         <MatchContainer id="MatchContainer">
                             <MapContainer id="MapContainer" isDotHovered={!!this.marks.hoveredPlayer()}>
                                 <MatchHeader>
-                                    <MatchInfo match={match} marks={this.marks} />
+                                    <MatchInfo
+                                        match={match}
+                                        marks={this.marks}
+                                        rawTelemetry={rawTelemetry}
+                                        playerName={prevPlayerName}
+                                    />
                                     <TimeSlider
                                         value={msSinceEpoch}
                                         stopAutoplay={timeControls.stopAutoplay}

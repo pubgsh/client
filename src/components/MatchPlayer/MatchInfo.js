@@ -2,6 +2,7 @@ import React from 'react'
 import moment from 'moment'
 import styled from 'styled-components'
 import { ordinalSuffix } from 'ordinal-js'
+import { downloadJSON, generateMatchFilename } from '../../lib/match-export.js'
 
 const StyledMatchInfo = styled.ul`
     font-size: 1.3rem;
@@ -31,6 +32,15 @@ const StyledMatchInfo = styled.ul`
 `
 
 class MatchInfo extends React.PureComponent {
+    downloadMatch = () => {
+        const { match, rawTelemetry, playerName } = this.props
+
+        downloadJSON(
+            { playerName, match, rawTelemetry },
+            generateMatchFilename(match, playerName),
+        )
+    }
+
     render() {
         const { match, marks } = this.props
 
@@ -43,6 +53,9 @@ class MatchInfo extends React.PureComponent {
                 <li>
                     <strong>{stats.winPlace}</strong>{ordinalSuffix(stats.winPlace)} place,&nbsp;
                     <strong>{stats.kills}</strong> kills
+                </li>
+                <li>
+                    <button onClick={this.downloadMatch}>Download</button>
                 </li>
             </StyledMatchInfo>
         )

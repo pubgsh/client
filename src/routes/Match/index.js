@@ -17,6 +17,7 @@ const Message = styled.p`
 
 class Match extends React.Component {
     state = {
+        rawTelemetry: null,
         telemetry: null,
         telemetryLoaded: false,
         telemetryError: false,
@@ -44,7 +45,9 @@ class Match extends React.Component {
 
         const telemetryWorker = new TelemetryWorker()
 
-        telemetryWorker.addEventListener('message', ({ data: { success, error, state, globalState } }) => {
+        telemetryWorker.addEventListener('message', ({ data }) => {
+            const { success, error, state, globalState, rawTelemetry } = data
+
             if (!success) {
                 console.error(`Error loading telemetry: ${error}`)
 
@@ -58,6 +61,7 @@ class Match extends React.Component {
             const telemetry = Telemetry(state)
 
             this.setState(prevState => ({
+                rawTelemetry,
                 telemetry,
                 telemetryLoaded: true,
                 rosters: telemetry.finalRoster(params.playerName),
@@ -77,7 +81,7 @@ class Match extends React.Component {
 
     render() {
         const { data: { loading, error, match }, match: { params } } = this.props
-        const { telemetry, telemetryLoaded, telemetryError, rosters, globalState } = this.state
+        const { telemetry, rawTelemetry, telemetryLoaded, telemetryError, rosters, globalState } = this.state
 
         let content
 
@@ -92,6 +96,7 @@ class Match extends React.Component {
         } else {
             content = <MatchPlayer
                 match={match}
+                rawTelemetry={rawTelemetry}
                 telemetry={telemetry}
                 rosters={rosters}
                 globalState={globalState}

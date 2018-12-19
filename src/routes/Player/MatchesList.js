@@ -4,6 +4,7 @@ import moment from 'moment'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { ordinalSuffix } from 'ordinal-js'
+import { friendlyMapName } from '../../lib/util'
 
 const MatchesColumn = styled.div`
     text-align: center;
@@ -33,14 +34,6 @@ const NoMatches = styled.span`
     display: inline-block;
     padding-top: 12px;
 `
-
-const friendlyMapName = name => {
-    if (name === 'Erangel_Main') return 'Erangel'
-    if (name === 'Desert_Main') return 'Miramar'
-    if (name === 'Savage_Main') return 'Sanhok'
-    if (name === 'DihorOtok_Main') return 'Vikendi'
-    return name
-}
 
 const MatchesTable = ({ baseUrl, matches }) => {
     if (isEmpty(matches)) {
