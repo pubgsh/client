@@ -36,20 +36,23 @@ class LocalMatch extends React.Component {
         const reader = new FileReader()
 
         reader.onload = read => {
-            const data = JSON.parse(read.target.result)
+            try {
+                const data = JSON.parse(read.target.result)
 
-            if (!data.playerName || !data.match || !data.rawTelemetry) {
-                console.error('Loaded invalid replay JSON')
-                this.setState({ error: true })
-                return
+                if (!data.playerName || !data.match || !data.rawTelemetry) {
+                    throw new Error('Loaded invalid replay JSON')
+                }
+
+                this.loadTelemetry(data)
+            } catch (error) {
+                console.error(error)
+                this.setState({ loading: false, error: true })
             }
-
-            this.loadTelemetry(data)
         }
 
         reader.onerror = error => {
-            console.error('Error reading JSON', error)
-            this.setState({ error: true })
+            console.error('Error reading replay file', error)
+            this.setState({ loading: false, error: true })
         }
 
         reader.readAsText(this.props.location.state.file)
