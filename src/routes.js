@@ -6,6 +6,7 @@ import Home from './routes/Home'
 import About from './routes/About'
 import Player from './routes/Player'
 import Match from './routes/Match'
+import LocalMatch from './routes/LocalMatch'
 import TopMenu from './components/TopMenu.js'
 import * as Settings from './components/Settings.js'
 
@@ -117,6 +118,7 @@ class App extends React.Component { // eslint-disable-line
                             <Switch>
                                 <RouteWithTopMenu path="/" exact component={Home} />
                                 <RouteWithTopMenu path="/about" exact component={About} />
+                                <RouteWithTopMenu path="/local-replay" exact component={LocalMatch} />
                                 <RouteWithTopMenu path="/:playerName/:shardId/:matchId" component={Match} />
                                 <RouteWithTopMenu path="/:playerName/:shardId" component={Player} />
                             </Switch>
