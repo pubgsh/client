@@ -57,34 +57,29 @@ class TimeTracker extends React.Component {
     componentDidMount() {
         this.mounted = true
         if (this.state.autoplay) setTimeout(this.startAutoplay, 300)
+        window.addEventListener('keydown', this.onKeydown)
+
+        // Handle devtools options
+        if (this.props.options.tools.enabled) {
+            const { timestamp, autoplay } = this.props.options.tools.match
+
+            if (autoplay) {
+                setTimeout(this.toggleAutoplay, 100)
+            }
+
+            const [, min, sec, ds] = /(\d+):(\d+)\.(\d)/.exec(timestamp)
+            this.setMsSinceEpoch((min * 60 * 1000) + (sec * 1000) + (ds * 100))
+
+            return
+        }
+
+        setTimeout(this.toggleAutoplay, 100)
     }
 
     componentWillUnmount() {
         cancelAnimationFrame(this.rafId)
         this.mounted = false
         window.removeEventListener('keydown', this.onKeydown)
-    }
-
-    componentDidUpdate(prevProps, prevState) {
-        if (!prevProps.telemetry && this.props.telemetry) {
-            window.addEventListener('keydown', this.onKeydown)
-
-            // Handle devtools options
-            if (this.props.options.tools.enabled) {
-                const { timestamp, autoplay } = this.props.options.tools.match
-
-                if (autoplay) {
-                    setTimeout(this.toggleAutoplay, 100)
-                }
-
-                const [, min, sec, ds] = /(\d+):(\d+)\.(\d)/.exec(timestamp)
-                this.setMsSinceEpoch((min * 60 * 1000) + (sec * 1000) + (ds * 100))
-
-                return
-            }
-
-            setTimeout(this.toggleAutoplay, 100)
-        }
     }
 
     loop = time => {

@@ -1,11 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Link } from 'react-router-dom'
+import { withRouter, Link } from 'react-router-dom'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import DocumentTitle from 'react-document-title'
 import { SHARDS } from '../../models/Shards.js'
 import Dropdown from '../../components/Dropdown.js'
+import FileUploadButton from './FileUploadButton'
 
 import headerImg from '../../assets/home-header-img.png'
 
@@ -86,7 +87,6 @@ const StyledForm = styled.form`
     }
 `
 
-
 class Home extends React.Component {
     state = { searchText: '', shardId: localStorage.getItem('shardIdV2') || SHARDS[0] }
 
@@ -96,6 +96,11 @@ class Home extends React.Component {
     }
 
     handleInputChange = e => { this.setState({ searchText: e.target.value }) }
+
+    handleFile = e => {
+        this.props.history.push('/local-replay', { file: e.target.files[0] })
+        e.target.value = null // reset so we can select the same file again
+    }
 
     search = e => {
         if (e) e.preventDefault()
@@ -127,6 +132,7 @@ class Home extends React.Component {
                     />
                     <SearchButton className="button-primary" type="submit" value="Search" />
                 </StyledForm>
+                <FileUploadButton onFile={this.handleFile}>Upload pubg.sh replay</FileUploadButton>
                 <RandomMatchLink to={sm ? `/${sm.playerName}/${sm.shardId}/${sm.id}` : ''}>
                     <span>(Or just view a random match)</span>
                     <HeaderImage src={headerImg} />
@@ -150,4 +156,4 @@ export default graphql(gql`
             shardId: localStorage.getItem('shardIdV2') || SHARDS[0],
         },
     }),
-})(Home)
+})(withRouter(Home))

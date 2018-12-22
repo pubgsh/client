@@ -56,7 +56,6 @@ const PlayerDatapoint = styled.div`
 `
 
 const Roster = ({ match, telemetry, marks, rosters }) => {
-    if (!telemetry) return null
     return (
         <Options.Context.Consumer>
             {({ options }) => rosters.map(r => {

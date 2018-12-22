@@ -1,11 +1,10 @@
 import React from 'react'
-import { graphql } from 'react-apollo'
-import gql from 'graphql-tag'
+import { withRouter } from 'react-router-dom'
 import styled from 'styled-components'
 import DocumentTitle from 'react-document-title'
 import MatchPlayer from '../../components/MatchPlayer'
 import Telemetry from '../../models/Telemetry.js'
-import TelemetryWorker from '../../models/Telemetry.worker.js'
+import LocalTelemetryWorker from '../../models/LocalTelemetry.worker.js'
 
 // -----------------------------------------------------------------------------
 // Styled Components -----------------------------------------------------------
@@ -15,8 +14,10 @@ const Message = styled.p`
     text-align: center;
 `
 
-class Match extends React.Component {
+class LocalMatch extends React.Component {
     state = {
+        loading: true,
+        error: false,
         rawTelemetry: null,
         telemetry: null,
         telemetryLoaded: false,
@@ -29,24 +30,51 @@ class Match extends React.Component {
     // Telemetry, Lifecycle ----------------------------------------------------
     // -------------------------------------------------------------------------
 
-    componentDidUpdate(prevProps, prevState) {
-        const { match: { params } } = this.props
+    componentDidMount() {
+        // Read replay JSON from file stored in history state
 
-        if (!prevProps.data.match && this.props.data.match) {
-            console.log(`Loading telemetry for match ${params.matchId}`)
-            this.loadTelemetry()
+        const reader = new FileReader()
+
+        reader.onload = read => {
+            try {
+                const data = JSON.parse(read.target.result)
+
+                if (!data.playerName || !data.match || !data.rawTelemetry) {
+                    throw new Error('Loaded invalid replay JSON')
+                }
+
+                this.loadTelemetry(data)
+            } catch (error) {
+                console.error(error)
+                this.setState({ loading: false, error: true })
+            }
         }
+
+        reader.onerror = error => {
+            console.error('Error reading replay file', error)
+            this.setState({ loading: false, error: true })
+        }
+
+        reader.readAsText(this.props.location.state.file)
     }
 
-    loadTelemetry = async () => {
-        const { match: { params } } = this.props
+    loadTelemetry = async json => {
+        const { playerName, match, rawTelemetry } = json
 
-        this.setState({ telemetry: null, telemetryLoaded: false, telemetryError: false })
+        this.setState({
+            match,
+            playerName,
+            rawTelemetry,
+            loading: false,
+            telemetry: null,
+            telemetryLoaded: false,
+            telemetryError: false,
+        })
 
-        const telemetryWorker = new TelemetryWorker()
+        const telemetryWorker = new LocalTelemetryWorker()
 
         telemetryWorker.addEventListener('message', ({ data }) => {
-            const { success, error, state, globalState, rawTelemetry } = data
+            const { success, error, state, globalState } = data
 
             if (!success) {
                 console.error(`Error loading telemetry: ${error}`)
@@ -61,17 +89,17 @@ class Match extends React.Component {
             const telemetry = Telemetry(state)
 
             this.setState(prevState => ({
-                rawTelemetry,
                 telemetry,
                 telemetryLoaded: true,
-                rosters: telemetry.finalRoster(params.playerName),
+                rosters: telemetry.finalRoster(playerName),
                 globalState,
             }))
         })
 
         telemetryWorker.postMessage({
-            match: this.props.data.match,
-            focusedPlayer: params.playerName,
+            match,
+            focusedPlayer: playerName,
+            rawTelemetry,
         })
     }
 
@@ -80,8 +108,21 @@ class Match extends React.Component {
     // -------------------------------------------------------------------------
 
     render() {
-        const { data: { loading, error, match }, match: { params } } = this.props
-        const { telemetry, rawTelemetry, telemetryLoaded, telemetryError, rosters, globalState } = this.state
+        const {
+            // JSON file
+            loading,
+            error,
+            playerName,
+            match,
+            rawTelemetry,
+
+            // Telemetry
+            telemetryLoaded,
+            telemetryError,
+            telemetry,
+            rosters,
+            globalState,
+        } = this.state
 
         let content
 
@@ -89,8 +130,6 @@ class Match extends React.Component {
             content = <Message>Loading...</Message>
         } else if (error || telemetryError) {
             content = <Message>An error occurred :(</Message>
-        } else if (!match) {
-            content = <Message>Match not found</Message>
         } else if (!telemetryLoaded) {
             content = <Message>Loading telemetry...</Message>
         } else {
@@ -100,44 +139,17 @@ class Match extends React.Component {
                 telemetry={telemetry}
                 rosters={rosters}
                 globalState={globalState}
-                playerName={params.playerName}
+                playerName={playerName}
             />
         }
 
         return (
             <React.Fragment>
-                <DocumentTitle title="Replay | pubg.sh" />
+                <DocumentTitle title="Local Replay | pubg.sh" />
                 {content}
             </React.Fragment>
         )
     }
 }
 
-export default graphql(gql`
-    query($matchId: String!) {
-        match(id: $matchId) {
-            id
-            shardId
-            gameMode
-            playedAt
-            mapName
-            durationSeconds
-            telemetryUrl
-            players {
-                id
-                name
-                rosterId
-                stats {
-                    kills
-                    winPlace
-                }
-            }
-        }
-    }`, {
-    options: ({ match }) => ({
-        fetchPolicy: 'network-only',
-        variables: {
-            matchId: match.params.matchId,
-        },
-    }),
-})(Match)
+export default withRouter(LocalMatch)
