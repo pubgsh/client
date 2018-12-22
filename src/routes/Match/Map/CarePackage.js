@@ -9,7 +9,7 @@ const Items = ({ visible, items }) => {
     if (!visible) return null
 
     const itemsText = items
-        .map(i => `${i.stackCount > 1 ? `(${i.stackCount}) ` : ''}${dict[i.itemId]}`)
+        .map(i => `${i.stackCount > 1 ? `(${i.stackCount}) ` : ''}${dict[i.itemId] || i.itemId}`)
         .join('\n')
 
     return (
