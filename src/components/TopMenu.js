@@ -1,9 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
-import { get } from 'lodash'
-import { Link } from 'react-router-dom'
-import { SHARDS } from '../models/Shards.js'
+import { withRouter, Link } from 'react-router-dom'
 import * as Settings from './Settings.js'
+import FileUploadButton from './FileUploadButton'
 
 const TopMenuContainer = styled.div`
     grid-row: 1;
@@ -11,7 +10,7 @@ const TopMenuContainer = styled.div`
     justify-self: center;
     width: 100%;
     display: grid;
-    grid-template-columns: 1fr 150px;
+    grid-template-columns: 1fr 180px;
     grid-column-gap: 15px;
 `
 
@@ -97,28 +96,9 @@ const createPlayerLinks = favoritePlayers => {
 class TopMenu extends React.Component {
     state = {}
 
-    static getDerivedStateFromProps(props) {
-        return {
-            searchText: get(props, 'match.params.playerName', ''),
-            shardId: get(props, 'match.params.shardId', (localStorage.getItem('shardIdV2') || SHARDS[0])),
-        }
-    }
-
-    handleDropdownChange = ({ value }) => {
-        this.setState({ shardId: value })
-        localStorage.setItem('shardIdV2', value)
-    }
-
-    handleInputChange = e => { this.setState({ searchText: e.target.value }) }
-
-    search = e => {
-        if (e) e.preventDefault()
-        const newLocation = `/${this.state.searchText}/${this.state.shardId}`
-        if (newLocation === this.props.history.location.pathname) {
-            window.location.reload()
-        } else {
-            this.props.history.push(newLocation)
-        }
+    handleFile = e => {
+        this.props.history.push('/local-replay', { file: e.target.files[0] })
+        e.target.value = null // reset so we can select the same file again
     }
 
     render() {
@@ -131,6 +111,7 @@ class TopMenu extends React.Component {
                             <PlayerLinks>{createPlayerLinks(favoritePlayers)}</PlayerLinks>
                         </div>
                         <RightLinks>
+                            <FileUploadButton onFile={this.handleFile}>Load Saved Replay</FileUploadButton>
                             <Link to="/about">About</Link>
                         </RightLinks>
                     </TopMenuContainer>
@@ -140,4 +121,4 @@ class TopMenu extends React.Component {
     }
 }
 
-export default TopMenu
+export default withRouter(TopMenu)

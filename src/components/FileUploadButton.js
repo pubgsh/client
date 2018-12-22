@@ -5,21 +5,28 @@ const HiddenFileInput = styled.input`
     display: none;
 `
 
+const UploadButton = styled.button`
+    display: inline;
+    font-size: 1rem;
+    border: 0;
+    padding: 0;
+`
+
 class FileUploadButton extends React.Component {
     handleUploadClick = e => { this.fileInputRef.click() }
 
     render() {
         return (
-            <div>
-                <button onClick={this.handleUploadClick}>
+            <React.Fragment>
+                <UploadButton onClick={this.handleUploadClick}>
                     {this.props.children}
-                </button>
+                </UploadButton>
                 <HiddenFileInput
                     type="file"
                     innerRef={ref => { this.fileInputRef = ref }}
                     onChange={this.props.onFile}
                 />
-            </div>
+            </React.Fragment>
         )
     }
 }
