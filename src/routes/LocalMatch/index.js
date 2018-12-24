@@ -56,6 +56,10 @@ class LocalMatch extends React.Component {
         }
     }
 
+    componentWillUnmount() {
+        this.cancelTelemetry()
+    }
+
     // -------------------------------------------------------------------------
     // Match, Telemetry --------------------------------------------------------
     // -------------------------------------------------------------------------
@@ -121,6 +125,8 @@ class LocalMatch extends React.Component {
     }
 
     loadTelemetry = async json => {
+        this.cancelTelemetry()
+
         const { playerName, match, rawTelemetry } = json
 
         this.setState({
@@ -133,9 +139,9 @@ class LocalMatch extends React.Component {
             telemetryError: false,
         })
 
-        const telemetryWorker = new LocalTelemetryWorker()
+        this.telemetryWorker = new LocalTelemetryWorker()
 
-        telemetryWorker.addEventListener('message', ({ data }) => {
+        this.telemetryWorker.addEventListener('message', ({ data }) => {
             const { success, error, state, globalState } = data
 
             if (!success) {
@@ -158,11 +164,18 @@ class LocalMatch extends React.Component {
             }))
         })
 
-        telemetryWorker.postMessage({
+        this.telemetryWorker.postMessage({
             match,
             focusedPlayer: playerName,
             rawTelemetry,
         })
+    }
+
+    cancelTelemetry = () => {
+        if (this.telemetryWorker) {
+            this.telemetryWorker.terminate()
+            this.telemetryWorker = null
+        }
     }
 
     // -------------------------------------------------------------------------
