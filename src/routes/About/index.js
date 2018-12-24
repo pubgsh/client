@@ -55,6 +55,11 @@ export default () =>
             <section>
                 <SectionHeader>Changelog</SectionHeader>
 
+                <h5>2018-12-24</h5>
+                <ul>
+                    <li>Add match download and upload (Credit @alvaro-cuesta)</li>
+                </ul>
+
                 <h5>2018-12-19</h5>
                 <ul>
                     <li>Add Vikendi</li>
