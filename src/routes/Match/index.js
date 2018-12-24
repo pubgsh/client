@@ -29,17 +29,22 @@ class Match extends React.Component {
     // Telemetry, Lifecycle ----------------------------------------------------
     // -------------------------------------------------------------------------
 
-    componentDidUpdate(prevProps, prevState) {
-        const { match: { params } } = this.props
+    componentDidMount() {
+        if (this.props.data.match) {
+            this.loadTelemetry()
+        }
+    }
 
-        if (!prevProps.data.match && this.props.data.match) {
-            console.log(`Loading telemetry for match ${params.matchId}`)
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps.data.match !== this.props.data.match) {
             this.loadTelemetry()
         }
     }
 
     loadTelemetry = async () => {
         const { match: { params } } = this.props
+
+        console.log(`Loading telemetry for match ${params.matchId}`)
 
         this.setState({ telemetry: null, telemetryLoaded: false, telemetryError: false })
 
