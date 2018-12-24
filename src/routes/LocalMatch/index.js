@@ -17,6 +17,7 @@ const Message = styled.p`
 const INITIAL_STATE = {
     // JSON file
     loading: true,
+    missingFileError: false,
     fileError: false,
     parseError: false,
     loadedVersion: null,
@@ -60,6 +61,15 @@ class LocalMatch extends React.Component {
     // -------------------------------------------------------------------------
 
     loadLocalReplay = () => {
+        if (!this.props.location.state ||
+            !this.props.location.state.file ||
+            !(this.props.location.state.file instanceof File)
+        ) {
+            console.error('No file in history state')
+            this.setState({ loading: false, missingFileError: true })
+            return
+        }
+
         // Read replay JSON from file stored in history state
 
         const reader = new FileReader()
@@ -163,6 +173,7 @@ class LocalMatch extends React.Component {
         const {
             // JSON file
             loading,
+            missingFileError,
             fileError,
             parseError,
             loadedVersion,
@@ -183,12 +194,20 @@ class LocalMatch extends React.Component {
 
         if (loading) {
             content = <Message>Loading...</Message>
+        } else if (missingFileError) {
+            content = (
+                <Message>
+                    Local replay files must be loaded using the button located at the top-right.
+                </Message>
+            )
         } else if (fileError) {
             content = <Message>Error loading replay file :(</Message>
         } else if (parseError) {
-            content = <Message>
-                Invalid replay file. Only replays downloaded from pubg.sh are supported.
-            </Message>
+            content = (
+                <Message>
+                    Invalid replay file. Only replays downloaded from pubg.sh are supported.
+                </Message>
+            )
         } else if (versionError) {
             content = <Message>Unsupported replay version ${loadedVersion} :(</Message>
         } else if (telemetryError) {
