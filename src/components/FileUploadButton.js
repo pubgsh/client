@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { LOCAL_REPLAY_EXTENSION } from '../lib/match-export'
 
 const HiddenFileInput = styled.input`
     display: none;
@@ -23,6 +24,7 @@ class FileUploadButton extends React.Component {
                 </UploadButton>
                 <HiddenFileInput
                     type="file"
+                    accept={LOCAL_REPLAY_EXTENSION}
                     innerRef={ref => { this.fileInputRef = ref }}
                     onChange={this.props.onFile}
                 />
