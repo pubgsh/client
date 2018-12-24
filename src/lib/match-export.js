@@ -1,6 +1,8 @@
 import moment from 'moment'
 import { friendlyMapName } from './util'
 
+export const LOCAL_REPLAY_VERSION = 1
+
 const generateMatchFilename = (match, playerName = undefined) => {
     const dateFragment = moment(match.playedAt).format('YYYY-MM-DD-HH-mm')
     const modeFragment = match.gameMode
