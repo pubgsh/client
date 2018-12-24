@@ -23,6 +23,7 @@ class FileUploadButton extends React.Component {
                 </UploadButton>
                 <HiddenFileInput
                     type="file"
+                    accept=".json"
                     innerRef={ref => { this.fileInputRef = ref }}
                     onChange={this.props.onFile}
                 />

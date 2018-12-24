@@ -1,6 +1,10 @@
 import moment from 'moment'
 import { friendlyMapName } from './util'
 
+export const LOCAL_REPLAY_VERSION = 1
+
+export const LOCAL_REPLAY_EXTENSION = '.pubgsh.json'
+
 const generateMatchFilename = (match, playerName = undefined) => {
     const dateFragment = moment(match.playedAt).format('YYYY-MM-DD-HH-mm')
     const modeFragment = match.gameMode
@@ -9,7 +13,9 @@ const generateMatchFilename = (match, playerName = undefined) => {
         ? `-${playerName}`
         : ''
 
-    return `pubgsh${playerNameFragment}-${dateFragment}-${modeFragment}-${mapFragment}.json`
+    const fileName = `pubgsh${playerNameFragment}-${dateFragment}-${modeFragment}-${mapFragment}`
+
+    return `${fileName}${LOCAL_REPLAY_EXTENSION}`
 }
 
 export const downloadJSON = data => {

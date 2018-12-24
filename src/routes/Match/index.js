@@ -29,23 +29,34 @@ class Match extends React.Component {
     // Telemetry, Lifecycle ----------------------------------------------------
     // -------------------------------------------------------------------------
 
-    componentDidUpdate(prevProps, prevState) {
-        const { match: { params } } = this.props
-
-        if (!prevProps.data.match && this.props.data.match) {
-            console.log(`Loading telemetry for match ${params.matchId}`)
+    componentDidMount() {
+        if (this.props.data.match) {
             this.loadTelemetry()
         }
     }
 
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps.data.match !== this.props.data.match) {
+            this.loadTelemetry()
+        }
+    }
+
+    componentWillUnmount() {
+        this.cancelTelemetry()
+    }
+
     loadTelemetry = async () => {
+        this.cancelTelemetry()
+
         const { match: { params } } = this.props
+
+        console.log(`Loading telemetry for match ${params.matchId}`)
 
         this.setState({ telemetry: null, telemetryLoaded: false, telemetryError: false })
 
-        const telemetryWorker = new TelemetryWorker()
+        this.telemetryWorker = new TelemetryWorker()
 
-        telemetryWorker.addEventListener('message', ({ data }) => {
+        this.telemetryWorker.addEventListener('message', ({ data }) => {
             const { success, error, state, globalState, rawTelemetry } = data
 
             if (!success) {
@@ -69,10 +80,17 @@ class Match extends React.Component {
             }))
         })
 
-        telemetryWorker.postMessage({
+        this.telemetryWorker.postMessage({
             match: this.props.data.match,
             focusedPlayer: params.playerName,
         })
+    }
+
+    cancelTelemetry = () => {
+        if (this.telemetryWorker) {
+            this.telemetryWorker.terminate()
+            this.telemetryWorker = null
+        }
     }
 
     // -------------------------------------------------------------------------

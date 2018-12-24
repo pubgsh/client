@@ -1,6 +1,6 @@
 import React from 'react'
 import MapButton from '../../components/MapButton.js'
-import { downloadJSON } from '../../lib/match-export.js'
+import { downloadJSON, LOCAL_REPLAY_VERSION } from '../../lib/match-export.js'
 
 const DownloadIcon = MapButton.extend`
     top: 63px;
@@ -14,7 +14,13 @@ const DownloadIcon = MapButton.extend`
 class DownloadButton extends React.PureComponent {
     downloadMatch = () => {
         const { match, rawTelemetry, playerName } = this.props
-        downloadJSON({ match, rawTelemetry, playerName })
+
+        downloadJSON({
+            version: LOCAL_REPLAY_VERSION,
+            match,
+            rawTelemetry,
+            playerName,
+        })
     }
 
     render() {
