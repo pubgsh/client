@@ -42,6 +42,19 @@ class LocalMatch extends React.Component {
         this.loadLocalReplay()
     }
 
+    componentDidUpdate(prevProps, prevState) {
+        // React Router does not remount if route component is the same, which happens
+        // if uploading from /local-replay itself, or when navigating history between
+        // local replays.
+        if (prevProps.location !== this.props.location) {
+            // We need to to reset the component to its initial state. I think this is
+            // a legitimate use of `setState` in `componentDidUpdate`:
+            //
+            // eslint-disable-next-line react/no-did-update-set-state
+            this.setState(INITIAL_STATE, this.loadLocalReplay)
+        }
+    }
+
     // -------------------------------------------------------------------------
     // Match, Telemetry --------------------------------------------------------
     // -------------------------------------------------------------------------
