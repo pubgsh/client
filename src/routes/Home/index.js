@@ -86,7 +86,6 @@ const StyledForm = styled.form`
     }
 `
 
-
 class Home extends React.Component {
     state = { searchText: '', shardId: localStorage.getItem('shardIdV2') || SHARDS[0] }
 
