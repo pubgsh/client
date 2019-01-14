@@ -1,5 +1,8 @@
 FROM mhart/alpine-node:8.11.1
+
+RUN npm config set unsafe-perm true
 RUN npm install --global yarn
+RUN npm config set unsafe-perm false
 
 RUN apk add --no-cache python git make gcc g++ bash curl
 
