@@ -172,7 +172,7 @@ export default function parseTelemetry(matchData, telemetry, focusedPlayerName) 
             if (d._T === 'LogPlayerKill') {
                 setNewPlayerState(d.victim.name, { status: 'dead' })
 
-                if (d.killer.name) {
+                if (d.killer.name && d.killer.name !== d.victim.name) {
                     incrementPlayerStateVal(d.killer.name, 'kills', 1)
                 }
 
@@ -209,7 +209,7 @@ export default function parseTelemetry(matchData, telemetry, focusedPlayerName) 
                     })
                 }
 
-                if (d.attacker && d.attacker.name) {
+                if (d.attacker && d.attacker.name && d.attacker.name !== d.victim.name) {
                     incrementPlayerStateVal(d.attacker.name, 'damageDealt', d.damage)
                 }
             }
