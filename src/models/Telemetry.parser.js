@@ -48,6 +48,22 @@ export default function parseTelemetry(matchData, telemetry, focusedPlayerName) 
         setNewPlayerState(playerName, { [path]: latestPlayerStates[playerName][path] + delta })
     }
 
+    const getKilledBy = data => {
+        const { damageTypeCategory, victim, killer } = data
+        const isBlueZone = damageTypeCategory === 'Damage_BlueZone' ||
+            (victim.name === killer.name && victim.isInBlueZone)
+        const isRedZone = damageTypeCategory === 'Damage_Explosion_RedZone'
+        let killedBy = killer.name
+
+        if (isBlueZone) {
+            killedBy = 'Playzone'
+        } else if (isRedZone) {
+            killedBy = 'Redzone'
+        }
+
+        return killedBy
+    }
+
     { // --- Step Zero: Initialize state
         const teammates = matchData.players.reduce((acc, p) => {
             const teammateNames = matchData.players
@@ -177,9 +193,11 @@ export default function parseTelemetry(matchData, telemetry, focusedPlayerName) 
                 }
 
                 if (d.victim.name === focusedPlayerName) {
+                    const killedBy = getKilledBy(d)
+
                     globalState.death = {
                         msSinceEpoch,
-                        killedBy: d.killer.name,
+                        killedBy,
                     }
                 }
 
