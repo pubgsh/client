@@ -261,11 +261,17 @@ export default function parseTelemetry(matchData, telemetry, focusedPlayerName) 
             }
 
             if (d._T === 'LogCarePackageLand') {
-                curState.carePackages.push({
-                    location: d.itemPackage.location,
-                    items: d.itemPackage.items,
-                    state: 'landed',
-                })
+                // d.itemPackage.itemPackageId possibilities:
+                //  'Carapackage_RedBox_C': normal,
+                //  'Carapackage_FlareGun_C': flaregun,
+                //  'Uaz_Armored_C': UAZ but landing event only.
+                if (d.itemPackage.itemPackageId !== 'Uaz_Armored_C') {
+                    curState.carePackages.push({
+                        location: d.itemPackage.location,
+                        items: d.itemPackage.items,
+                        state: 'landed',
+                    })
+                }
             }
 
             if (d._T === 'LogMatchEnd') {
