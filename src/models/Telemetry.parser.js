@@ -188,7 +188,7 @@ export default function parseTelemetry(matchData, telemetry, focusedPlayerName) 
             if (d._T === 'LogPlayerKill') {
                 setNewPlayerState(d.victim.name, { status: 'dead' })
 
-                if (d.killer.name && d.killer.name !== d.victim.name) {
+                if (d.killer && d.killer.name && d.killer.name !== d.victim.name) {
                     incrementPlayerStateVal(d.killer.name, 'kills', 1)
                 }
 
@@ -201,7 +201,7 @@ export default function parseTelemetry(matchData, telemetry, focusedPlayerName) 
                     }
                 }
 
-                if (d.killer.name === focusedPlayerName) {
+                if (d.killer && d.killer.name === focusedPlayerName) {
                     globalState.kills.push({
                         msSinceEpoch,
                         victimName: d.victim.name,
