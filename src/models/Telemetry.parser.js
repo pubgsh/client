@@ -403,8 +403,10 @@ export default function parseTelemetry(matchData, telemetry, focusedPlayerName) 
                         .map(p => ({ key: p.key, distance: distance(cp, p) }))
 
                     const matchingCp = minBy(cpDistances, 'distance')
-                    activePackages = cloneDeep(activePackages)
-                    activePackages.find(p => p.key === matchingCp.key).state = 'landed'
+                    if (matchingCp) {
+                        activePackages = cloneDeep(activePackages)
+                        activePackages.find(p => p.key === matchingCp.key).state = 'landed'
+                    }
                 }
             })
 
