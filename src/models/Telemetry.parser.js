@@ -51,9 +51,9 @@ export default function parseTelemetry(matchData, telemetry, focusedPlayerName) 
     const getKilledBy = data => {
         const { damageTypeCategory, victim, killer } = data
         const isBlueZone = damageTypeCategory === 'Damage_BlueZone' ||
-            (victim.name === killer.name && victim.isInBlueZone)
+            (killer && victim && victim.name === killer.name && victim.isInBlueZone)
         const isRedZone = damageTypeCategory === 'Damage_Explosion_RedZone'
-        let killedBy = killer.name
+        let killedBy = killer && killer.name
 
         if (isBlueZone) {
             killedBy = 'Playzone'
