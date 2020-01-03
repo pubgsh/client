@@ -34,6 +34,20 @@ export default function parseTelemetry(matchData, telemetry, focusedPlayerName) 
     }
 
     const setNewPlayerState = (playerName, newVals) => {
+        if (!curState.players[playerName] && !latestPlayerStates[playerName]) {
+            // This captures a scenario where PUBG's matches API doesn't return
+            // someone who participated in this match. It will cause incorrect
+            // data, but at least it will render.
+            curState.players[playerName] = {
+                name: playerName,
+                teammates: [],
+                health: 100,
+                kills: 0,
+                damageDealt: 0,
+                items: [],
+            }
+        }
+
         if (!curState.players[playerName]) {
             // TODO: Needs cloneDeep once state holds nested values
             curState.players[playerName] = { ...latestPlayerStates[playerName] }
