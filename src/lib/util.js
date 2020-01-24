@@ -6,5 +6,6 @@ export const friendlyMapName = name => {
     if (name === 'Desert_Main') return 'Miramar'
     if (name === 'Savage_Main') return 'Sanhok'
     if (name === 'DihorOtok_Main') return 'Vikendi'
+    if (name === 'Summerland_Main') return 'Karakin'
     return name
 }
