@@ -20,6 +20,7 @@ const MAP_SIZES = {
     Desert_Main: 816000,
     Savage_Main: 408000,
     DihorOtok_Main: 612000,
+    Summerland_Main: 204000,
 }
 
 const StageWrapper = styled.div`
