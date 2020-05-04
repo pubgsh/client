@@ -137,6 +137,7 @@ export default function parseTelemetry(matchData, telemetry, focusedPlayerName) 
 
             if (d._T === 'LogItemEquip') {
                 const characterName = d.character.name
+                if (!characterName) return
                 const currentItems = curState.players[characterName].items
 
                 setNewPlayerState(characterName, { items: [...currentItems, d.item] })
@@ -144,6 +145,7 @@ export default function parseTelemetry(matchData, telemetry, focusedPlayerName) 
 
             if (d._T === 'LogItemUnequip') {
                 const characterName = d.character.name
+                if (!characterName) return
                 const currentItems = curState.players[characterName].items
 
                 setNewPlayerState(characterName, {
@@ -153,6 +155,7 @@ export default function parseTelemetry(matchData, telemetry, focusedPlayerName) 
 
             if (d._T === 'LogItemAttach') {
                 const characterName = d.character.name
+                if (!characterName) return
                 const currentItems = curState.players[characterName].items
 
                 const updatedItems = currentItems.reduce((prev, item) => {
@@ -177,6 +180,7 @@ export default function parseTelemetry(matchData, telemetry, focusedPlayerName) 
 
             if (d._T === 'LogItemDetach') {
                 const characterName = d.character.name
+                if (!characterName) return
                 const currentItems = curState.players[characterName].items
 
                 const updatedItems = currentItems.reduce((prev, item) => {

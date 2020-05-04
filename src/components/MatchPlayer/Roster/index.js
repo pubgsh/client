@@ -64,6 +64,8 @@ const Roster = ({ match, telemetry, marks, rosters }) => {
                         {r.map(playerName => {
                             const p = telemetry.players[playerName]
 
+                            if (!p) return null
+
                             return (
                                 <PlayerItem
                                     key={p.name}
