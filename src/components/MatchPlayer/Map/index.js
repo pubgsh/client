@@ -21,6 +21,7 @@ const MAP_SIZES = {
     Savage_Main: 408000,
     DihorOtok_Main: 612000,
     Summerland_Main: 204000,
+    Chimera_Main: 306000,
 }
 
 const StageWrapper = styled.div`
