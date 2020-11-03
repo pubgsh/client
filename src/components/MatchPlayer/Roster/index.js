@@ -35,7 +35,7 @@ const PlayerItem = styled.li`
     overflow: hidden;
     cursor: pointer;
     display: grid;
-    grid-template-columns: 1fr 15px 25px;
+    grid-template-columns: 75px .25fr .25fr .5fr;
     grid-column-gap: 5px;
 
     i {
@@ -87,6 +87,7 @@ const Roster = ({ match, telemetry, marks, rosters }) => {
                                         <PlayerName>{p.name}</PlayerName>
                                     </Tooltip>
                                     <PlayerDatapoint>{p.kills}</PlayerDatapoint>
+                                    <PlayerDatapoint>{p.assists}</PlayerDatapoint>
                                     <PlayerDatapoint>{Math.round(p.damageDealt)}</PlayerDatapoint>
                                 </PlayerItem>
                             )
