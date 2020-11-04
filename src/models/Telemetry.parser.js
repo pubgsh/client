@@ -43,6 +43,7 @@ export default function parseTelemetry(matchData, telemetry, focusedPlayerName) 
                 teammates: [],
                 health: 100,
                 kills: 0,
+                assists: 0,
                 damageDealt: 0,
                 items: [],
             }
@@ -94,6 +95,7 @@ export default function parseTelemetry(matchData, telemetry, focusedPlayerName) 
                 teammates: teammates[p.name],
                 health: 100,
                 kills: 0,
+                assists: 0,
                 damageDealt: 0,
                 items: [],
             }
@@ -208,6 +210,10 @@ export default function parseTelemetry(matchData, telemetry, focusedPlayerName) 
 
                 if (d && d.killer && d.killer.name && d.killer.name !== d.victim.name) {
                     incrementPlayerStateVal(d.killer.name, 'kills', 1)
+                }
+
+                if (d && d.assistant && d.assistant.name && d.assistant.name !== d.killer.name) {
+                    incrementPlayerStateVal(d.assistant.name, 'assists', 1)
                 }
 
                 if (d && d.victim.name === focusedPlayerName) {

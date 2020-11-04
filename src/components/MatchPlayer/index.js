@@ -230,7 +230,7 @@ class MatchPlayer extends React.Component {
                                 />
                             </MapContainer>
                             <RosterContainer mapSize={mapSize}>
-                                <RosterHeader>Name / Kills / Damage</RosterHeader>
+                                <RosterHeader>Name / Kills / Assists / Damage</RosterHeader>
                                 <Roster
                                     match={match}
                                     telemetry={currentTelemetry}
