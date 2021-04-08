@@ -66,8 +66,11 @@ export default function Telemetry(state) {
 
     const finalRoster = focusedPlayer => {
         const nonBotCharacters = state.matchEnd.characters
-            .filter(c => c.character.accountId && !c.character.accountId.startsWith('npc.'))
+            .filter(c => c.character.accountId
+              && !c.character.accountId.startsWith('npc.')
+              && !c.character.accountId.startsWith('ai.'))
             .map(c => c.character)
+
 
         const rosters = sortBy(groupBy(nonBotCharacters, 'teamId'), r => minBy(r, 'ranking').ranking)
         const focusedRosterIdx = rosters.findIndex(r => r.some(c => c.name === focusedPlayer))

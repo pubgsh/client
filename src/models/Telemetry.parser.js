@@ -205,7 +205,7 @@ export default function parseTelemetry(matchData, telemetry, focusedPlayerName) 
                 setNewPlayerState(characterName, { items: updatedItems })
             }
 
-            if (d._T === 'LogPlayerKill') {
+            if (d._T === 'LogPlayerKill' && d.damageReason !== 'SimlateAIBeKilled') {
                 setNewPlayerState(d.victim.name, { status: 'dead' })
 
                 if (d && d.killer && d.killer.name && d.killer.name !== d.victim.name) {
