@@ -8,5 +8,6 @@ export const friendlyMapName = name => {
     if (name === 'DihorOtok_Main') return 'Vikendi'
     if (name === 'Summerland_Main') return 'Karakin'
     if (name === 'Chimera_Main') return 'Paramo'
+    if (name === 'Heaven_Main') return 'Haven'
     return name
 }

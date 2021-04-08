@@ -22,6 +22,7 @@ const MAP_SIZES = {
     DihorOtok_Main: 612000,
     Summerland_Main: 204000,
     Chimera_Main: 306000,
+    Heaven_Main: 102000,
 }
 
 const StageWrapper = styled.div`
