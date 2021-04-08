@@ -1,5 +1,5 @@
 import React from 'react'
-import { map, clamp, sortBy } from 'lodash'
+import { map, clamp, sortBy, filter } from 'lodash'
 import { Stage, Layer } from 'react-konva'
 import styled from 'styled-components'
 import { Safezone, Bluezone, Redzone } from './ZoneCircle.js'
@@ -134,11 +134,13 @@ class Map extends React.Component {
 
         const pubgMapSize = MAP_SIZES[mapName]
 
+        const playersToRender = telemetry && filter(telemetry.players, p => this.props.playerNames[p.name])
+
         // The order players are added to the canvas determines their relative z-index. We want to render
         // focused players on top, then tracked, etc, so we need to sort the players. We want dead players
         // below everything else, so we have to do this sort on every render. We use ~ and @ as they wrap
         // the ASCII range and we want a stable sort, so we use the player's name as the default value.
-        const sortedPlayers = telemetry && sortBy(telemetry.players, player => {
+        const sortedPlayers = telemetry && sortBy(playersToRender, player => {
             const { name } = player
 
             if (marks.isPlayerFocused(name)) return '~z'

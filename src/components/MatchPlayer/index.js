@@ -178,7 +178,7 @@ class MatchPlayer extends React.Component {
     // -------------------------------------------------------------------------
 
     render() {
-        const { match, rawTelemetry, telemetry, rosters, globalState } = this.props
+        const { match, rawTelemetry, telemetry, rosters, globalState, playerNames } = this.props
         const { mapSize, options, setOption, prevPlayerName } = this.state
 
         return (
@@ -221,6 +221,7 @@ class MatchPlayer extends React.Component {
                                     marks={this.marks}
                                     msSinceEpoch={msSinceEpoch}
                                     options={options}
+                                    playerNames={playerNames}
                                 />
                                 <HelpModal mapSize={mapSize} />
                                 <DownloadButton

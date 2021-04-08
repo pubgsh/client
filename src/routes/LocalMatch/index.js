@@ -155,11 +155,19 @@ class LocalMatch extends React.Component {
             }
 
             const telemetry = Telemetry(state)
+            const rosters = telemetry.finalRoster(playerName)
+            const playerNames = rosters.reduce((acc, roster) => {
+                roster.forEach(name => {
+                    acc[name] = true
+                })
+                return acc
+            }, {})
 
             this.setState(prevState => ({
                 telemetry,
                 telemetryLoaded: true,
-                rosters: telemetry.finalRoster(playerName),
+                rosters,
+                playerNames,
                 globalState,
             }))
         })
@@ -235,6 +243,7 @@ class LocalMatch extends React.Component {
                 rosters={rosters}
                 globalState={globalState}
                 playerName={playerName}
+                playerNames={this.state.playerNames}
             />
         }
 

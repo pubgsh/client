@@ -70,12 +70,20 @@ class Match extends React.Component {
             }
 
             const telemetry = Telemetry(state)
+            const rosters = telemetry.finalRoster(params.playerName)
+            const playerNames = rosters.reduce((acc, roster) => {
+                roster.forEach(name => {
+                    acc[name] = true
+                })
+                return acc
+            }, {})
 
             this.setState(prevState => ({
                 rawTelemetry,
                 telemetry,
                 telemetryLoaded: true,
-                rosters: telemetry.finalRoster(params.playerName),
+                rosters,
+                playerNames,
                 globalState,
             }))
         })
@@ -119,6 +127,7 @@ class Match extends React.Component {
                 rosters={rosters}
                 globalState={globalState}
                 playerName={params.playerName}
+                playerNames={this.state.playerNames}
             />
         }
 
