@@ -75,7 +75,7 @@ const ItemIcon = styled.img`
     height: auto;
     display: inline-block;
     justify-self: center;
-    filter: invert(0.75);
+    filter: invert(0.25);
 `
 
 const StyledEquipmentIcons = styled.div`
@@ -87,7 +87,7 @@ const StyledEquipmentIcons = styled.div`
 `
 
 const ItemIconPlaceholder = styled(ItemIcon)`
-    filter: none !important;
+    filter: invert(0.75);
 `
 
 const NoItems = styled.span`

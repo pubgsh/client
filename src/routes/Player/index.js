@@ -40,7 +40,7 @@ const PlayerName = styled.h3`
 const SaveFavorite = styled.div`
     text-align: center;
     font-size: 1.7rem;
-    color: #ccc;
+    color: #444;
     cursor: pointer;
 
     &.active {

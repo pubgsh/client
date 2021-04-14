@@ -17,12 +17,12 @@ const TopMenuContainer = styled.div`
 const HomeLink = styled(Link)`
     font-size: 2.2rem;
     font-weight: 400;
-    color: #714868;
+    color: var(--grey-2);
     position: relative;
     align-self: center;
 
     &:hover {
-        color: #714868;
+        color: var(--grey-2);
     }
 
     span {
@@ -57,11 +57,11 @@ const PlayerLinks = styled.div`
 const PlayerLink = styled(Link)`
     font-size: 1.4rem;
     font-weight: 300;
-    color: #333;
+    color: var(--purple-1);
     margin-right: 1rem;
 
     &:hover {
-        color: #714868;
+        color: var(--purple-2);
     }
 `
 
@@ -73,12 +73,12 @@ const RightLinks = styled.div`
         text-transform: uppercase;
         font-size: 1.0rem;
         font-weight: 400;
-        color: #222;
+        color: var(--purple-1);
         grid-column: 2;
         margin-left: 15px;
 
         &:hover {
-            color: #714868;
+            color: var(--purple-2);
         }
     }
 `

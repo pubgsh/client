@@ -44,6 +44,17 @@ const RosterContainer = styled.div`
     overflow-x: hidden;
     height: ${props => props.mapSize + 48}px;
     padding-right: 10px;
+    scrollbar-color: var(--grey-0) var(--bg);
+
+    &::-webkit-scrollbar {
+      width: 10px;
+      background: none;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: var(--grey-0);
+        border-radius: 4px;
+    }
 
     @media (max-width: 700px) {
         grid-column: 1;
@@ -231,7 +242,7 @@ class MatchPlayer extends React.Component {
                                 />
                             </MapContainer>
                             <RosterContainer mapSize={mapSize}>
-                                <RosterHeader>Name / Kills / Assists / Damage</RosterHeader>
+                                <RosterHeader>Name / Kills / Assists / Dmg</RosterHeader>
                                 <Roster
                                     match={match}
                                     telemetry={currentTelemetry}

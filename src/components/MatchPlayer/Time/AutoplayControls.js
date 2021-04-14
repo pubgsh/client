@@ -17,6 +17,7 @@ const ControlButton = styled.button`
     margin: 0 10px;
     width: 25px;
     grid-column: 1;
+    color: var(--grey-1);
 `
 
 const ControlsWrapper = styled.div`

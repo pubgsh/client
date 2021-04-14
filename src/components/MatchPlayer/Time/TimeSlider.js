@@ -47,10 +47,10 @@ const HoverableTimePositionedElement = TimePositionedElement`
         top: -35px;
         background-color: white;
         white-space: nowrap;
-        border: 1px solid #ddd;
+        border: 1px solid var(--grey-1);
         border-radius: 3px;
         transform: translateX(-50%);
-        background: #F7F7F7;
+        background: var(--grey-0);
         padding: 2px 6px;
     }
 `
@@ -95,6 +95,7 @@ const DeathMarker = HoverableTimePositionedElement.extend`
     background: url('${ripIcon}');
     background-size: 19px;
     background-repeat: no-repeat;
+    filter: invert(.9);
 
     &:after {
         content: "";
@@ -102,6 +103,7 @@ const DeathMarker = HoverableTimePositionedElement.extend`
     }
 
     &:hover:before {
+        filter: invert(1.1);
         content: "Killed By: ${props => props.killerName}";
     }
 `

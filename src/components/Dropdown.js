@@ -11,7 +11,7 @@ const DropdownContainer = styled.div`
     cursor: pointer;
     margin-right: 10px;
     position: relative;
-    border: 1px solid #D1D1D1;
+    border: 1px solid var(--grey-0);
     border-radius: 4px;
     box-sizing: border-box;
     padding: 0 1rem;
@@ -23,12 +23,12 @@ const DropdownContainer = styled.div`
 
     ul {
         position: absolute;
-        background: white;
+        background: #181A1B;
         right: -1px;
         text-align: right;
         list-style-type: none;
         top: 45px;
-        border: 1px solid #D1D1D1;
+        border: 1px solid var(--grey-0);
         border-radius: 4px;
         width: 66px;
         z-index: 10;
@@ -39,7 +39,7 @@ const DropdownContainer = styled.div`
             line-height: 3rem;
 
             &:hover {
-                background-color: #F7F7F7;
+                background-color: var(--grey-0);
 
                 &:first-child {
                     border-radius: 4px 4px 0 0;

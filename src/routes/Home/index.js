@@ -24,7 +24,7 @@ const RandomMatchLink = styled(Link)`
     display: inline-block;
     width: 500px;
     margin: 35px 0 50px;
-    border: 1px solid #efefef;
+    border: 1px solid var(--grey-0);
     border-radius: 4px;
     filter: grayscale(40%);
     transition: filter linear 0.15s;
