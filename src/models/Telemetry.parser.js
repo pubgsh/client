@@ -212,8 +212,11 @@ export default function parseTelemetry(matchData, telemetry, focusedPlayerName) 
                     incrementPlayerStateVal(d.killer.name, 'kills', 1)
                 }
 
-                if (d && d.assistant && d.assistant.name && d.assistant.name !== d.killer.name) {
-                    incrementPlayerStateVal(d.assistant.name, 'assists', 1)
+                if (d && d.assists_AccountId && d.assists_AccountId.length > 0) {
+                    d.assists_AccountId.forEach(assistId => {
+                        const players = matchData.players.filter(p => p.id === assistId)
+                        players.forEach(p => incrementPlayerStateVal(p.name, 'assists', 1))
+                    })
                 }
 
                 if (d && d.victim.name === focusedPlayerName) {
