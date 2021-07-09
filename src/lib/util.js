@@ -9,5 +9,6 @@ export const friendlyMapName = name => {
     if (name === 'Summerland_Main') return 'Karakin'
     if (name === 'Chimera_Main') return 'Paramo'
     if (name === 'Heaven_Main') return 'Haven'
+    if (name === 'Tiger_Main') return 'Taego'
     return name
 }
