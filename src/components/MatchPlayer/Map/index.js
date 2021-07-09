@@ -23,6 +23,7 @@ const MAP_SIZES = {
     Summerland_Main: 204000,
     Chimera_Main: 306000,
     Heaven_Main: 102000,
+    Tiger_Main: 816000,
 }
 
 const StageWrapper = styled.div`
