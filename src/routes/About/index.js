@@ -57,8 +57,8 @@ export default () =>
 
                 <h5>2022-07-17</h5>
                 <ul>
-                    <li>Add Deston support (Credit @Otsomies)</li>
-                    <li>Add support for p90 (Credit @Otsomies)</li>
+                    <li>Add Deston map support (Credit @Otsomies)</li>
+                    <li>Add support for new weapons (ACE32, P90, O12) (Credit @Otsomies)</li>
                 </ul>
 
                 <h5>2021-07-09</h5>
