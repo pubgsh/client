@@ -5,6 +5,8 @@
     "Item_Ammo_556mm_C": "5.56mm Ammo",
     "Item_Ammo_762mm_C": "7.62mm Ammo",
     "Item_Ammo_9mm_C": "9mm Ammo",
+    "Item_Ammo_57mm_C": "5.77mm Ammo",
+    "Item_Ammo_12GuageSlug_C": "12 Gauge Slug Ammo",
     "Item_Ammo_Bolt_C": "Crossbow Bolt",
     "Item_Armor_C_01_Lv3_C": "Military Vest (Level 3)",
     "Item_Armor_D_01_Lv2_C": "Police Vest (Level 2)",
@@ -136,5 +138,8 @@
     "Item_Weapon_G36C_C": "G36C",
     "Item_Weapon_Grenade_Warmode_C": "Frag Grenade",
     "Item_Weapon_vz61Skorpion_C": "Skorpion",
+    "Item_Weapon_P90_C": "P90",
+    "Item_Weapon_OriginS12_C": "O12",
+    "Item_Weapon_ACE32_C": "ACE32",
     "WarModeStartParachutePack_C": "Parachute"
 }

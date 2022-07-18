@@ -55,6 +55,12 @@ export default () =>
             <section>
                 <SectionHeader>Changelog</SectionHeader>
 
+                <h5>2022-07-17</h5>
+                <ul>
+                    <li>Add Deston map support (Credit @Otsomies)</li>
+                    <li>Add support for new weapons (ACE32, P90, O12) (Credit @Otsomies)</li>
+                </ul>
+
                 <h5>2021-07-09</h5>
                 <ul>
                     <li>Add Taego support (Credit @lovethebomb)</li>
