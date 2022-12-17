@@ -19,7 +19,7 @@ const MAP_SIZES = {
     Baltic_Main: 816000,
     Desert_Main: 816000,
     Savage_Main: 408000,
-    DihorOtok_Main: 612000,
+    DihorOtok_Main: 816000,
     Summerland_Main: 204000,
     Chimera_Main: 306000,
     Heaven_Main: 102000,
