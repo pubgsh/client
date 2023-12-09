@@ -25,6 +25,7 @@ const MAP_SIZES = {
     Heaven_Main: 102000,
     Tiger_Main: 816000,
     Kiki_Main: 816000,
+    Neon_Main: 816000,
 }
 
 const StageWrapper = styled.div`
