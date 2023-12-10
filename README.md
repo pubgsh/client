@@ -19,6 +19,8 @@ This app provides the front end, including telemetry event parsing and rendering
 
 - `REACT_APP_API` (Where you have the companion)
 
+2. Install the dependencies by running `yarn install`.
+
 ### Running
 
 Simply run `yarn start` and create-react-app will launch the client app for you.

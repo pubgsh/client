@@ -55,6 +55,11 @@ export default () =>
             <section>
                 <SectionHeader>Changelog</SectionHeader>
 
+                <h5>2023-12-09</h5>
+                <ul>
+                    <li>Add Rondo support (Credit @luk27official)</li>
+                </ul>
+
                 <h5>2022-12-17</h5>
                 <ul>
                     <li>Updated Vikendi map image and settings (Credit @Otsomies)</li>
