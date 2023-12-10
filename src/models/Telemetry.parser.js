@@ -237,6 +237,9 @@ export default function parseTelemetry(matchData, telemetry, focusedPlayerName) 
             }
 
             if (d._T === 'LogPlayerTakeDamage') {
+                // Handle the case where a player attacks other entities than players (e.g. bears, bird cages, etc.)
+                if (d.victim.type.indexOf('user') === -1) return
+
                 incrementPlayerStateVal(d.victim.name, 'health', -d.damage)
                 setNewPlayerLocation(d.victim.name, { x: d.victim.location.x, y: d.victim.location.y })
 
