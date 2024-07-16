@@ -6,6 +6,7 @@ import DocumentTitle from 'react-document-title'
 import MatchPlayer from '../../components/MatchPlayer'
 import Telemetry from '../../models/Telemetry.js'
 import TelemetryWorker from '../../models/Telemetry.worker.js'
+import { getMapAsset } from '../../components/MatchPlayer/Map/BackgroundLayer'
 
 // -----------------------------------------------------------------------------
 // Styled Components -----------------------------------------------------------
@@ -32,17 +33,23 @@ class Match extends React.Component {
     componentDidMount() {
         if (this.props.data.match) {
             this.loadTelemetry()
+            this.preloadMapImage()
         }
     }
 
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.data.match !== this.props.data.match) {
             this.loadTelemetry()
+            this.preloadMapImage()
         }
     }
 
     componentWillUnmount() {
         this.cancelTelemetry()
+    }
+
+    preloadMapImage() {
+        new Image().src = getMapAsset(this.props.data.match.mapName)
     }
 
     loadTelemetry = async () => {
