@@ -60,12 +60,11 @@ class Analytics extends React.Component {
     }
 
     sendPageChange = (pathname, search = '') => {
-        const page = pathname + search
-
-        if (process.env.NODE_ENV === 'production') {
-            ReactGA.set({ page })
-            ReactGA.pageview(page)
-        }
+        // const page = pathname + search
+        // if (process.env.NODE_ENV === 'production') {
+        //     ReactGA.set({ page })
+        //     ReactGA.pageview(page)
+        // }
     }
 
     render() {
