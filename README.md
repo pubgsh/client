@@ -10,24 +10,22 @@ This app provides the front end, including telemetry event parsing and rendering
 
 ### Requirements
 
-- Node version 8+
-- yarn
+- bun
+- Node v18+
 
 ### Configuration
 
 1. Create `.env.local` [dotenv](https://github.com/motdotla/dotenv) file in the root of the project and provide the following values:
 
-- `REACT_APP_API` (Where you have the companion)
+- `REACT_APP_API` (Where you have the companion API app)
 
-2. Install the dependencies by running `yarn install`.
+    > Note: You can use `REACT_APP_API=https://api.pubg.sh` if you only want to run the client
+
+2. Install the dependencies by running `bun install`.
 
 ### Running
 
-Simply run `yarn start` and create-react-app will launch the client app for you.
-
-### Testing
-
-Run `yarn test`.
+Simply run `bun start` and create-react-app will launch the client app for you.
 
 ## License
 

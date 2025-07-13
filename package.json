@@ -47,12 +47,12 @@
         "worker-loader": "2.0.0"
     },
     "scripts": {
-        "check": "yarn run lint && CI=true yarn run test",
+        "check": "bun run lint && CI=true bun run test",
         "start": "react-app-rewired start",
         "lint": "eslint -c .eslintrc src",
         "build": "react-app-rewired build",
         "test": "react-app-rewired test --env=jsdom",
-        "predeploy": "yarn build",
+        "predeploy": "bun run build",
         "deploy": "scp -r build pubgsh:/apps/client"
     }
 }
